@@ -164,8 +164,14 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
           </div>
         </div>
 
-        {/* Floating Pill Header (Pinterest Pyko + PeopleFlow Aesthetic) */}
-        <header className="sticky top-0 z-40 w-full px-4 sm:px-8 py-4">
+        {/* Floating Pill Header (Liquid Glass Aesthetic) */}
+        <header
+          className={`w-full px-4 sm:px-8 py-3.5 z-40 transition-all ${
+            isHomePage
+              ? "absolute top-8 left-0 right-0 bg-transparent"
+              : "sticky top-0 bg-white/90 backdrop-blur-md"
+          }`}
+        >
           <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
             {/* Brand Identity (Top Left) */}
             <Link
@@ -175,7 +181,7 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
               <div
                 className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
                   isHomePage
-                    ? "bg-white/12 border border-white/20 text-white group-hover:bg-[#D9F296] group-hover:text-[#1A1E1C]"
+                    ? "liquid-glass text-white group-hover:bg-[#D9F296] group-hover:text-[#1A1E1C]"
                     : "bg-[#1A1E1C] text-[#D9F296] shadow-sm"
                 }`}
               >
@@ -190,13 +196,13 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
               </span>
             </Link>
 
-            {/* Center Floating Glass Pill Navigation (Exact Pinterest Pyko / PeopleFlow Bar) */}
+            {/* Center Floating Glass Pill Navigation (Liquid Glass Aesthetic) */}
             <nav
               aria-label="Primary Marketing Navigation"
-              className={`hidden xl:flex items-center space-x-1 px-2.5 py-1.5 rounded-full backdrop-blur-xl border transition-all ${
+              className={`hidden xl:flex items-center space-x-1 px-2.5 py-1.5 rounded-full transition-all ${
                 isHomePage
-                  ? "bg-[#1C241E]/80 border-white/15 shadow-[0_12px_36px_rgba(0,0,0,0.4)]"
-                  : "bg-white/90 border-white shadow-[0_8px_28px_rgba(26,30,28,0.06)]"
+                  ? "liquid-glass shadow-[0_12px_36px_rgba(0,0,0,0.4)]"
+                  : "bg-white/90 border border-white shadow-[0_8px_28px_rgba(26,30,28,0.06)] backdrop-blur-xl"
               }`}
             >
               {MARKETING_NAV_LINKS.map((link) => {

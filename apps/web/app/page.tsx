@@ -151,7 +151,7 @@ function MarketingHomeContent() {
       {/* =====================================================================
           SECTION 1: HERO SECTION WITH LOOPING BACKGROUND VIDEO & LIQUID GLASS
           ===================================================================== */}
-      <section className="relative min-h-[92vh] flex flex-col justify-between pt-8 pb-16 px-4 sm:px-8 overflow-hidden bg-black">
+      <section className="relative min-h-screen flex flex-col justify-between pt-36 pb-16 px-4 sm:px-8 overflow-hidden bg-black">
         {/* Full-Screen Looping Background Video */}
         <video
           ref={heroVideoRef}
