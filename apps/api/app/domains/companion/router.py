@@ -111,7 +111,7 @@ async def clear_session_history(
     user: UserContext = Depends(get_current_user),
 ):
     """Resets conversational history for a session (safe privacy control)."""
-    cleared = session_store.clear(session_id)
+    cleared = session_store.clear(session_id, user.user_id)
     if not cleared:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

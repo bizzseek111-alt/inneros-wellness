@@ -1,79 +1,77 @@
 "use client";
 
 import React from "react";
-import { Sparkles, Heart, Activity, Wind, ArrowRight } from "lucide-react";
+import { Activity, Wind, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 export const WarmFuturismComposition: React.FC = () => {
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-8 p-6 md:p-10 rounded-3xl bg-[#0B1120] border border-[#3B497B]/40 shadow-2xl text-[#FAF8F5]">
-      {/* Direction Manifesto Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-white/[0.08] pb-6 gap-4">
+    <div className="w-full max-w-4xl mx-auto space-y-8 p-6 md:p-10 rounded-3xl bg-white border border-[#E6E0D6] shadow-sm text-[#263330]">
+      {/* Direction Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[#F3EFE8] pb-6 gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-[#E2875F] text-xs font-mono tracking-widest uppercase mb-2">
-            <span>Direction 02</span>
-            <span>•</span>
-            <span>The Living Sanctuary</span>
+          <div className="flex items-center space-x-2 text-[#7D402D] text-[13px] font-medium mb-2">
+            <span>Style 02</span>
+            <span>&bull;</span>
+            <span>Gentle Presence</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-sans font-bold tracking-tight text-[#FAF8F5]">
+          <h2 className="text-2xl sm:text-3xl font-serif font-medium tracking-tight text-[#263330]">
             Warm Human Futurism
           </h2>
-          <p className="text-xs sm:text-sm text-[#C4C0E3] mt-2 max-w-xl font-normal leading-relaxed">
-            Organic empathy meets 2030 ambient intelligence. Uses twilight indigo, warm terracotta glow, soft pillowed surface elevations, and a fluid living companion sphere that breathes in circadian harmony.
+          <p className="text-[14.5px] text-[#52625E] mt-2 max-w-xl leading-relaxed">
+            Soft peach and sage gradients, tactile rounded cards, and a responsive breathing companion orb that moves gently with your voice.
           </p>
         </div>
-        <div className="flex items-center space-x-2 text-xs font-mono text-[#E2875F] bg-[#E2875F]/10 px-3 py-1.5 rounded-full border border-[#E2875F]/30 shrink-0">
-          <span>Palette: Twilight Indigo & Warm Terracotta</span>
+        <div className="text-[13px] font-medium text-[#7D402D] bg-[#F7E7E2] px-3.5 py-1.5 rounded-full border border-[#EED0C6] shrink-0">
+          Palette: Warm Peach &amp; Botanical Teal
         </div>
       </div>
 
-      {/* Composition: Real Interface Mockup */}
+      {/* Composition Mockup */}
       <div className="grid md:grid-cols-12 gap-6">
-        {/* Living Breathing Sphere */}
-        <div className="md:col-span-5 p-6 rounded-3xl bg-gradient-to-br from-[#18233C] to-[#0E1528] border border-white/[0.08] flex flex-col items-center justify-center text-center space-y-4">
+        <div className="md:col-span-5 p-6 rounded-3xl bg-gradient-to-br from-[#F7E7E2]/60 via-[#FAF8F4] to-[#E8F1EB]/70 border border-[#E6E0D6] flex flex-col items-center justify-center text-center space-y-4">
           <motion.div
-            animate={{ scale: [1, 1.1, 1] }}
+            animate={{ scale: [1, 1.06, 1] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="w-24 h-24 rounded-full bg-gradient-to-tr from-[#3D7E73] via-[#E2875F] to-[#4F5D95] p-1 shadow-[0_0_35px_rgba(226,135,95,0.35)] flex items-center justify-center"
+            className="w-24 h-24 rounded-full bg-gradient-to-tr from-[#E8F1EB] via-[#F7E7E2] to-[#EDE8F5] p-1.5 shadow-sm border border-[#CFE2D6] flex items-center justify-center"
           >
-            <div className="w-full h-full rounded-full bg-[#0B1120] flex items-center justify-center">
-              <Wind className="w-6 h-6 text-[#E2875F]" />
+            <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
+              <Wind className="w-6 h-6 text-[#285B55]" />
             </div>
           </motion.div>
           <div>
-            <h4 className="text-sm font-semibold text-[#FAF8F5]">Living Resonance Presence</h4>
-            <p className="text-xs text-[#C4C0E3] mt-0.5">Attuned to 4-4-4-4 box breathing</p>
+            <h4 className="text-[15px] font-serif font-medium text-[#263330]">Breathing Companion Orb</h4>
+            <p className="text-[13px] text-[#52625E] mt-0.5">Paced to 4-4-4-4 box breathing</p>
           </div>
-          <div className="text-[11px] font-mono text-[#3D7E73] bg-[#3D7E73]/15 px-2.5 py-1 rounded-full border border-[#3D7E73]/30">
-            HRV Coherence: High
+          <div className="text-[12.5px] font-medium text-[#1F4742] bg-[#E8F1EB] px-3 py-1 rounded-full border border-[#CFE2D6]">
+            Mode: Help Me Settle
           </div>
         </div>
 
-        {/* Tactile Pillowed Dialogue Card */}
         <div className="md:col-span-7 space-y-4">
-          <div className="p-6 rounded-3xl bg-[#141E34]/90 border border-white/[0.08] shadow-lg space-y-3">
-            <div className="flex items-center justify-between text-xs text-[#8B9CD6]">
-              <span className="font-mono text-[10px] uppercase">Companion Attunement</span>
-              <span className="text-[#E2875F] font-medium">&bull; Grounding Warmth</span>
+          <div className="p-6 rounded-3xl bg-[#FAF8F4] border border-[#E6E0D6] space-y-3">
+            <div className="flex items-center justify-between text-[13px] text-[#52625E]">
+              <span className="font-medium text-[#285B55]">Companion Response</span>
+              <span className="text-[#7D402D] font-medium">&bull; Warm &amp; Grounding</span>
             </div>
-            <p className="text-base text-[#FAF8F5] leading-relaxed">
-              &ldquo;I sense the emotional residue from your workday. Let&rsquo;s gently lower your shoulders and give yourself permission to exist without solving anything for the next ten minutes.&rdquo;
+            <p className="text-[15px] text-[#263330] leading-relaxed">
+              &ldquo;It sounds like today asked a lot of you. Let&rsquo;s lower your shoulders together and take ten quiet minutes where nothing needs to be fixed.&rdquo;
             </p>
-            <div className="pt-2 flex items-center justify-between text-xs text-[#8B9CD6]">
-              <span>Context: 3 habit nodes referenced</span>
-              <button className="px-3 py-1.5 rounded-xl bg-[#E2875F]/20 hover:bg-[#E2875F]/30 text-[#E2875F] font-medium transition-colors flex items-center space-x-1">
-                <span>Breath pause</span>
-                <ArrowRight className="w-3 h-3" />
-              </button>
+            <div className="pt-2 flex items-center justify-between text-[13px] text-[#52625E]">
+              <span>3 personal routines remembered</span>
+              <span className="px-3 py-1.5 rounded-xl bg-[#E8F1EB] text-[#1F4742] font-medium inline-flex items-center space-x-1">
+                <span>Start breathing exercise</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </span>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-[#10192C]/70 border border-white/[0.06] flex items-center justify-between text-xs">
-            <div className="flex items-center space-x-2 text-[#C4C0E3]">
-              <Activity className="w-4 h-4 text-[#3D7E73]" />
-              <span>Evening parasympathetic transition active</span>
+          <div className="p-4 rounded-2xl bg-[#EDE8F5]/50 border border-[#DCD3EC] flex items-center justify-between text-[13.5px]">
+            <div className="flex items-center space-x-2 text-[#263330]">
+              <Activity className="w-4 h-4 text-[#553E82]" />
+              <span>Evening wind-down routine active</span>
             </div>
-            <span className="text-[10px] font-mono text-zinc-500">Autonomous Check-in</span>
+            <span className="text-[12.5px] text-[#553E82] font-medium">Gentle Check-in</span>
           </div>
         </div>
       </div>

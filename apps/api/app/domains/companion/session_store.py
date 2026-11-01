@@ -18,19 +18,24 @@ class ConversationSession(BaseModel):
 
 
 class SessionStore:
-    """Thread-safe conversational session manager with synthetic seed capability."""
+    """Thread-safe conversational session manager with strict per-user isolation."""
 
     def __init__(self, max_turns: int = 20):
         self._sessions: Dict[str, ConversationSession] = {}
         self.max_turns = max_turns
         self._seed_default_session()
 
+    def _make_key(self, session_id: str, user_id: str) -> str:
+        return f"{user_id}:{session_id}"
+
     def _seed_default_session(self):
         """Seeds initial synthetic session for Elena Vance."""
         now = datetime.now(timezone.utc)
-        self._sessions["session_default"] = ConversationSession(
+        default_user = "usr_synthetic_elena_vance_001"
+        key = self._make_key("session_default", default_user)
+        self._sessions[key] = ConversationSession(
             session_id="session_default",
-            user_id="user_synth_elena_001",
+            user_id=default_user,
             mode=ConversationMode.JUST_LISTEN,
             messages=[
                 ChatMessage(
@@ -45,10 +50,16 @@ class SessionStore:
             updated_at=now,
         )
 
-    def get_or_create(self, session_id: str, user_id: str, mode: ConversationMode = ConversationMode.JUST_LISTEN) -> ConversationSession:
-        if session_id not in self._sessions:
+    def get_or_create(
+        self,
+        session_id: str,
+        user_id: str,
+        mode: ConversationMode = ConversationMode.JUST_LISTEN,
+    ) -> ConversationSession:
+        key = self._make_key(session_id, user_id)
+        if key not in self._sessions:
             now = datetime.now(timezone.utc)
-            self._sessions[session_id] = ConversationSession(
+            self._sessions[key] = ConversationSession(
                 session_id=session_id,
                 user_id=user_id,
                 mode=mode,
@@ -56,26 +67,42 @@ class SessionStore:
                 created_at=now,
                 updated_at=now,
             )
-        return self._sessions[session_id]
+        return self._sessions[key]
 
-    def add_message(self, session_id: str, message: ChatMessage) -> None:
-        if session_id in self._sessions:
-            session = self._sessions[session_id]
+    def add_message(
+        self,
+        session_id: str,
+        message: ChatMessage,
+        user_id: str = "usr_synthetic_elena_vance_001",
+    ) -> None:
+        key = self._make_key(session_id, user_id)
+        if key in self._sessions:
+            session = self._sessions[key]
             session.messages.append(message)
             # Safe trim to max_turns
             if len(session.messages) > self.max_turns:
                 session.messages = session.messages[-self.max_turns:]
             session.updated_at = datetime.now(timezone.utc)
 
-    def get_history(self, session_id: str) -> List[ChatMessage]:
-        if session_id in self._sessions:
-            return list(self._sessions[session_id].messages)
+    def get_history(
+        self,
+        session_id: str,
+        user_id: str = "usr_synthetic_elena_vance_001",
+    ) -> List[ChatMessage]:
+        key = self._make_key(session_id, user_id)
+        if key in self._sessions:
+            return list(self._sessions[key].messages)
         return []
 
-    def clear(self, session_id: str) -> bool:
-        if session_id in self._sessions:
-            self._sessions[session_id].messages = []
-            self._sessions[session_id].updated_at = datetime.now(timezone.utc)
+    def clear(
+        self,
+        session_id: str,
+        user_id: str = "usr_synthetic_elena_vance_001",
+    ) -> bool:
+        key = self._make_key(session_id, user_id)
+        if key in self._sessions:
+            self._sessions[key].messages = []
+            self._sessions[key].updated_at = datetime.now(timezone.utc)
             return True
         return False
 

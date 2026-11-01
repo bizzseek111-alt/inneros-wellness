@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SanctuaryShell } from "@/components/shell/SanctuaryShell";
 import { Switch } from "@/components/primitives/Switch";
 import { Button } from "@/components/primitives/Button";
@@ -9,41 +9,122 @@ import {
   Lock,
   Download,
   Trash2,
-  ShieldCheck,
   AlertTriangle,
   FileText,
   Check,
   Info,
 } from "lucide-react";
 import { prototypeService } from "@/lib/prototype-service";
+import { api, UserMemoryConsent } from "@/lib/api-client";
 
 export default function PrivacySettingsPage() {
   const [consent, setConsent] = useState(prototypeService.getState().consent);
+  const [backendConsent, setBackendConsent] = useState<UserMemoryConsent | null>(null);
   const [exportPreview, setExportPreview] = useState<string | null>(null);
   const [showPurgeModal, setShowPurgeModal] = useState(false);
   const [purged, setPurged] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isPurging, setIsPurging] = useState(false);
 
-  const toggleConsent = (key: keyof typeof consent) => {
-    const updated = prototypeService.updateConsent({ [key]: !consent[key] });
+  useEffect(() => {
+    let mounted = true;
+    api
+      .getMemoryConsent()
+      .then((res) => {
+        if (mounted) {
+          setBackendConsent(res);
+          setConsent((prev) => ({
+            ...prev,
+            deriveLongTermMemory: !res.is_memory_recording_paused && res.allow_memory_system,
+          }));
+        }
+      })
+      .catch(() => {
+        // Offline fallback uses prototypeService state
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const toggleConsent = async (key: keyof typeof consent) => {
+    const nextVal = !consent[key];
+    const updated = prototypeService.updateConsent({ [key]: nextVal });
     setConsent(updated);
+
+    if (key === "deriveLongTermMemory") {
+      try {
+        if (nextVal) {
+          const res = await api.resumeMemory();
+          setBackendConsent(res);
+        } else {
+          const res = await api.pauseMemory();
+          setBackendConsent(res);
+        }
+      } catch {
+        // Fallback to local state if backend is unreachable
+      }
+    }
+
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   };
 
-  const handleExportData = () => {
-    const jsonStr = prototypeService.exportGdprArticle15Archive();
-    setExportPreview(jsonStr);
+  const handleExportData = async () => {
+    setIsExporting(true);
+    try {
+      const localArchive = JSON.parse(prototypeService.exportGdprArticle15Archive());
+      let backendBundle = null;
+      try {
+        backendBundle = await api.exportPersonalData();
+      } catch {
+        backendBundle = { note: "Backend API offline; exported local storage archive only." };
+      }
+
+      const combinedArchive = {
+        exportTimestamp: new Date().toISOString(),
+        formatVersion: "2.1.0-unified",
+        backendMemoryAndGraphBundle: backendBundle,
+        localReflectionsAndGoalsArchive: localArchive,
+      };
+      const jsonStr = JSON.stringify(combinedArchive, null, 2);
+      setExportPreview(jsonStr);
+    } finally {
+      setIsExporting(false);
+    }
   };
 
-  const handlePurgeAccount = () => {
-    prototypeService.purgeAllDataPermanently();
-    setShowPurgeModal(false);
-    setPurged(true);
-    setTimeout(() => {
-      setPurged(false);
-      window.location.reload();
-    }, 2000);
+  const handleDownloadJsonFile = () => {
+    if (!exportPreview) return;
+    const blob = new Blob([exportPreview], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `inneros-personal-data-export-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handlePurgeAccount = async () => {
+    setIsPurging(true);
+    try {
+      await Promise.all([
+        api.purgeAllMemory().catch(() => null),
+        api.clearSessionHistory("session_default").catch(() => null),
+      ]);
+      prototypeService.purgeAllDataPermanently();
+      setShowPurgeModal(false);
+      setPurged(true);
+      setTimeout(() => {
+        setPurged(false);
+        window.location.reload();
+      }, 1500);
+    } finally {
+      setIsPurging(false);
+    }
   };
 
   return (
@@ -71,13 +152,16 @@ export default function PrivacySettingsPage() {
                 What Your Companion Can Use
               </h2>
               <p className="text-[13.5px] text-[#52625E]">
-                Last updated: {consent.updatedAt}
+                Last updated:{" "}
+                {backendConsent?.updated_at
+                  ? new Date(backendConsent.updated_at).toLocaleString()
+                  : consent.updatedAt}
               </p>
             </div>
             {saved && (
               <Badge variant="sage" size="sm">
                 <Check className="w-3.5 h-3.5 mr-1 inline" />
-                Saved
+                Saved to Companion
               </Badge>
             )}
           </div>
@@ -121,16 +205,17 @@ export default function PrivacySettingsPage() {
                 Export Personal Archive
               </h3>
               <p className="text-[14px] text-[#52625E] leading-relaxed">
-                View or download a complete, readable JSON copy of your journal reflections, saved memories, and privacy settings.
+                View or download a complete, readable JSON copy of your saved memories, Life Graph connections, journal reflections, and privacy settings.
               </p>
             </div>
             <Button
               size="sm"
               variant="outline"
               onClick={handleExportData}
+              disabled={isExporting}
               leftIcon={<FileText className="w-4 h-4" />}
             >
-              View & Export My Data
+              {isExporting ? "Preparing Archive..." : "View & Export My Data"}
             </Button>
           </div>
 
@@ -145,7 +230,7 @@ export default function PrivacySettingsPage() {
                 Clear All Personal Data
               </h3>
               <p className="text-[14px] text-[#52625E] leading-relaxed">
-                Permanently remove your saved memories, connections, journal entries, and preferences from this environment.
+                Permanently remove your saved memories, Life Graph nodes, chat sessions, journal entries, and preferences from both the server and this browser.
               </p>
             </div>
             <Button
@@ -161,17 +246,27 @@ export default function PrivacySettingsPage() {
         {/* Export Data Preview */}
         {exportPreview && (
           <div className="p-6 rounded-3xl bg-white border border-[#285B55]/40 shadow-sm space-y-3">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="text-[15px] font-serif font-medium text-[#263330]">
-                Your Personal Data Archive
+                Your Personal Data Archive (Server + Browser)
               </span>
-              <Button
-                size="xs"
-                variant="ghost"
-                onClick={() => setExportPreview(null)}
-              >
-                Close Preview
-              </Button>
+              <div className="flex items-center space-x-2">
+                <Button
+                  size="xs"
+                  variant="primary"
+                  onClick={handleDownloadJsonFile}
+                  leftIcon={<Download className="w-3.5 h-3.5" />}
+                >
+                  Download JSON File
+                </Button>
+                <Button
+                  size="xs"
+                  variant="ghost"
+                  onClick={() => setExportPreview(null)}
+                >
+                  Close Preview
+                </Button>
+              </div>
             </div>
             <pre className="p-4 rounded-2xl bg-[#FAF8F4] border border-[#E6E0D6] text-[13px] font-mono text-[#263330] overflow-x-auto max-h-64 leading-relaxed">
               {exportPreview}
@@ -208,7 +303,7 @@ export default function PrivacySettingsPage() {
                 Scoped Account Isolation
               </span>
               <p className="text-[#52625E] text-[13.5px] leading-relaxed">
-                Backend API queries scope memories, reminders, and imports to your user profile and record changes in an activity log.
+                Backend API queries scope memories, sessions, reminders, and imports to your user profile and record changes in an activity log.
               </p>
             </div>
 
@@ -225,14 +320,22 @@ export default function PrivacySettingsPage() {
 
         {/* Confirmation Modal for Permanent Deletion */}
         {showPurgeModal && (
-          <div className="fixed inset-0 z-50 bg-[#263330]/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="purge-modal-title"
+            className="fixed inset-0 z-50 bg-[#263330]/40 backdrop-blur-sm flex items-center justify-center p-4"
+          >
             <div className="max-w-md w-full p-6 rounded-3xl bg-white border border-[#E6E0D6] shadow-xl space-y-4">
-              <div className="flex items-center space-x-2.5 text-[#A4384B] font-serif font-medium text-xl">
+              <div
+                id="purge-modal-title"
+                className="flex items-center space-x-2.5 text-[#A4384B] font-serif font-medium text-xl"
+              >
                 <AlertTriangle className="w-5 h-5 shrink-0" />
                 <span>Delete All Personal Data?</span>
               </div>
               <p className="text-[15px] text-[#52625E] leading-relaxed">
-                Are you sure you want to permanently delete all saved reflections, memories, and preferences? This cannot be undone.
+                Are you sure you want to permanently delete all saved memories, Life Graph nodes, chat sessions, journal reflections, and preferences? This cannot be undone.
               </p>
               <div className="flex justify-end space-x-2.5 pt-2">
                 <Button
@@ -245,9 +348,10 @@ export default function PrivacySettingsPage() {
                 <Button
                   size="sm"
                   variant="emergency"
+                  disabled={isPurging}
                   onClick={handlePurgeAccount}
                 >
-                  Yes, Delete Everything
+                  {isPurging ? "Deleting..." : "Yes, Delete Everything"}
                 </Button>
               </div>
             </div>
@@ -255,8 +359,8 @@ export default function PrivacySettingsPage() {
         )}
 
         {purged && (
-          <div className="p-4 rounded-2xl bg-[#FDF2F2] border border-[#F5D0D0] text-center text-[15px] text-[#A4384B]">
-            Your data has been cleared. Refreshing your space...
+          <div className="p-4 rounded-2xl bg-[#E8F1EB] border border-[#CFE2D6] text-center text-[14px] text-[#1F4742] font-medium">
+            All personal memories, sessions, and local reflections have been cleared. Refreshing your space...
           </div>
         )}
       </div>

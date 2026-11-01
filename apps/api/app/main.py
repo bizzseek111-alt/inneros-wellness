@@ -86,9 +86,9 @@ async def readiness_probe():
             "safety_guardrails": "active_and_enforced",
             "ai_gateway": f"ready ({settings.AI_PRIMARY_PROVIDER})",
             "voice_pipeline": f"ready ({settings.VOICE_STT_PROVIDER})",
-            "memory_encryption": "AES-256-GCM + HKDF active",
+            "memory_encryption": "In-Memory Tenant-Scoped Store (OAuth Tokens AES-256-GCM + HKDF Encrypted)",
             "synthetic_fixtures": "loaded",
-            "regulatory_status": "Non-Clinical Wellness Software (FDA 21 CFR 882 compliant)",
+            "regulatory_status": "Non-Clinical Wellness Companion (Not a Medical Device; Not FDA Cleared)",
         },
     )
 

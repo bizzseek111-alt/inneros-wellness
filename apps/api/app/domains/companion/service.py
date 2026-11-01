@@ -111,10 +111,12 @@ class CompanionService:
             session_store.add_message(
                 session_id,
                 ChatMessage(role="user", content=req.utterance, timestamp=now),
+                user.user_id,
             )
             session_store.add_message(
                 session_id,
                 ChatMessage(role="assistant", content=de_esc_msg, timestamp=now, is_crisis=True),
+                user.user_id,
             )
 
             return ChatResponse(
@@ -146,7 +148,7 @@ class CompanionService:
 
         # 4. Assemble Messages for AI Gateway
         messages: List[Message] = [Message(role="system", content=system_prompt)]
-        past_turns = session_store.get_history(session_id)
+        past_turns = session_store.get_history(session_id, user.user_id)
         for turn in past_turns[-6:]:  # Last 3 conversational exchanges
             messages.append(Message(role=turn.role, content=turn.content))
         messages.append(Message(role="user", content=req.utterance))
@@ -177,6 +179,7 @@ class CompanionService:
         session_store.add_message(
             session_id,
             ChatMessage(role="user", content=req.utterance, timestamp=now),
+            user.user_id,
         )
         session_store.add_message(
             session_id,
@@ -187,6 +190,7 @@ class CompanionService:
                 is_crisis=False,
                 recalled_memory_count=len(user_memories),
             ),
+            user.user_id,
         )
 
         return ChatResponse(
@@ -230,10 +234,12 @@ class CompanionService:
             session_store.add_message(
                 session_id,
                 ChatMessage(role="user", content=req.utterance, timestamp=now),
+                user.user_id,
             )
             session_store.add_message(
                 session_id,
                 ChatMessage(role="assistant", content=de_esc_msg, timestamp=now, is_crisis=True),
+                user.user_id,
             )
             yield f"data: {de_esc_msg}\n\n"
             yield "data: [DONE]\n\n"
@@ -254,7 +260,7 @@ class CompanionService:
             memory_context=memory_context,
         )
         messages: List[Message] = [Message(role="system", content=system_prompt)]
-        past_turns = session_store.get_history(session_id)
+        past_turns = session_store.get_history(session_id, user.user_id)
         for turn in past_turns[-6:]:
             messages.append(Message(role=turn.role, content=turn.content))
         messages.append(Message(role="user", content=req.utterance))
@@ -276,6 +282,7 @@ class CompanionService:
         session_store.add_message(
             session_id,
             ChatMessage(role="user", content=req.utterance, timestamp=now),
+            user.user_id,
         )
 
         async for chunk in ai_gateway.stream_complete(ai_req):
@@ -298,6 +305,7 @@ class CompanionService:
                 is_crisis=False,
                 recalled_memory_count=len(user_memories),
             ),
+            user.user_id,
         )
         yield "data: [DONE]\n\n"
 

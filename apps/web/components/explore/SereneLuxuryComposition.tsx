@@ -1,83 +1,75 @@
 "use client";
 
-import React, { useState } from "react";
-import { Sparkles, Compass, Shield, Feather, Clock, ArrowRight } from "lucide-react";
-import { Badge } from "@/components/primitives/Badge";
+import React from "react";
+import { ArrowRight } from "lucide-react";
 
 export const SereneLuxuryComposition: React.FC = () => {
-  const [activePrompt, setActivePrompt] = useState<string | null>(null);
-
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-8 p-6 md:p-10 rounded-3xl bg-[#090D16] border border-[#2B354F]/40 shadow-2xl text-[#FBF9F5]">
-      {/* Direction Manifesto Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-white/[0.08] pb-6 gap-4">
+    <div className="w-full max-w-4xl mx-auto space-y-8 p-6 md:p-10 rounded-3xl bg-white border border-[#E6E0D6] shadow-sm text-[#263330]">
+      {/* Direction Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[#F3EFE8] pb-6 gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-[#C5A880] text-xs font-mono tracking-widest uppercase mb-2">
-            <span>Direction 01</span>
-            <span>•</span>
-            <span>The Contemplative Salon</span>
+          <div className="flex items-center space-x-2 text-[#285B55] text-[13px] font-medium mb-2">
+            <span>Style 01</span>
+            <span>&bull;</span>
+            <span>Editorial Stillness</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-serif font-normal tracking-tight text-[#FBF9F5]">
-            Serene Luxury
+          <h2 className="text-2xl sm:text-3xl font-serif font-medium tracking-tight text-[#263330]">
+            Serene Sanctuary
           </h2>
-          <p className="text-xs sm:text-sm text-[#A9B2C8] mt-2 max-w-xl font-light leading-relaxed">
-            Architectural stillness, whisper-quiet prestige, and high editorial authority. Uses deep midnight ink, warm alabaster, and hairline champagne brass borders to create a timeless sanctuary.
+          <p className="text-[14.5px] text-[#52625E] mt-2 max-w-xl leading-relaxed">
+            Unhurried editorial typography, warm alabaster paper surfaces, and soft botanical sage accents designed for quiet evening journaling and contemplation.
           </p>
         </div>
-        <div className="flex items-center space-x-2 text-xs font-mono text-[#C5A880] bg-[#C5A880]/10 px-3 py-1.5 rounded-full border border-[#C5A880]/30 shrink-0">
-          <span>Palette: Midnight Ink & Warm Alabaster</span>
+        <div className="text-[13px] font-medium text-[#285B55] bg-[#E8F1EB] px-3.5 py-1.5 rounded-full border border-[#CFE2D6] shrink-0">
+          Palette: Warm Alabaster &amp; Soft Sage
         </div>
       </div>
 
-      {/* Composition: Real Interface Mockup */}
+      {/* Composition Mockup */}
       <div className="grid md:grid-cols-12 gap-6">
-        {/* Main Dialogue Panel */}
         <div className="md:col-span-7 space-y-4">
-          <div className="p-5 rounded-2xl bg-[#111726]/80 border border-white/[0.06] space-y-3">
-            <div className="flex items-center justify-between text-xs text-[#8994B0]">
-              <span className="font-mono uppercase tracking-wider text-[10px]">Evening Reflection</span>
-              <span>21:15</span>
+          <div className="p-5 rounded-2xl bg-[#FAF8F4] border border-[#E6E0D6] space-y-3">
+            <div className="flex items-center justify-between text-[13px] text-[#52625E]">
+              <span className="font-medium text-[#285B55]">Evening Reflection</span>
+              <span>9:15 PM</span>
             </div>
-            <p className="font-serif text-lg text-[#FBF9F5] leading-relaxed italic">
-              &ldquo;Notice where your mind travels when you release the demand to produce. What desires stillness tonight?&rdquo;
+            <p className="font-serif text-lg text-[#263330] leading-relaxed italic">
+              &ldquo;Notice where your mind travels when you let go of the need to solve everything tonight. What feels ready to rest?&rdquo;
             </p>
-            <div className="pt-2 flex items-center justify-between text-xs text-[#8994B0]">
-              <span className="text-[11px] text-[#C5A880]">Elena &bull; 2 memories honored</span>
-              <button className="text-xs text-[#C5A880] hover:underline flex items-center space-x-1">
-                <span>Respond</span>
-                <ArrowRight className="w-3 h-3" />
-              </button>
+            <div className="pt-2 flex items-center justify-between text-[13px] text-[#52625E]">
+              <span>2 saved notes remembered</span>
+              <span className="text-[#285B55] font-medium inline-flex items-center space-x-1">
+                <span>Reflect</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </span>
             </div>
           </div>
 
-          {/* User Reflection Card */}
-          <div className="p-5 rounded-2xl bg-[#182136]/50 border border-white/[0.08] space-y-2">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-[#C5A880]">Elena Vance</span>
-            <p className="text-sm text-[#E2E6F0] leading-relaxed font-light">
-              &ldquo;The executive presentation felt charged today. I noticed my impulse to defend every design choice immediately. Practicing ACT defusion helped me pause and stay curious.&rdquo;
+          <div className="p-5 rounded-2xl bg-[#E8F1EB]/50 border border-[#CFE2D6] space-y-2">
+            <span className="text-[12.5px] font-semibold text-[#1F4742]">Your Reflection</span>
+            <p className="text-[14.5px] text-[#263330] leading-relaxed">
+              &ldquo;The design review felt busy today. Stepping outside for a 20-minute walk before dinner helped me let go of the tension.&rdquo;
             </p>
           </div>
         </div>
 
-        {/* Insight & Celestial Resonance Rail */}
         <div className="md:col-span-5 space-y-4">
-          {/* Celestial Resonance Node */}
-          <div className="p-6 rounded-2xl bg-gradient-to-b from-[#141C30] to-[#0D1322] border border-[#C5A880]/20 flex flex-col items-center text-center space-y-3">
-            <div className="relative w-20 h-20 rounded-full border border-[#C5A880]/40 flex items-center justify-center">
-              <div className="w-8 h-8 rounded-full bg-[#C5A880]/20 border border-[#C5A880] animate-pulse" />
+          <div className="p-6 rounded-2xl bg-[#FAF8F4] border border-[#E6E0D6] flex flex-col items-center text-center space-y-3">
+            <div className="w-20 h-20 rounded-full bg-[#E8F1EB] border border-[#CFE2D6] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-[#285B55]/20 border border-[#285B55] animate-breathe" />
             </div>
             <div>
-              <h4 className="font-serif text-sm font-medium text-[#FBF9F5]">Celestial Resonance</h4>
-              <p className="text-[11px] text-[#A9B2C8] mt-0.5 font-light">Grounding &bull; 0.04 Hz Cadence</p>
+              <h4 className="font-serif text-[16px] font-medium text-[#263330]">Calm Breathing Pace</h4>
+              <p className="text-[13px] text-[#52625E] mt-0.5">Slow 4-second inhale &bull; 4-second exhale</p>
             </div>
           </div>
 
-          {/* Pacing Anchor */}
-          <div className="p-4 rounded-xl bg-[#111726]/60 border border-white/[0.06] text-xs space-y-1.5">
-            <span className="text-[10px] font-mono text-[#C5A880] uppercase tracking-wider">Circadian Rule</span>
-            <h5 className="font-medium text-[#FBF9F5]">Rest is restorative architecture</h5>
-            <p className="text-[11px] text-[#8994B0] leading-relaxed">
-              Biological equilibrium requires periods of zero stimulation. Your evening curfew begins in 45 minutes.
+          <div className="p-4 rounded-2xl bg-[#F7E7E2]/50 border border-[#EED0C6] text-[13.5px] space-y-1">
+            <span className="text-[12px] font-semibold text-[#7D402D]">Evening Quiet Hours</span>
+            <h5 className="font-medium text-[#263330]">Rest is protected</h5>
+            <p className="text-[13px] text-[#52625E] leading-relaxed">
+              Your quiet hours begin at 10:00 PM so notifications never interrupt your sleep.
             </p>
           </div>
         </div>

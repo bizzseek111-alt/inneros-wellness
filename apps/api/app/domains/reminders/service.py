@@ -577,9 +577,10 @@ class RemindersService:
         """
         _init_synthetic_user_state(user_id)
 
-        # 1. Idempotency Check
-        if req.idempotency_key in _IDEMPOTENCY_CACHE:
-            return _IDEMPOTENCY_CACHE[req.idempotency_key]
+        # 1. Idempotency Check (Scoped per user_id)
+        cache_key = f"{user_id}:{req.idempotency_key}"
+        if cache_key in _IDEMPOTENCY_CACHE:
+            return _IDEMPOTENCY_CACHE[cache_key]
 
         reminder = self.get_reminder(user_id, reminder_id)
         if not reminder:
@@ -605,7 +606,7 @@ class RemindersService:
                 audit_log_id=audit_id,
                 message="Reminder is inactive or paused by user. Skipped cleanly without noise.",
             )
-            _IDEMPOTENCY_CACHE[req.idempotency_key] = result
+            _IDEMPOTENCY_CACHE[cache_key] = result
             return result
 
         # 3. Quiet Hours Check (Circadian Window)
@@ -634,7 +635,7 @@ class RemindersService:
                 status=DeliveryStatus.SUPPRESSED_QUIET_HOURS,
                 details={"quiet_start": quiet_settings.start_time, "quiet_end": quiet_settings.end_time},
             )
-            _IDEMPOTENCY_CACHE[req.idempotency_key] = result
+            _IDEMPOTENCY_CACHE[cache_key] = result
             return result
 
         # 4. Simulated Network Retries (Background Job Resilience)
@@ -703,7 +704,7 @@ class RemindersService:
             audit_log_id=audit_id,
             message="Dispatched successfully with lockscreen privacy sanitization and explicit user consent.",
         )
-        _IDEMPOTENCY_CACHE[req.idempotency_key] = result
+        _IDEMPOTENCY_CACHE[cache_key] = result
         return result
 
     # --- Safety Invariant: Missed Check-In Non-Escalation ---
