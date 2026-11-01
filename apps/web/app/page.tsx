@@ -96,16 +96,19 @@ function MarketingHomeContent() {
   const [billingAnnual, setBillingAnnual] = useState(true);
   const [activeModeIdx, setActiveModeIdx] = useState(0);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const lifeGraphVideoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (heroVideoRef.current) {
-      heroVideoRef.current.muted = true;
-      heroVideoRef.current.defaultMuted = true;
-      const playPromise = heroVideoRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {});
+    [heroVideoRef, lifeGraphVideoRef].forEach((ref) => {
+      if (ref.current) {
+        ref.current.muted = true;
+        ref.current.defaultMuted = true;
+        const playPromise = ref.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {});
+        }
       }
-    }
+    });
   }, []);
 
   const modes = [
@@ -859,11 +862,27 @@ function MarketingHomeContent() {
       {/* =====================================================================
           SECTION 6: THE MIND BEHIND INNEROS — BIOLUMINESCENT LIFE GRAPH (PYKO 00:22)
           ===================================================================== */}
-      <section className="relative py-28 px-4 sm:px-8 bg-[#070E09] text-white overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-70 pointer-events-none"
-          style={{ backgroundImage: "url('/images/oracle-sphere.jpg')" }}
-        />
+      <section id="life-graph" className="relative py-28 px-4 sm:px-8 bg-[#070E09] text-white overflow-hidden">
+        {/* High-Resolution Bioluminescent Life Graph Looping Background Video */}
+        <video
+          ref={lifeGraphVideoRef}
+          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+          autoPlay
+          muted
+          loop
+          playsInline
+          style={{
+            imageRendering: "-webkit-optimize-contrast",
+            WebkitBackfaceVisibility: "hidden",
+            transform: "translateZ(0)",
+          }}
+        >
+          <source src="/videos/lifegraph-sphere.mp4" type="video/mp4" />
+          <source
+            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260702_102608_5fa1187d-9ac6-44fb-82ab-54376200abc0.mp4"
+            type="video/mp4"
+          />
+        </video>
         <div className="absolute inset-0 bg-gradient-to-b from-[#070E09] via-transparent to-[#070E09] pointer-events-none" />
 
         <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
