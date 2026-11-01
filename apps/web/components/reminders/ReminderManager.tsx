@@ -301,17 +301,17 @@ export function ReminderManager() {
   return (
     <div className="space-y-8">
       {/* Module Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-white/[0.08] pb-6 gap-4">
+      <div className="p-6 rounded-3xl bg-white border border-[#E6E0D6] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1.5">
-          <div className="flex items-center space-x-2 text-teal-400 text-xs font-mono uppercase tracking-widest">
-            <Clock className="w-4 h-4 text-teal-400" />
-            <span>Circadian Pacing & Proactive Life-Assistance</span>
+          <div className="flex items-center space-x-2 text-[#285B55] text-[14px] font-medium">
+            <Clock className="w-4 h-4 text-[#285B55]" />
+            <span>Reminders &amp; Daily Rhythms</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-serif font-normal text-ivory-100 tracking-tight">
-            Reminders, Routines & Quiet Hours
+          <h1 className="text-2xl sm:text-3xl font-serif font-medium text-[#263330]">
+            Gentle Reminders &amp; Quiet Hours
           </h1>
-          <p className="text-xs sm:text-sm text-ivory-400 font-light max-w-2xl leading-relaxed">
-            Autonomous daily companion with strict attention throttling, zero streak-pressure, and automatic lockscreen privacy sanitization.
+          <p className="text-[15px] text-[#52625E] max-w-2xl leading-relaxed">
+            Set supportive check-ins and daily routines that respect your rest—with no streaks, pressure, or guilt.
           </p>
         </div>
 
@@ -320,12 +320,12 @@ export function ReminderManager() {
             size="sm"
             variant="secondary"
             onClick={() => setActiveTab("notifications")}
-            leftIcon={<Bell className="w-3.5 h-3.5" />}
+            leftIcon={<Bell className="w-4 h-4" />}
             className="relative"
           >
-            In-App Center
+            Recent Messages
             {unreadCount > 0 && (
-              <span className="ml-1.5 px-1.5 py-0.2 bg-teal-500 text-midnight-950 rounded-full text-[10px] font-bold">
+              <span className="ml-2 px-2 py-0.5 bg-[#285B55] text-white rounded-full text-[12px] font-semibold">
                 {unreadCount}
               </span>
             )}
@@ -334,43 +334,43 @@ export function ReminderManager() {
             size="sm"
             variant="primary"
             onClick={() => setIsAdding(!isAdding)}
-            leftIcon={<Plus className="w-3.5 h-3.5" />}
+            leftIcon={<Plus className="w-4 h-4" />}
           >
-            {isAdding ? "Cancel Schedule" : "New Reminder"}
+            {isAdding ? "Cancel" : "Add Reminder"}
           </Button>
         </div>
       </div>
 
-      {/* Behavioral Ethics & Privacy Banner */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-midnight-900/90 border border-teal-800/40 grid md:grid-cols-3 gap-4 text-xs">
+      {/* Reassuring Highlights Banner */}
+      <div className="p-5 rounded-3xl bg-[#E8F1EB] border border-[#CFE2D6] grid md:grid-cols-3 gap-4 text-[14px]">
         <div className="flex items-start space-x-3">
-          <HeartHandshake className="w-4 h-4 text-teal-400 shrink-0 mt-0.5" />
+          <HeartHandshake className="w-5 h-5 text-[#285B55] shrink-0 mt-0.5" />
           <div className="space-y-0.5">
-            <span className="font-semibold text-ivory-100">Zero Guilt & Streak Anxiety</span>
-            <p className="text-zinc-400 text-[11px] leading-relaxed">
-              No manipulative attachments. Missed check-ins are normal human life and never trigger alarms.
+            <span className="font-semibold text-[#263330]">No Streaks or Pressure</span>
+            <p className="text-[#52625E] text-[13.5px] leading-relaxed">
+              Skipping a check-in is a normal part of life. You will never receive guilt-based reminders.
             </p>
           </div>
         </div>
 
         <div className="flex items-start space-x-3">
-          <ShieldCheck className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
+          <ShieldCheck className="w-5 h-5 text-[#285B55] shrink-0 mt-0.5" />
           <div className="space-y-0.5">
-            <span className="font-semibold text-ivory-100">Lockscreen Privacy Shield</span>
-            <p className="text-zinc-400 text-[11px] leading-relaxed">
-              Psychological reflections and notes stay in-app; lockscreens only preview non-stigmatizing prompts.
+            <span className="font-semibold text-[#263330]">Discreet Notifications</span>
+            <p className="text-[#52625E] text-[13.5px] leading-relaxed">
+              Personal notes stay inside the app—notifications only show a simple, private greeting.
             </p>
           </div>
         </div>
 
         <div className="flex items-start space-x-3">
-          <Moon className="w-4 h-4 text-lavender-400 shrink-0 mt-0.5" />
+          <Moon className="w-5 h-5 text-[#285B55] shrink-0 mt-0.5" />
           <div className="space-y-0.5">
-            <span className="font-semibold text-ivory-100">Circadian Quiet Window</span>
-            <p className="text-zinc-400 text-[11px] leading-relaxed">
+            <span className="font-semibold text-[#263330]">Rest-Friendly Quiet Hours</span>
+            <p className="text-[#52625E] text-[13.5px] leading-relaxed">
               {quietHours.enabled
-                ? `Active (${quietHours.start_time} - ${quietHours.end_time} ${quietHours.timezone.split("/")[1] || "Local"}). Sleep fully protected.`
-                : "Disabled. Sleep protection off."}
+                ? `Active (${quietHours.start_time} – ${quietHours.end_time}). Your evening rest is protected.`
+                : "Quiet hours are currently off."}
             </p>
           </div>
         </div>

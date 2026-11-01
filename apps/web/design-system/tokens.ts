@@ -1,96 +1,131 @@
 /**
  * InnerOS Design System Tokens
- * Master token specifications for typography, colors, elevations, radiuses, and motion.
+ * Master token specifications for "Warm Human Minimalism with Gentle Futurism".
  */
 
 export const tokens = {
   colors: {
-    // Midnight Blue (Foundational Dark Canvas & Depths)
-    midnight: {
-      950: "#04070D", // Deepest canvas void
-      900: "#070B14", // Primary dark canvas
-      850: "#0B111E", // Dark elevated surface
-      800: "#101828", // Card surface in dark
-      700: "#1A253A", // Subtle dark border
-      600: "#273752", // Active state border
-      500: "#3B4E70", // Muted dark text
+    // Warm Alabaster & Soft Surfaces (Light Default)
+    canvas: {
+      primary: "#FAF8F4",
+      subtle: "#F3EFE8",
+      card: "#FFFFFF",
+      elevated: "#FCFBF9",
     },
 
-    // Soft Indigo (Contemplation, Depth & Evening Rest)
-    indigo: {
-      900: "#181E36",
-      800: "#222B4C",
-      700: "#2E3B66",
-      600: "#3D4E85",
-      500: "#4F64AA",
-      400: "#687DC2",
-      300: "#8B9CD6",
-      200: "#B4C1EA",
-      100: "#DCE3F6",
-      50: "#F2F5FC",
+    // Soft Sage (Calm, Grounding & Primary Accent)
+    sage: {
+      50: "#F4F8F5",
+      100: "#E8F1EB",
+      200: "#D0E3D7",
+      300: "#A8CBB5",
+      400: "#78AC8D",
+      500: "#4D8B68",
+      600: "#376F50",
+      700: "#285B55",
+      800: "#1F4742",
+      900: "#173632",
     },
 
-    // Muted Lavender (Ethereal Clarity, Self-Reflection & Nuance)
+    // Warm Peach (Human Warmth & Gentle Reassurance)
+    peach: {
+      50: "#FDF8F6",
+      100: "#F7E7E2",
+      200: "#EED0C6",
+      300: "#E0B0A0",
+      400: "#CE8A74",
+      500: "#B86B52",
+      600: "#9A523B",
+      700: "#7D402D",
+    },
+
+    // Gentle Lavender (Reflection, Clarity & Stillness)
     lavender: {
-      900: "#232130",
-      800: "#36334A",
-      700: "#4D4968",
-      600: "#69648D",
-      500: "#8983B3",
-      400: "#A9A4CF",
-      300: "#C4C0E3",
-      200: "#DDD9F0",
-      100: "#EFEBF8",
-      50: "#F9F7FC",
+      50: "#F7F5FA",
+      100: "#EDE8F5",
+      200: "#DCD3EC",
+      300: "#C2B3DF",
+      400: "#A38ECF",
+      500: "#856BB8",
+      600: "#6B519E",
+      700: "#553E82",
+      800: "#423166",
+      900: "#31254C",
     },
 
-    // Warm Ivory & Alabaster (Light Canvas, Gentle Warmth & Human Touch)
+    // Accessible Typography Ink Hierarchy
+    ink: {
+      primary: "#263330", // 11.2:1 contrast ratio on #FAF8F4
+      secondary: "#52625E", // 5.6:1 contrast ratio on #FAF8F4
+      muted: "#6E7E7A",
+      border: "#E4E0D8",
+    },
+
+    // Backward-compatible semantic palettes mapped to Warm Human Minimalism
+    midnight: {
+      950: "#FAF8F4",
+      900: "#FFFFFF",
+      850: "#F6F3EC",
+      800: "#FFFFFF",
+      700: "#E8E3D9",
+      600: "#D5CFC2",
+      500: "#52625E",
+    },
+    indigo: {
+      900: "#31254C",
+      800: "#423166",
+      700: "#553E82",
+      600: "#6B519E",
+      500: "#856BB8",
+      400: "#A38ECF",
+      300: "#C2B3DF",
+      200: "#DCD3EC",
+      100: "#EDE8F5",
+      50: "#F7F5FA",
+    },
     ivory: {
-      900: "#262420",
-      800: "#3B3833",
-      700: "#59544D",
-      600: "#7E776D",
-      500: "#A8A094",
-      400: "#C8C1B5",
-      300: "#E3DDD3",
-      200: "#EFEBE3",
-      100: "#F6F3EE",
-      50: "#FAF8F5", // Pristine warm light canvas
+      900: "#FAF8F4",
+      800: "#F3EFE8",
+      700: "#E6E1D6",
+      600: "#6E7E7A",
+      500: "#5C6B67",
+      400: "#52625E",
+      300: "#3D4D49",
+      200: "#2F3E3A",
+      100: "#263330",
+      50: "#1B2623",
     },
-
-    // Restrained Teal (Calm Breath, Autonomic Nervous System Regulation & Centeredness)
     teal: {
-      900: "#0D2523",
-      800: "#133734",
-      700: "#1B4D49",
-      600: "#266863",
-      500: "#348680",
-      400: "#4BA59E",
-      300: "#6EC2BC",
-      200: "#9CDBD6",
-      100: "#CEEFEB",
-      50: "#EBF8F6",
+      900: "#173632",
+      800: "#1F4742",
+      700: "#285B55",
+      600: "#285B55",
+      500: "#2F6B64",
+      400: "#4D8B68",
+      300: "#78AC8D",
+      200: "#A8CBB5",
+      100: "#E8F1EB",
+      50: "#F4F8F5",
     },
 
-    // Functional Sanctuary Semantic Colors
     functional: {
       crisisRose: {
         dark: "#7F1D1D",
-        medium: "#BE123C",
-        light: "#F43F5E",
-        bg: "rgba(190, 18, 60, 0.12)",
+        medium: "#9B1C31",
+        light: "#FDF2F2",
+        bg: "#FDF2F2",
       },
       warningAmber: {
-        dark: "#78350F",
-        medium: "#B45309",
-        light: "#F59E0B",
-        bg: "rgba(245, 158, 11, 0.12)",
+        dark: "#6B4415",
+        medium: "#9A523B",
+        light: "#F7E7E2",
+        bg: "#FDF8F6",
       },
       successSage: {
-        dark: "#143E2C",
-        medium: "#1F6D4F",
-        light: "#34D399",
-        bg: "rgba(52, 211, 153, 0.12)",
+        dark: "#173632",
+        medium: "#285B55",
+        light: "#E8F1EB",
+        bg: "#F4F8F5",
       },
     },
   },
@@ -98,44 +133,44 @@ export const tokens = {
   typography: {
     fontFamilies: {
       serif: '"Newsreader", "Playfair Display", "Cormorant Garamond", Georgia, serif',
-      sans: '"Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      sans: '"Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       mono: '"JetBrains Mono", "SF Mono", Menlo, Consolas, monospace',
     },
     scale: {
-      "2xs": { size: "0.6875rem", lineHeight: "1rem", letterSpacing: "0.04em" }, // 11px
-      xs: { size: "0.75rem", lineHeight: "1.125rem", letterSpacing: "0.02em" }, // 12px
-      sm: { size: "0.8125rem", lineHeight: "1.25rem", letterSpacing: "0.01em" }, // 13px
-      base: { size: "0.9375rem", lineHeight: "1.5rem", letterSpacing: "0em" }, // 15px
-      md: { size: "1.0625rem", lineHeight: "1.625rem", letterSpacing: "-0.01em" }, // 17px
-      lg: { size: "1.25rem", lineHeight: "1.75rem", letterSpacing: "-0.015em" }, // 20px
-      xl: { size: "1.5rem", lineHeight: "2rem", letterSpacing: "-0.02em" }, // 24px
-      "2xl": { size: "1.875rem", lineHeight: "2.375rem", letterSpacing: "-0.025em" }, // 30px
-      "3xl": { size: "2.375rem", lineHeight: "2.875rem", letterSpacing: "-0.03em" }, // 38px
-      "4xl": { size: "3rem", lineHeight: "3.5rem", letterSpacing: "-0.035em" }, // 48px
+      "2xs": { size: "0.8125rem", lineHeight: "1.35rem", letterSpacing: "0.01em" }, // 13px
+      xs: { size: "0.875rem", lineHeight: "1.4rem", letterSpacing: "0.01em" },      // 14px
+      sm: { size: "0.9375rem", lineHeight: "1.5rem", letterSpacing: "0em" },        // 15px
+      base: { size: "1.0625rem", lineHeight: "1.65rem", letterSpacing: "0em" },     // 17px
+      md: { size: "1.125rem", lineHeight: "1.7rem", letterSpacing: "-0.005em" },    // 18px
+      lg: { size: "1.25rem", lineHeight: "1.75rem", letterSpacing: "-0.01em" },     // 20px
+      xl: { size: "1.5rem", lineHeight: "2rem", letterSpacing: "-0.015em" },        // 24px
+      "2xl": { size: "1.875rem", lineHeight: "2.375rem", letterSpacing: "-0.02em" },// 30px
+      "3xl": { size: "2.25rem", lineHeight: "2.75rem", letterSpacing: "-0.025em" }, // 36px
+      "4xl": { size: "2.75rem", lineHeight: "3.25rem", letterSpacing: "-0.03em" },  // 44px
     },
   },
 
   radius: {
     none: "0px",
-    xs: "4px",
-    sm: "8px",
-    md: "12px",
-    lg: "16px",
+    xs: "6px",
+    sm: "10px",
+    md: "14px",
+    lg: "18px",
     xl: "24px",
     "2xl": "32px",
     full: "9999px",
   },
 
   elevations: {
-    subtle: "0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03)",
-    surface: "0 4px 20px -2px rgba(0, 0, 0, 0.18), 0 2px 6px -1px rgba(0, 0, 0, 0.08)",
-    elevated: "0 12px 36px -4px rgba(0, 0, 0, 0.28), 0 4px 12px -2px rgba(0, 0, 0, 0.14)",
-    floating: "0 24px 64px -12px rgba(0, 0, 0, 0.42), 0 8px 24px -4px rgba(0, 0, 0, 0.22)",
+    subtle: "0 2px 8px rgba(38, 51, 48, 0.04)",
+    surface: "0 6px 24px -4px rgba(38, 51, 48, 0.06)",
+    elevated: "0 16px 40px -6px rgba(38, 51, 48, 0.09)",
+    floating: "0 24px 60px -12px rgba(38, 51, 48, 0.14)",
   },
 
   motion: {
     ease: {
-      fluid: [0.16, 1, 0.3, 1], // Apple-grade natural deceleration
+      fluid: [0.16, 1, 0.3, 1],
       meditative: [0.33, 1, 0.68, 1],
       breathe: [0.45, 0, 0.55, 1],
     },
@@ -150,5 +185,5 @@ export const tokens = {
   },
 } as const;
 
-export type ThemeMode = "dark" | "light";
+export type ThemeMode = "light" | "dark";
 export type DesignDirection = "serene-luxury" | "warm-futurism" | "minimal-eq";

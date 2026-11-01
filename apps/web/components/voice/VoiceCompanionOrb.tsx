@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Mic, Volume2, Sparkles, Moon, Radio, AlertCircle, WifiOff } from "lucide-react";
 
 export type VoiceCompanionVisualState =
@@ -17,7 +17,7 @@ export type VoiceCompanionVisualState =
 
 interface VoiceCompanionOrbProps {
   state: VoiceCompanionVisualState;
-  audioLevel?: number; // 0.0 to 1.0
+  audioLevel?: number;
   prefersReducedMotion?: boolean;
   className?: string;
   onClick?: () => void;
@@ -44,107 +44,104 @@ export const VoiceCompanionOrb: React.FC<VoiceCompanionOrbProps> = ({
 
   const isReducedMotion = propReducedMotion !== undefined ? propReducedMotion : systemReducedMotion;
 
-  // Visual State Palette Mapping
   const stateConfig: Record<
     VoiceCompanionVisualState,
     {
-      primaryColor: string;
-      secondaryColor: string;
+      gradient: string;
+      ringColor: string;
       glowColor: string;
-      borderColor: string;
+      iconColor: string;
       icon: React.ComponentType<{ className?: string }>;
       label: string;
       subtext: string;
     }
   > = {
     idle: {
-      primaryColor: "rgba(52, 134, 128, 0.4)",
-      secondaryColor: "rgba(30, 27, 75, 0.6)",
-      glowColor: "rgba(52, 134, 128, 0.2)",
-      borderColor: "rgba(52, 134, 128, 0.3)",
+      gradient: "radial-gradient(circle at 35% 35%, #FFFFFF 0%, #E8F1EB 45%, #A8CBB5 100%)",
+      ringColor: "rgba(40, 91, 85, 0.25)",
+      glowColor: "rgba(40, 91, 85, 0.14)",
+      iconColor: "text-[#285B55]",
       icon: Sparkles,
-      label: "Sanctuary Presence",
-      subtext: "Calm, receptive stillness",
+      label: "Ready When You Are",
+      subtext: "Tap the microphone or orb to begin speaking",
     },
     connecting: {
-      primaryColor: "rgba(129, 140, 248, 0.4)",
-      secondaryColor: "rgba(30, 27, 75, 0.7)",
-      glowColor: "rgba(129, 140, 248, 0.25)",
-      borderColor: "rgba(129, 140, 248, 0.4)",
+      gradient: "radial-gradient(circle at 35% 35%, #FFFFFF 0%, #EDE8F5 50%, #C2B3DF 100%)",
+      ringColor: "rgba(107, 81, 158, 0.30)",
+      glowColor: "rgba(107, 81, 158, 0.16)",
+      iconColor: "text-[#553E82]",
       icon: Radio,
-      label: "Establishing Connection",
-      subtext: "Negotiating low-latency audio stream",
+      label: "Connecting...",
+      subtext: "Preparing your quiet voice space",
     },
     listening: {
-      primaryColor: "rgba(20, 184, 166, 0.6)",
-      secondaryColor: "rgba(45, 212, 191, 0.25)",
-      glowColor: "rgba(20, 184, 166, 0.4)",
-      borderColor: "rgba(45, 212, 191, 0.7)",
+      gradient: "radial-gradient(circle at 35% 35%, #E8F1EB 0%, #78AC8D 55%, #285B55 100%)",
+      ringColor: "rgba(40, 91, 85, 0.45)",
+      glowColor: "rgba(40, 91, 85, 0.24)",
+      iconColor: "text-white",
       icon: Mic,
-      label: "Active Listening",
-      subtext: "Attuned to your vocal presence",
+      label: "Listening to You",
+      subtext: "Speak naturally at your own pace",
     },
     thinking: {
-      primaryColor: "rgba(167, 139, 250, 0.5)",
-      secondaryColor: "rgba(99, 102, 241, 0.35)",
-      glowColor: "rgba(167, 139, 250, 0.3)",
-      borderColor: "rgba(167, 139, 250, 0.6)",
-      icon: Radio,
-      label: "Synthesizing Reflection",
-      subtext: "Grounded in non-clinical emotional presence",
+      gradient: "radial-gradient(circle at 35% 35%, #FAF8F4 0%, #EDE8F5 50%, #A38ECF 100%)",
+      ringColor: "rgba(107, 81, 158, 0.35)",
+      glowColor: "rgba(107, 81, 158, 0.20)",
+      iconColor: "text-[#423166]",
+      icon: Sparkles,
+      label: "Reflecting",
+      subtext: "Taking a thoughtful moment...",
     },
     speaking: {
-      primaryColor: "rgba(45, 212, 191, 0.65)",
-      secondaryColor: "rgba(247, 245, 240, 0.35)",
-      glowColor: "rgba(52, 134, 128, 0.5)",
-      borderColor: "rgba(45, 212, 191, 0.8)",
+      gradient: "radial-gradient(circle at 35% 35%, #FAF8F4 0%, #F7E7E2 45%, #E8F1EB 100%)",
+      ringColor: "rgba(40, 91, 85, 0.40)",
+      glowColor: "rgba(40, 91, 85, 0.22)",
+      iconColor: "text-[#285B55]",
       icon: Volume2,
-      label: "Empathic Voice",
-      subtext: "Speaking gently &bull; Interrupt anytime",
+      label: "Speaking Gently",
+      subtext: "You can interrupt or pause anytime",
     },
     interrupted: {
-      primaryColor: "rgba(245, 158, 11, 0.6)",
-      secondaryColor: "rgba(217, 119, 6, 0.3)",
-      glowColor: "rgba(245, 158, 11, 0.35)",
-      borderColor: "rgba(245, 158, 11, 0.8)",
+      gradient: "radial-gradient(circle at 35% 35%, #FFFFFF 0%, #F7E7E2 60%, #E0B0A0 100%)",
+      ringColor: "rgba(184, 107, 82, 0.40)",
+      glowColor: "rgba(184, 107, 82, 0.18)",
+      iconColor: "text-[#7D402D]",
       icon: AlertCircle,
-      label: "Speech Interrupted",
-      subtext: "Audio paused immediately &bull; Listening to you",
+      label: "Paused for You",
+      subtext: "I stopped speaking so I can listen to you",
     },
     reconnecting: {
-      primaryColor: "rgba(245, 158, 11, 0.4)",
-      secondaryColor: "rgba(180, 83, 9, 0.3)",
-      glowColor: "rgba(245, 158, 11, 0.2)",
-      borderColor: "rgba(245, 158, 11, 0.5)",
+      gradient: "radial-gradient(circle at 35% 35%, #FFFFFF 0%, #F7E7E2 60%, #EED0C6 100%)",
+      ringColor: "rgba(184, 107, 82, 0.35)",
+      glowColor: "rgba(184, 107, 82, 0.15)",
+      iconColor: "text-[#7D402D]",
       icon: WifiOff,
-      label: "Recovering Stream",
-      subtext: "Restoring audio buffers safely",
+      label: "Reconnecting Audio",
+      subtext: "Restoring your voice connection...",
     },
     resting: {
-      primaryColor: "rgba(40, 44, 52, 0.4)",
-      secondaryColor: "rgba(20, 22, 28, 0.7)",
-      glowColor: "rgba(255, 255, 255, 0.05)",
-      borderColor: "rgba(255, 255, 255, 0.1)",
+      gradient: "radial-gradient(circle at 35% 35%, #FFFFFF 0%, #F3EFE8 65%, #E4E0D8 100%)",
+      ringColor: "rgba(38, 51, 48, 0.15)",
+      glowColor: "rgba(38, 51, 48, 0.06)",
+      iconColor: "text-[#52625E]",
       icon: Moon,
-      label: "Resting Sanctuary",
-      subtext: "Conserving emotional energy",
+      label: "Conversation Paused",
+      subtext: "Take all the time you need",
     },
     muted: {
-      primaryColor: "rgba(225, 29, 72, 0.3)",
-      secondaryColor: "rgba(30, 27, 75, 0.6)",
-      glowColor: "rgba(225, 29, 72, 0.2)",
-      borderColor: "rgba(225, 29, 72, 0.4)",
+      gradient: "radial-gradient(circle at 35% 35%, #FFFFFF 0%, #F7E7E2 65%, #EED0C6 100%)",
+      ringColor: "rgba(155, 28, 49, 0.28)",
+      glowColor: "rgba(155, 28, 49, 0.10)",
+      iconColor: "text-[#9B1C31]",
       icon: Moon,
       label: "Microphone Muted",
-      subtext: "Zero audio captured &bull; Privacy protected",
+      subtext: "Your microphone is off and private",
     },
   };
 
   const current = stateConfig[state] || stateConfig.idle;
   const StateIcon = current.icon;
-
-  // Dynamic audio scale booster for speaking and listening
-  const dynamicAudioScale = 1 + Math.min(0.25, audioLevel * 0.4);
+  const dynamicAudioScale = 1 + Math.min(0.18, audioLevel * 0.3);
 
   return (
     <div
@@ -152,127 +149,86 @@ export const VoiceCompanionOrb: React.FC<VoiceCompanionOrbProps> = ({
       role="button"
       tabIndex={0}
       aria-label={`${current.label}: ${current.subtext}`}
-      className={`flex flex-col items-center justify-center p-6 select-none cursor-pointer group focus:outline-none focus:ring-2 focus:ring-teal-500/40 rounded-3xl ${className}`}
+      className={`flex flex-col items-center justify-center p-6 select-none cursor-pointer group focus-visible:ring-2 focus-visible:ring-[#285B55] rounded-3xl ${className}`}
     >
-      {/* Central Living Atmospheric Orb Container */}
-      <div className="relative w-52 h-52 sm:w-64 sm:h-64 flex items-center justify-center">
-        {/* If Reduced Motion is active, render peaceful static atmospheric aura */}
+      {/* Central Soft Gradient Orb */}
+      <div className="relative w-56 h-56 sm:w-64 sm:h-64 flex items-center justify-center">
         {isReducedMotion ? (
           <div
             style={{
-              boxShadow: `0 0 60px ${current.glowColor}`,
-              borderColor: current.borderColor,
+              boxShadow: `0 12px 48px ${current.glowColor}`,
+              borderColor: current.ringColor,
+              background: current.gradient,
             }}
-            className="absolute inset-2 rounded-full border-2 bg-midnight-950/90 flex items-center justify-center transition-all duration-700"
+            className="w-44 h-44 sm:w-52 sm:h-52 rounded-full border-2 flex items-center justify-center transition-all duration-500"
           >
-            <div
-              style={{
-                background: `radial-gradient(circle at 40% 40%, ${current.primaryColor}, ${current.secondaryColor}, rgba(11, 15, 25, 0.95))`,
-              }}
-              className="w-40 h-40 sm:w-48 sm:h-48 rounded-full border border-white/[0.1] flex items-center justify-center shadow-inner"
-            >
-              <StateIcon className="w-10 h-10 text-ivory-100/90" />
-            </div>
+            <StateIcon className={`w-12 h-12 ${current.iconColor}`} />
           </div>
         ) : (
           <>
-            {/* Animated Waveform Outermost Echo Ring */}
+            {/* Soft Outer Breathing Halo */}
             <motion.div
               animate={{
                 scale:
                   state === "speaking"
-                    ? [1, 1.25 * dynamicAudioScale, 1.05, 1.28 * dynamicAudioScale, 1]
+                    ? [1, 1.18 * dynamicAudioScale, 1.04, 1.2 * dynamicAudioScale, 1]
                     : state === "listening"
-                    ? [1, 1.15 * dynamicAudioScale, 1]
-                    : state === "thinking"
-                    ? [1.02, 1.08, 1.02]
-                    : state === "interrupted"
-                    ? [1.1, 1]
-                    : [1, 1.05, 1],
-                opacity: state === "resting" || state === "muted" ? 0.2 : [0.35, 0.7, 0.35],
+                    ? [1, 1.12 * dynamicAudioScale, 1]
+                    : [1, 1.06, 1],
+                opacity: state === "resting" || state === "muted" ? 0.3 : [0.45, 0.8, 0.45],
               }}
               transition={{
-                duration:
-                  state === "speaking"
-                    ? 2.2
-                    : state === "listening"
-                    ? 1.6
-                    : state === "thinking"
-                    ? 3.2
-                    : state === "interrupted"
-                    ? 0.4
-                    : 6.5,
-                repeat: state === "interrupted" ? 0 : Infinity,
-                ease: "easeInOut",
-              }}
-              style={{
-                borderColor: current.borderColor,
-                boxShadow: `0 0 50px ${current.glowColor}`,
-              }}
-              className="absolute inset-0 rounded-full border blur-[2px] transition-colors duration-500"
-            />
-
-            {/* Secondary Orbital Dashed Halo */}
-            <motion.div
-              animate={{
-                rotate: 360,
-                scale: state === "speaking" ? [1, 1.08, 1] : 1,
-              }}
-              transition={{
-                rotate: { duration: 32, repeat: Infinity, ease: "linear" },
-                scale: { duration: 2.8, repeat: Infinity, ease: "easeInOut" },
-              }}
-              className="absolute inset-3 rounded-full border border-dashed border-white/[0.12] pointer-events-none"
-            />
-
-            {/* Core Layered Atmospheric Gradient Orb */}
-            <motion.div
-              animate={{
-                scale:
-                  state === "speaking"
-                    ? [1, 1.08 * dynamicAudioScale, 1.02, 1.1 * dynamicAudioScale, 1]
-                    : state === "listening"
-                    ? [1, 1.04, 1]
-                    : [1, 1.03, 1],
-              }}
-              transition={{
-                duration: state === "speaking" ? 2.2 : 5.5,
+                duration: state === "speaking" ? 2.6 : state === "listening" ? 2.0 : 5.5,
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
               style={{
-                background: `radial-gradient(circle at 35% 35%, ${current.primaryColor}, ${current.secondaryColor}, rgba(8, 11, 20, 0.98))`,
-                boxShadow: `inset 0 0 35px rgba(255, 255, 255, 0.08), 0 0 40px ${current.glowColor}`,
+                borderColor: current.ringColor,
+                backgroundColor: current.glowColor,
               }}
-              className="w-36 h-36 sm:w-44 sm:h-44 rounded-full border border-white/[0.18] flex items-center justify-center relative overflow-hidden backdrop-blur-md transition-all duration-500"
-            >
-              {/* Internal Caustic Lighting Reflection */}
-              <div className="absolute top-2 left-6 w-16 h-8 rounded-full bg-white/[0.15] blur-[8px] transform -rotate-12 pointer-events-none" />
+              className="absolute inset-2 rounded-full border transition-colors duration-500"
+            />
 
-              {/* State Glyphic Presence */}
+            {/* Core Soft Gradient Companion Orb */}
+            <motion.div
+              animate={{
+                scale:
+                  state === "speaking"
+                    ? [1, 1.06 * dynamicAudioScale, 1.01, 1.07 * dynamicAudioScale, 1]
+                    : state === "listening"
+                    ? [1, 1.04, 1]
+                    : [1, 1.025, 1],
+              }}
+              transition={{
+                duration: state === "speaking" ? 2.4 : 5.0,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              style={{
+                background: current.gradient,
+                boxShadow: `0 16px 48px ${current.glowColor}, inset 0 2px 16px rgba(255, 255, 255, 0.75)`,
+                borderColor: current.ringColor,
+              }}
+              className="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-2 flex items-center justify-center relative overflow-hidden transition-all duration-500"
+            >
               <motion.div
                 key={state}
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.3 }}
-                className="relative z-10 flex flex-col items-center justify-center text-ivory-100"
+                transition={{ duration: 0.25 }}
+                className="relative z-10 flex flex-col items-center justify-center"
               >
-                <StateIcon className="w-9 h-9 sm:w-11 sm:h-11 drop-shadow-md text-ivory-100 transition-all duration-300" />
+                <StateIcon className={`w-10 h-10 sm:w-12 sm:h-12 ${current.iconColor} transition-all`} />
               </motion.div>
             </motion.div>
           </>
         )}
       </div>
 
-      {/* State Caption & Pacing Subtitle */}
-      <div className="mt-4 text-center space-y-1">
-        <h3 className="text-sm sm:text-base font-serif font-normal text-ivory-100 tracking-tight transition-colors">
-          {current.label}
-        </h3>
-        <p className="text-xs text-ivory-400 font-light flex items-center justify-center space-x-1.5">
-          <span dangerouslySetInnerHTML={{ __html: current.subtext }} />
-        </p>
+      {/* Clear, Friendly State Caption */}
+      <div className="mt-5 text-center space-y-1">
+        <h2 className="text-xl font-serif font-medium text-[#263330]">{current.label}</h2>
+        <p className="text-sm sm:text-base text-[#52625E]">{current.subtext}</p>
       </div>
     </div>
   );

@@ -272,55 +272,55 @@ export function PersonalContextHub() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-white/[0.08] pb-6 gap-4">
+      <div className="p-6 rounded-3xl bg-white border border-[#E6E0D6] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1.5">
-          <div className="flex items-center space-x-2 text-teal-400 text-xs font-mono uppercase tracking-widest">
-            <Puzzle className="w-4 h-4 text-teal-400" />
-            <span>Personal Context Hub &amp; Sovereign Data Enclave</span>
+          <div className="flex items-center space-x-2 text-[#285B55] text-[14px] font-medium">
+            <Puzzle className="w-4 h-4 text-[#285B55]" />
+            <span>Connected Apps &amp; Imports</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-serif font-normal text-ivory-100 tracking-tight">
-            User-Controlled Integrations &amp; Memory Ingest
+          <h1 className="text-2xl sm:text-3xl font-serif font-medium text-[#263330]">
+            Bring Your Notes &amp; Schedule Together
           </h1>
-          <p className="text-xs sm:text-sm text-ivory-400 font-light max-w-2xl leading-relaxed">
-            Import past ChatGPT/Claude conversations, notes, and calendars with strict client-side PII scrubbing, prompt-injection defense, and user-confirmed memory extraction.
+          <p className="text-[15px] text-[#52625E] max-w-2xl leading-relaxed">
+            Import past conversations, personal notes, or calendar events at your own pace. You can preview and choose exactly what to save before anything is added to your memories.
           </p>
         </div>
 
         <div className="flex items-center space-x-2 shrink-0">
-          <Badge variant="teal" size="md" className="space-x-1.5 py-1.5 px-3">
-            <ShieldCheck className="w-4 h-4 text-teal-300" />
-            <span>Untrusted Data Quarantine Active</span>
+          <Badge variant="sage" size="md" className="space-x-1.5 py-1.5 px-3.5">
+            <ShieldCheck className="w-4 h-4 text-[#285B55]" />
+            <span>Preview Before Saving</span>
           </Badge>
         </div>
       </div>
 
-      {/* Critical Integrations & Privacy Creed */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-midnight-900/90 border border-teal-800/40 grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-        <div className="space-y-1 border-l-2 border-teal-400 pl-3">
-          <div className="font-semibold text-ivory-100">Zero Password Capture</div>
-          <p className="text-zinc-400 text-[11px] leading-relaxed">
-            Never captures third-party passwords. Only user-selected export archives and scoped OAuth.
+      {/* Reassuring Privacy Promises */}
+      <div className="p-5 rounded-3xl bg-[#E8F1EB] border border-[#CFE2D6] grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-[14px]">
+        <div className="space-y-1 border-l-2 border-[#285B55] pl-3">
+          <div className="font-semibold text-[#263330]">No Passwords Asked</div>
+          <p className="text-[#52625E] text-[13px] leading-relaxed">
+            We never ask for your third-party passwords—only files you choose to upload.
           </p>
         </div>
 
-        <div className="space-y-1 border-l-2 border-indigo-400 pl-3">
-          <div className="font-semibold text-ivory-100">Zero Scraping</div>
-          <p className="text-zinc-400 text-[11px] leading-relaxed">
-            No unauthorized scraping of ChatGPT or Claude web accounts. Strictly user-initiated data exports.
+        <div className="space-y-1 border-l-2 border-[#285B55] pl-3">
+          <div className="font-semibold text-[#263330]">You Choose What Saves</div>
+          <p className="text-[#52625E] text-[13px] leading-relaxed">
+            Review and uncheck any conversation or note before it is added to your space.
           </p>
         </div>
 
-        <div className="space-y-1 border-l-2 border-lavender-400 pl-3">
-          <div className="font-semibold text-ivory-100">Read-Only Invariant</div>
-          <p className="text-zinc-400 text-[11px] leading-relaxed">
-            Never autonomously writes, mutates external calendars, or sends emails. Zero external side effects.
+        <div className="space-y-1 border-l-2 border-[#285B55] pl-3">
+          <div className="font-semibold text-[#263330]">Read-Only Calendar</div>
+          <p className="text-[#52625E] text-[13px] leading-relaxed">
+            Calendar sync only checks busy times to respect your schedule—it never edits events.
           </p>
         </div>
 
-        <div className="space-y-1 border-l-2 border-rose-400 pl-3">
-          <div className="font-semibold text-ivory-100">Injection Disarming</div>
-          <p className="text-zinc-400 text-[11px] leading-relaxed">
-            Imported content is treated strictly as data, never executable model instructions.
+        <div className="space-y-1 border-l-2 border-[#285B55] pl-3">
+          <div className="font-semibold text-[#263330]">Private Details Redacted</div>
+          <p className="text-[#52625E] text-[13px] leading-relaxed">
+            Emails, phone numbers, and sensitive IDs are automatically masked during import.
           </p>
         </div>
       </div>

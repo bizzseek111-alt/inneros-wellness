@@ -24,19 +24,19 @@ export const Slider: React.FC<SliderProps> = ({
   valueDisplay,
   className,
 }) => {
-  const percentage = ((value - min) / (max - min)) * 100;
-
   return (
-    <div className={cn("w-full space-y-2", className)}>
+    <div className={cn("w-full space-y-2.5", className)}>
       {(label || valueDisplay !== undefined) && (
-        <div className="flex items-center justify-between text-xs">
-          {label && <span className="font-medium text-ivory-300">{label}</span>}
+        <div className="flex items-center justify-between text-sm">
+          {label && <span className="font-medium text-[#263330]">{label}</span>}
           {valueDisplay !== undefined && (
-            <span className="font-mono text-teal-300">{valueDisplay}</span>
+            <span className="font-medium text-[#285B55] bg-[#E8F1EB] px-2.5 py-0.5 rounded-full text-xs">
+              {valueDisplay}
+            </span>
           )}
         </div>
       )}
-      <div className="relative flex items-center h-5 select-none touch-none">
+      <div className="relative flex items-center h-6 select-none touch-none">
         <input
           type="range"
           min={min}
@@ -44,7 +44,7 @@ export const Slider: React.FC<SliderProps> = ({
           step={step}
           value={value}
           onChange={(e) => onChange(Number(e.target.value))}
-          className="w-full h-1.5 bg-midnight-950/80 rounded-full appearance-none cursor-pointer border border-white/[0.08] focus:outline-none accent-teal-400"
+          className="w-full h-2 bg-[#E8E3D9] rounded-full appearance-none cursor-pointer focus:outline-none accent-[#285B55]"
         />
       </div>
     </div>

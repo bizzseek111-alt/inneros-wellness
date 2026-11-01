@@ -14,9 +14,9 @@ export interface GentleReminderProps {
 }
 
 export const GentleReminderBanner: React.FC<GentleReminderProps> = ({
-  title = "Circadian Pacing",
-  message = "You have been in focused flow for 90 minutes. A brief 2-minute gaze into the distance restores visual accommodation and autonomic tone.",
-  timeContext = "Midday Anchor",
+  title = "Gentle Pause",
+  message = "Take a slow breath and let your shoulders soften. You don't have to carry everything at once.",
+  timeContext = "Today's check-in",
   onAcknowledge,
   className,
 }) => {
@@ -32,44 +32,45 @@ export const GentleReminderBanner: React.FC<GentleReminderProps> = ({
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, y: -8 }}
+        initial={{ opacity: 0, y: -6 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -8 }}
+        exit={{ opacity: 0, y: -6 }}
         transition={{ duration: 0.25 }}
         className={cn(
-          "rounded-2xl p-4 bg-gradient-to-r from-midnight-850 via-midnight-800 to-indigo-950/40 border border-indigo-700/30 shadow-md relative overflow-hidden",
+          "rounded-3xl p-5 sm:p-6 bg-[#EDE8F5]/75 border border-[#D8CEEA] shadow-soft relative overflow-hidden",
           className
         )}
       >
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-start space-x-3">
-            <div className="p-2 rounded-xl bg-indigo-950/80 border border-indigo-800/40 text-indigo-300 shrink-0 mt-0.5">
-              <Sparkles className="w-4 h-4" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start space-x-3.5">
+            <div className="p-2.5 rounded-2xl bg-white border border-[#D8CEEA] text-[#553E82] shrink-0 mt-0.5 shadow-sm">
+              <Sparkles className="w-5 h-5" />
             </div>
             <div className="space-y-1">
-              <div className="flex items-center space-x-2">
-                <span className="text-xs font-semibold text-ivory-100">{title}</span>
-                <span className="text-[10px] font-mono text-zinc-400 bg-white/[0.05] px-1.5 py-0.5 rounded flex items-center space-x-1">
-                  <Clock className="w-2.5 h-2.5" />
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-base font-serif font-semibold text-[#263330]">{title}</span>
+                <span className="text-xs font-medium text-[#553E82] bg-white/80 px-2.5 py-0.5 rounded-full border border-[#D8CEEA] flex items-center space-x-1">
+                  <Clock className="w-3 h-3" />
                   <span>{timeContext}</span>
                 </span>
               </div>
-              <p className="text-xs text-ivory-300/90 leading-relaxed max-w-xl">{message}</p>
+              <p className="text-base text-[#263330] leading-relaxed max-w-2xl">{message}</p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-2 shrink-0">
+          <div className="flex items-center space-x-2 shrink-0 self-end sm:self-center">
             <button
               onClick={handleDismiss}
-              className="text-xs px-2.5 py-1 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] text-ivory-200 border border-white/[0.08] transition-colors flex items-center space-x-1"
+              className="text-sm font-medium px-4 py-2 min-h-[40px] rounded-xl bg-white hover:bg-[#FAF8F4] text-[#263330] border border-[#D8CEEA] transition-colors flex items-center space-x-1.5 shadow-sm"
             >
-              <Check className="w-3 h-3 text-teal-400" />
-              <span>Acknowledge</span>
+              <Check className="w-4 h-4 text-[#285B55]" />
+              <span>Thank you</span>
             </button>
             <button
               onClick={handleDismiss}
-              className="p-1 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04] transition-colors"
-              title="Dismiss"
+              className="p-2 min-h-[40px] min-w-[40px] rounded-xl text-[#52625E] hover:text-[#263330] hover:bg-white/60 transition-colors flex items-center justify-center"
+              title="Dismiss reminder"
+              aria-label="Dismiss reminder"
             >
               <X className="w-4 h-4" />
             </button>

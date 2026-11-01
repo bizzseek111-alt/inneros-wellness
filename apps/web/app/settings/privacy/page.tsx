@@ -5,7 +5,16 @@ import { SanctuaryShell } from "@/components/shell/SanctuaryShell";
 import { Switch } from "@/components/primitives/Switch";
 import { Button } from "@/components/primitives/Button";
 import { Badge } from "@/components/primitives/Badge";
-import { Lock, Download, Trash2, Key, ShieldCheck, AlertTriangle, FileText, Check } from "lucide-react";
+import {
+  Lock,
+  Download,
+  Trash2,
+  ShieldCheck,
+  AlertTriangle,
+  FileText,
+  Check,
+  Info,
+} from "lucide-react";
 import { prototypeService } from "@/lib/prototype-service";
 
 export default function PrivacySettingsPage() {
@@ -19,7 +28,7 @@ export default function PrivacySettingsPage() {
     const updated = prototypeService.updateConsent({ [key]: !consent[key] });
     setConsent(updated);
     setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setTimeout(() => setSaved(false), 2500);
   };
 
   const handleExportData = () => {
@@ -39,82 +48,59 @@ export default function PrivacySettingsPage() {
 
   return (
     <SanctuaryShell>
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="max-w-4xl mx-auto space-y-6 pb-8">
         {/* Header */}
-        <div className="space-y-1 border-b border-white/[0.08] pb-4">
-          <div className="flex items-center space-x-2 text-teal-400 text-xs font-mono uppercase tracking-widest">
+        <div className="p-6 rounded-3xl bg-white border border-[#E6E0D6] shadow-sm space-y-2">
+          <div className="flex items-center space-x-2 text-[#285B55] text-[14px] font-medium">
             <Lock className="w-4 h-4" />
-            <span>Sovereign Data Rights &bull; GDPR & CCPA</span>
+            <span>Privacy & Data Controls</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-serif font-normal text-ivory-100 tracking-tight">
-            Privacy, Envelope Encryption & Data Controls
+          <h1 className="text-2xl sm:text-3xl font-serif font-medium text-[#263330]">
+            Your Data Belongs to You
           </h1>
-          <p className="text-xs sm:text-sm text-ivory-400 font-light leading-relaxed">
-            InnerOS treats privacy as an architectural guarantee, not a legal afterthought. All entries are encrypted with per-user derived keys.
+          <p className="text-[15px] text-[#52625E] leading-relaxed">
+            Choose what InnerOS remembers, download a copy of your data anytime, or clear your history with a single click.
           </p>
         </div>
 
-        {/* Cryptographic Architecture Card */}
-        <div className="p-6 rounded-3xl bg-midnight-900/90 border border-white/[0.08] space-y-4">
-          <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
-            <span className="text-xs font-semibold text-ivory-100 flex items-center space-x-2">
-              <Key className="w-4 h-4 text-teal-400" />
-              <span>Two-Tier Envelope Encryption Architecture</span>
-            </span>
-            <Badge variant="teal" size="sm">
-              AES-256-GCM Active
-            </Badge>
-          </div>
-
-          <div className="grid sm:grid-cols-3 gap-3 text-xs">
-            <div className="p-3.5 rounded-2xl bg-midnight-950/80 border border-white/[0.04] space-y-1">
-              <span className="text-[10px] font-mono text-zinc-500 uppercase">Master KMS Key</span>
-              <p className="font-mono text-teal-300 text-[11px] truncate">0123456789abcdef...[HSM Secured]</p>
-              <p className="text-[10px] text-zinc-400">Isolated server vault key</p>
+        {/* Consent & Remembering Controls */}
+        <div className="p-6 rounded-3xl bg-white border border-[#E6E0D6] shadow-sm space-y-5">
+          <div className="flex flex-wrap items-center justify-between border-b border-[#F3EFE8] pb-3 gap-2">
+            <div>
+              <h2 className="text-[17px] font-serif font-medium text-[#263330]">
+                What Your Companion Can Use
+              </h2>
+              <p className="text-[13.5px] text-[#52625E]">
+                Last updated: {consent.updatedAt}
+              </p>
             </div>
-
-            <div className="p-3.5 rounded-2xl bg-midnight-950/80 border border-white/[0.04] space-y-1">
-              <span className="text-[10px] font-mono text-zinc-500 uppercase">Key Derivation</span>
-              <p className="font-mono text-indigo-300 text-[11px]">HKDF-SHA256 (User Salt)</p>
-              <p className="text-[10px] text-zinc-400">Unique per-user Data Encryption Key</p>
-            </div>
-
-            <div className="p-3.5 rounded-2xl bg-midnight-950/80 border border-white/[0.04] space-y-1">
-              <span className="text-[10px] font-mono text-zinc-500 uppercase">Vector Index Isolation</span>
-              <p className="font-mono text-lavender-300 text-[11px]">PostgreSQL RLS Scoped</p>
-              <p className="text-[10px] text-zinc-400">Cross-tenant queries physically barred</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Active Consent Ledger */}
-        <div className="p-6 rounded-3xl bg-midnight-900/90 border border-white/[0.08] space-y-4">
-          <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
-            <span className="text-xs font-semibold text-ivory-100 uppercase tracking-wider font-mono">
-              Active Consent Ledger
-            </span>
-            <span className="text-[10px] font-mono text-zinc-500">Last Modified: {consent.updatedAt}</span>
+            {saved && (
+              <Badge variant="sage" size="sm">
+                <Check className="w-3.5 h-3.5 mr-1 inline" />
+                Saved
+              </Badge>
+            )}
           </div>
 
           <div className="space-y-4">
             <Switch
-              label="Retain Active Session Working Memory"
-              description="Companion references statements within the immediate conversation turn."
+              label="Remember Context During Active Conversations"
+              description="Allows your companion to follow the thread of what you are talking about within your current session."
               checked={consent.storeConversations}
               onChange={() => toggleConsent("storeConversations")}
             />
-            <div className="border-t border-white/[0.06] pt-3">
+            <div className="border-t border-[#F3EFE8] pt-4">
               <Switch
-                label="Derive Long-Term Life Graph Nodes"
-                description="Extracts recurring habits, values, and stress triggers into your private graph."
+                label="Suggest Memories & Personal Connections"
+                description="Allows InnerOS to suggest helpful notes (like routines, goals, or preferences) that you can review and approve before they are saved."
                 checked={consent.deriveLongTermMemory}
                 onChange={() => toggleConsent("deriveLongTermMemory")}
               />
             </div>
-            <div className="border-t border-white/[0.06] pt-3">
+            <div className="border-t border-[#F3EFE8] pt-4">
               <Switch
-                label="Voice Audio Streaming Processing"
-                description="Transcribes live audio frames. Raw audio buffers are deleted immediately post-synthesis."
+                label="Enable Voice Conversation Processing"
+                description="Allows microphone speech-to-text when you use the Voice Companion."
                 checked={consent.voiceAudioProcessing}
                 onChange={() => toggleConsent("voiceAudioProcessing")}
               />
@@ -122,75 +108,146 @@ export default function PrivacySettingsPage() {
           </div>
         </div>
 
-        {/* Data Portability (GDPR Article 15) & Deletion (Article 17) */}
-        <div className="grid sm:grid-cols-2 gap-4">
-          {/* Article 15 Data Portability */}
-          <div className="p-6 rounded-3xl bg-midnight-900/80 border border-white/[0.08] space-y-3 flex flex-col justify-between">
-            <div className="space-y-1.5">
-              <div className="flex items-center space-x-2 text-teal-400 text-xs font-semibold">
+        {/* Download or Delete Your Data */}
+        <div className="grid sm:grid-cols-2 gap-5">
+          {/* Export Data */}
+          <div className="p-6 rounded-3xl bg-white border border-[#E6E0D6] shadow-sm space-y-4 flex flex-col justify-between">
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2 text-[#285B55] text-[14px] font-semibold">
                 <Download className="w-4 h-4" />
-                <span>GDPR Article 15: Right of Access</span>
+                <span>Download Your Information</span>
               </div>
-              <h4 className="text-sm font-semibold text-ivory-100">Export Complete Personal Archive</h4>
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                Download a cryptographically verifiable JSON archive containing every stored reflection, life graph node, and consent log.
+              <h3 className="text-[17px] font-serif font-medium text-[#263330]">
+                Export Personal Archive
+              </h3>
+              <p className="text-[14px] text-[#52625E] leading-relaxed">
+                View or download a complete, readable JSON copy of your journal reflections, saved memories, and privacy settings.
               </p>
             </div>
-            <Button size="sm" variant="outline" onClick={handleExportData} leftIcon={<FileText className="w-3.5 h-3.5" />}>
-              Generate Data Archive
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleExportData}
+              leftIcon={<FileText className="w-4 h-4" />}
+            >
+              View & Export My Data
             </Button>
           </div>
 
-          {/* Article 17 Right to be Forgotten */}
-          <div className="p-6 rounded-3xl bg-rose-950/20 border border-rose-900/40 space-y-3 flex flex-col justify-between">
-            <div className="space-y-1.5">
-              <div className="flex items-center space-x-2 text-rose-400 text-xs font-semibold">
+          {/* Delete All Data */}
+          <div className="p-6 rounded-3xl bg-[#FDF2F2] border border-[#F5D0D0] shadow-sm space-y-4 flex flex-col justify-between">
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2 text-[#A4384B] text-[14px] font-semibold">
                 <Trash2 className="w-4 h-4" />
-                <span>GDPR Article 17: Right to be Forgotten</span>
+                <span>Delete Everything</span>
               </div>
-              <h4 className="text-sm font-semibold text-rose-100">Permanent Account & Data Purge</h4>
-              <p className="text-xs text-rose-200/80 leading-relaxed">
-                Irrevocably deletes all personal memories, vector embeddings, journal records, and credentials from the system.
+              <h3 className="text-[17px] font-serif font-medium text-[#263330]">
+                Clear All Personal Data
+              </h3>
+              <p className="text-[14px] text-[#52625E] leading-relaxed">
+                Permanently remove your saved memories, connections, journal entries, and preferences from this environment.
               </p>
             </div>
-            <Button size="sm" variant="emergency" onClick={() => setShowPurgeModal(true)}>
-              Purge All Data Permanently
+            <Button
+              size="sm"
+              variant="emergency"
+              onClick={() => setShowPurgeModal(true)}
+            >
+              Delete All My Data
             </Button>
           </div>
         </div>
 
-        {/* Export Data Modal Preview */}
+        {/* Export Data Preview */}
         {exportPreview && (
-          <div className="p-5 rounded-2xl bg-midnight-950 border border-teal-700/60 space-y-3">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-teal-300">GDPR Article 15 Archive Generated</span>
-              <button onClick={() => setExportPreview(null)} className="text-zinc-500 hover:text-white">
+          <div className="p-6 rounded-3xl bg-white border border-[#285B55]/40 shadow-sm space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[15px] font-serif font-medium text-[#263330]">
+                Your Personal Data Archive
+              </span>
+              <Button
+                size="xs"
+                variant="ghost"
+                onClick={() => setExportPreview(null)}
+              >
                 Close Preview
-              </button>
+              </Button>
             </div>
-            <pre className="p-4 rounded-xl bg-midnight-900 border border-white/[0.04] text-[10px] font-mono text-zinc-300 overflow-x-auto max-h-60 leading-snug">
+            <pre className="p-4 rounded-2xl bg-[#FAF8F4] border border-[#E6E0D6] text-[13px] font-mono text-[#263330] overflow-x-auto max-h-64 leading-relaxed">
               {exportPreview}
             </pre>
           </div>
         )}
 
-        {/* Confirmation Modal for Permanent Purge */}
-        {showPurgeModal && (
-          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-            <div className="max-w-md w-full p-6 rounded-3xl bg-midnight-950 border border-rose-800 shadow-2xl space-y-4">
-              <div className="flex items-center space-x-2.5 text-rose-400 font-semibold text-base">
-                <AlertTriangle className="w-5 h-5 shrink-0" />
-                <span>Confirm Irreversible Purge</span>
-              </div>
-              <p className="text-xs text-zinc-300 leading-relaxed">
-                Are you sure you want to delete all personal reflections and life graph connections for <strong>Elena Vance</strong>? This action conforms to GDPR Article 17 and cannot be undone.
+        {/* Dedicated Technical & Privacy Information Section (Truthful & Transparent) */}
+        <div className="p-6 rounded-3xl bg-[#FAF8F4] border border-[#E6E0D6] space-y-4">
+          <div className="flex items-center justify-between border-b border-[#E6E0D6] pb-3">
+            <div className="flex items-center space-x-2">
+              <Info className="w-5 h-5 text-[#285B55]" />
+              <h2 className="text-[16px] font-serif font-medium text-[#263330]">
+                How Your Privacy & Security Work
+              </h2>
+            </div>
+            <Badge variant="sage" size="sm">
+              Transparent Architecture
+            </Badge>
+          </div>
+
+          <div className="grid sm:grid-cols-3 gap-4 text-[14px]">
+            <div className="p-4 rounded-2xl bg-white border border-[#E6E0D6] space-y-1.5">
+              <span className="font-semibold text-[#263330] block">
+                User-Approved Memories
+              </span>
+              <p className="text-[#52625E] text-[13.5px] leading-relaxed">
+                AI observations are held as suggestions first. Nothing becomes a permanent memory without your review.
               </p>
-              <div className="flex justify-end space-x-2 pt-2">
-                <Button size="sm" variant="ghost" onClick={() => setShowPurgeModal(false)}>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white border border-[#E6E0D6] space-y-1.5">
+              <span className="font-semibold text-[#263330] block">
+                Scoped Account Isolation
+              </span>
+              <p className="text-[#52625E] text-[13.5px] leading-relaxed">
+                Backend API queries scope memories, reminders, and imports to your user profile and record changes in an activity log.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white border border-[#E6E0D6] space-y-1.5">
+              <span className="font-semibold text-[#263330] block">
+                No Ad Profiling
+              </span>
+              <p className="text-[#52625E] text-[13.5px] leading-relaxed">
+                Your reflections and conversations are never sold to data brokers or used for advertising targeting.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Confirmation Modal for Permanent Deletion */}
+        {showPurgeModal && (
+          <div className="fixed inset-0 z-50 bg-[#263330]/40 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="max-w-md w-full p-6 rounded-3xl bg-white border border-[#E6E0D6] shadow-xl space-y-4">
+              <div className="flex items-center space-x-2.5 text-[#A4384B] font-serif font-medium text-xl">
+                <AlertTriangle className="w-5 h-5 shrink-0" />
+                <span>Delete All Personal Data?</span>
+              </div>
+              <p className="text-[15px] text-[#52625E] leading-relaxed">
+                Are you sure you want to permanently delete all saved reflections, memories, and preferences? This cannot be undone.
+              </p>
+              <div className="flex justify-end space-x-2.5 pt-2">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setShowPurgeModal(false)}
+                >
                   Cancel
                 </Button>
-                <Button size="sm" variant="emergency" onClick={handlePurgeAccount}>
-                  Confirm Permanent Deletion
+                <Button
+                  size="sm"
+                  variant="emergency"
+                  onClick={handlePurgeAccount}
+                >
+                  Yes, Delete Everything
                 </Button>
               </div>
             </div>
@@ -198,8 +255,8 @@ export default function PrivacySettingsPage() {
         )}
 
         {purged && (
-          <div className="p-4 rounded-2xl bg-rose-950 border border-rose-700 text-center text-xs text-rose-200">
-            All synthetic persona records have been purged. Resetting sanctuary environment...
+          <div className="p-4 rounded-2xl bg-[#FDF2F2] border border-[#F5D0D0] text-center text-[15px] text-[#A4384B]">
+            Your data has been cleared. Refreshing your space...
           </div>
         )}
       </div>

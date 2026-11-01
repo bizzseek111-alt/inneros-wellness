@@ -28,28 +28,28 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      "inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40 select-none active:scale-[0.98]";
+      "inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#285B55] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-45 select-none active:scale-[0.99]";
 
     const sizeStyles = {
-      xs: "text-[11px] px-2.5 py-1 rounded-lg gap-1.5",
-      sm: "text-xs px-3 py-1.5 rounded-xl gap-2",
-      md: "text-sm px-4 py-2.5 rounded-xl gap-2",
-      lg: "text-base px-6 py-3.5 rounded-2xl gap-2.5",
+      xs: "text-xs px-3.5 py-2 min-h-[36px] rounded-xl gap-1.5",
+      sm: "text-sm px-4 py-2.5 min-h-[40px] rounded-xl gap-2",
+      md: "text-sm px-5 py-2.5 min-h-[44px] rounded-2xl gap-2",
+      lg: "text-base px-6 py-3.5 min-h-[52px] rounded-2xl gap-2.5",
     };
 
     const variantStyles = {
       primary:
-        "bg-teal-600 hover:bg-teal-500 text-white shadow-sm hover:shadow-md hover:shadow-teal-900/20 focus-visible:ring-teal-500",
+        "bg-[#285B55] hover:bg-[#1F4742] text-white shadow-sm hover:shadow-md",
       secondary:
-        "bg-midnight-800 hover:bg-midnight-700 text-ivory-100 border border-white/[0.08] hover:border-white/[0.14] focus-visible:ring-indigo-400",
+        "bg-[#E8F1EB] hover:bg-[#D5E6DC] text-[#263330] border border-[#CBE0D3]",
       outline:
-        "bg-transparent hover:bg-white/[0.04] text-ivory-200 border border-white/[0.12] hover:border-white/[0.22] focus-visible:ring-teal-400",
+        "bg-white hover:bg-[#F3EFE8] text-[#263330] border border-[#DDD8CE] shadow-sm",
       ghost:
-        "bg-transparent hover:bg-white/[0.06] text-ivory-300 hover:text-ivory-100 focus-visible:ring-lavender-400",
+        "bg-transparent hover:bg-[#F3EFE8] text-[#52625E] hover:text-[#263330]",
       calm:
-        "bg-indigo-900/40 hover:bg-indigo-900/60 text-indigo-200 border border-indigo-700/40 hover:border-indigo-600/60 focus-visible:ring-indigo-400",
+        "bg-[#EDE8F5] hover:bg-[#E1D9F0] text-[#423166] border border-[#D5CAE8]",
       emergency:
-        "bg-rose-950/60 hover:bg-rose-900/70 text-rose-200 border border-rose-800/60 hover:border-rose-700 focus-visible:ring-rose-500",
+        "bg-[#FDF2F2] hover:bg-[#FCE4E4] text-[#9B1C31] border border-[#F2C9CE] font-semibold",
     };
 
     return (

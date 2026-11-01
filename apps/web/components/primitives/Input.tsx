@@ -16,15 +16,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const inputId = id || (label ? `input-${label.toLowerCase().replace(/\s+/g, "-")}` : undefined);
 
     return (
-      <div className="w-full space-y-1.5">
+      <div className="w-full space-y-2">
         {label && (
-          <label htmlFor={inputId} className="block text-xs font-medium text-ivory-300">
+          <label htmlFor={inputId} className="block text-sm font-medium text-[#263330]">
             {label}
           </label>
         )}
         <div className="relative flex items-center">
           {leftElement && (
-            <div className="absolute left-3.5 flex items-center pointer-events-none text-zinc-400">
+            <div className="absolute left-4 flex items-center pointer-events-none text-[#52625E]">
               {leftElement}
             </div>
           )}
@@ -32,25 +32,25 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             ref={ref}
             className={cn(
-              "w-full rounded-xl bg-midnight-850/80 border border-white/[0.1] text-ivory-100 placeholder:text-zinc-500 text-sm px-3.5 py-2.5 transition-all duration-200",
-              "focus:outline-none focus:border-teal-500/60 focus:ring-1 focus:ring-teal-500/40",
-              leftElement && "pl-10",
-              rightElement && "pr-10",
-              error && "border-rose-700/60 focus:border-rose-500 focus:ring-rose-500/30",
+              "w-full rounded-2xl bg-white border border-[#DCD7CE] text-[#263330] placeholder:text-[#7F8E8A] text-base px-4 py-3 min-h-[48px] transition-all duration-200 shadow-sm",
+              "focus:outline-none focus:border-[#285B55] focus:ring-2 focus:ring-[#285B55]/20",
+              leftElement && "pl-11",
+              rightElement && "pr-11",
+              error && "border-[#9B1C31] focus:border-[#9B1C31] focus:ring-[#9B1C31]/20",
               className
             )}
             {...props}
           />
           {rightElement && (
-            <div className="absolute right-3.5 flex items-center text-zinc-400">
+            <div className="absolute right-4 flex items-center text-[#52625E]">
               {rightElement}
             </div>
           )}
         </div>
         {error ? (
-          <p className="text-xs text-rose-400 font-medium">{error}</p>
+          <p className="text-sm text-[#9B1C31] font-medium">{error}</p>
         ) : helperText ? (
-          <p className="text-xs text-zinc-500">{helperText}</p>
+          <p className="text-sm text-[#52625E]">{helperText}</p>
         ) : null}
       </div>
     );

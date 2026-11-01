@@ -23,20 +23,20 @@ export const Switch: React.FC<SwitchProps> = ({
   return (
     <label
       className={cn(
-        "flex items-center justify-between cursor-pointer select-none group",
-        disabled && "opacity-40 cursor-not-allowed",
+        "flex items-center justify-between cursor-pointer select-none group py-1",
+        disabled && "opacity-45 cursor-not-allowed",
         className
       )}
     >
       {(label || description) && (
-        <div className="mr-3">
+        <div className="mr-4">
           {label && (
-            <span className="text-xs font-medium text-ivory-200 group-hover:text-ivory-100 transition-colors">
+            <span className="text-base font-medium text-[#263330] group-hover:text-[#1F4742] transition-colors">
               {label}
             </span>
           )}
           {description && (
-            <p className="text-[11px] text-zinc-400 mt-0.5 leading-snug">{description}</p>
+            <p className="text-sm text-[#52625E] mt-0.5 leading-relaxed">{description}</p>
           )}
         </div>
       )}
@@ -47,14 +47,14 @@ export const Switch: React.FC<SwitchProps> = ({
         disabled={disabled}
         onClick={() => !disabled && onChange(!checked)}
         className={cn(
-          "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border border-white/[0.1] transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500",
-          checked ? "bg-teal-600" : "bg-midnight-950/90"
+          "relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#285B55] focus-visible:ring-offset-2",
+          checked ? "bg-[#285B55] border-[#285B55]" : "bg-[#DDD7CC] border-[#CFC8BC]"
         )}
       >
         <span
           className={cn(
-            "pointer-events-none inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out mt-0.5",
-            checked ? "translate-x-4.5" : "translate-x-0.5"
+            "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out mt-0.5",
+            checked ? "translate-x-5" : "translate-x-1"
           )}
         />
       </button>

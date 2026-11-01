@@ -4,21 +4,21 @@ import React, { useState, useEffect } from "react";
 import { SanctuaryShell } from "@/components/shell/SanctuaryShell";
 import { Button } from "@/components/primitives/Button";
 import { Badge } from "@/components/primitives/Badge";
-import { BookOpen, Lock, Sparkles, Trash2, Plus, Calendar, Tag, ShieldCheck, Check } from "lucide-react";
+import { BookOpen, Sparkles, Trash2, Plus, Calendar, Check } from "lucide-react";
 import { prototypeService, JournalEntry } from "@/lib/prototype-service";
 
 const GUIDED_PROMPTS = [
   {
-    title: "ACT Thought Defusion",
-    prompt: "Write down the thought that felt heaviest today. Prefix it with: 'I notice I am having the thought that...'",
+    title: "Stepping Back from a Heavy Thought",
+    prompt: "Write down a thought that felt heavy today. Try starting with: 'I notice I’m having the thought that...'",
   },
   {
-    title: "Three Small Micro-Moments",
-    prompt: "What were three small moments of beauty, quiet, or kindness that occurred today?",
+    title: "Three Small Good Moments",
+    prompt: "What were three small moments of calm, comfort, or kindness you noticed today?",
   },
   {
-    title: "Evening Surrender",
-    prompt: "What is one responsibility or worry that you can intentionally release until tomorrow?",
+    title: "Setting Down Today’s Worries",
+    prompt: "What is one worry or task you can give yourself permission to set down until tomorrow?",
   },
 ];
 
@@ -27,9 +27,11 @@ export default function JournalPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [valence, setValence] = useState<"reflective" | "calm" | "overwhelmed" | "grateful" | "restless">("reflective");
-  const [somaticFocus, setSomaticFocus] = useState("Calm and centered breathing");
-  const [tagInput, setTagInput] = useState("daily_reflection");
+  const [valence, setValence] = useState<
+    "reflective" | "calm" | "overwhelmed" | "grateful" | "restless"
+  >("reflective");
+  const [somaticFocus, setSomaticFocus] = useState("Slow, steady breathing");
+  const [tagInput, setTagInput] = useState("reflection");
 
   useEffect(() => {
     setEntries(prototypeService.getState().journal);
@@ -44,7 +46,10 @@ export default function JournalPage() {
       valence,
       energyScore: 7,
       somaticFocus,
-      tags: tagInput.split(",").map((t) => t.trim()).filter(Boolean),
+      tags: tagInput
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean),
     });
 
     setEntries((prev) => [newEntry, ...prev]);
@@ -58,7 +63,7 @@ export default function JournalPage() {
     setEntries((prev) => prev.filter((e) => e.id !== id));
   };
 
-  const applyPrompt = (p: typeof GUIDED_PROMPTS[0]) => {
+  const applyPrompt = (p: (typeof GUIDED_PROMPTS)[0]) => {
     setTitle(p.title);
     setContent(p.prompt + "\n\n");
     setIsCreating(true);
@@ -66,113 +71,123 @@ export default function JournalPage() {
 
   return (
     <SanctuaryShell>
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="max-w-4xl mx-auto space-y-6 pb-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/[0.08] pb-4 gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center space-x-2 text-teal-400 text-xs font-mono uppercase tracking-widest">
+        <div className="p-6 rounded-3xl bg-white border border-[#E6E0D6] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1.5">
+            <div className="flex items-center space-x-2 text-[#285B55] text-[14px] font-medium">
               <BookOpen className="w-4 h-4" />
-              <span>Personal Diary & Reflection</span>
+              <span>My Journal</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-serif font-normal text-ivory-100 tracking-tight">
-              Encrypted Sanctuary Journal
+            <h1 className="text-2xl sm:text-3xl font-serif font-medium text-[#263330]">
+              Personal Reflections & Notes
             </h1>
-            <p className="text-xs sm:text-sm text-ivory-400 font-light leading-relaxed">
-              Private reflective writing protected by AES-256-GCM envelope encryption. Never scanned for advertising or shared.
+            <p className="text-[15px] text-[#52625E] leading-relaxed">
+              A quiet, private space to write down your thoughts, reflect on your day, or follow a gentle prompt.
             </p>
           </div>
 
           <Button
-            size="sm"
+            size="md"
             variant="primary"
             onClick={() => setIsCreating(!isCreating)}
-            leftIcon={<Plus className="w-3.5 h-3.5" />}
+            leftIcon={<Plus className="w-4 h-4" />}
           >
-            {isCreating ? "Cancel" : "New Entry"}
+            {isCreating ? "Close Editor" : "Write New Entry"}
           </Button>
         </div>
 
-        {/* Guided Prompts Carousel Strip */}
-        <div className="space-y-2">
-          <span className="text-[11px] font-mono text-zinc-500 uppercase">Evidence-Informed Guided Prompts</span>
-          <div className="grid sm:grid-cols-3 gap-3">
+        {/* Guided Prompts Strip */}
+        <div className="space-y-2.5">
+          <span className="text-[14px] font-medium text-[#52625E] px-1">
+            Gentle Writing Prompts (Click any prompt to start)
+          </span>
+          <div className="grid sm:grid-cols-3 gap-4">
             {GUIDED_PROMPTS.map((gp, i) => (
-              <div
+              <button
+                type="button"
                 key={i}
                 onClick={() => applyPrompt(gp)}
-                className="p-4 rounded-2xl bg-midnight-900/80 border border-white/[0.06] hover:border-teal-600/50 transition-all cursor-pointer space-y-1.5 group"
+                className="p-5 rounded-3xl bg-white border border-[#E6E0D6] hover:border-[#285B55] transition-all text-left space-y-2 shadow-sm group"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-ivory-100 group-hover:text-teal-300 transition-colors">
+                  <span className="text-[15px] font-serif font-medium text-[#263330] group-hover:text-[#285B55] transition-colors">
                     {gp.title}
                   </span>
-                  <Sparkles className="w-3 h-3 text-teal-400" />
+                  <Sparkles className="w-4 h-4 text-[#285B55] flex-shrink-0" />
                 </div>
-                <p className="text-[11px] text-zinc-400 line-clamp-2 leading-snug">{gp.prompt}</p>
-              </div>
+                <p className="text-[14px] text-[#52625E] line-clamp-2 leading-relaxed">
+                  {gp.prompt}
+                </p>
+              </button>
             ))}
           </div>
         </div>
 
         {/* New Reflection Composer Form */}
         {isCreating && (
-          <div className="p-6 rounded-3xl bg-midnight-900 border border-teal-700/50 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
-              <span className="text-xs font-semibold text-ivory-100 flex items-center space-x-1.5">
-                <Lock className="w-3.5 h-3.5 text-teal-400" />
-                <span>New Encrypted Reflection</span>
+          <div className="p-6 rounded-3xl bg-white border border-[#285B55]/40 shadow-md space-y-4">
+            <div className="flex items-center justify-between border-b border-[#F3EFE8] pb-3">
+              <span className="text-[16px] font-serif font-medium text-[#263330]">
+                New Journal Entry
               </span>
-              <Badge variant="teal" size="sm">
-                AES-256 GCM
+              <Badge variant="sage" size="sm">
+                Private Entry
               </Badge>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               <input
                 type="text"
-                placeholder="Reflection Title..."
+                placeholder="Give your entry a title..."
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full text-base font-serif font-medium bg-midnight-950 border border-white/[0.1] rounded-xl px-4 py-2 text-ivory-100 focus:outline-none focus:border-teal-500"
+                className="w-full text-[17px] font-serif font-medium bg-[#FAF8F4] border border-[#D5CFC2] rounded-2xl px-4 py-3 text-[#263330] focus:outline-none focus:border-[#285B55]"
               />
 
               <div className="grid sm:grid-cols-2 gap-3">
                 <select
                   value={valence}
                   onChange={(e) => setValence(e.target.value as any)}
-                  className="rounded-xl bg-midnight-950 border border-white/[0.1] text-xs text-ivory-200 px-3 py-2 focus:outline-none focus:border-teal-500"
+                  aria-label="How are you feeling?"
+                  className="rounded-2xl bg-[#FAF8F4] border border-[#D5CFC2] text-[14px] text-[#263330] px-4 py-2.5 focus:outline-none focus:border-[#285B55]"
                 >
-                  <option value="reflective">Valence: Reflective & Contemplative</option>
-                  <option value="calm">Valence: Calm & Grounded</option>
-                  <option value="grateful">Valence: Grateful & Savoring</option>
-                  <option value="overwhelmed">Valence: Overwhelmed & Releasing</option>
-                  <option value="restless">Valence: Restless & Seeking Rest</option>
+                  <option value="reflective">Mood: Reflective & Thoughtful</option>
+                  <option value="calm">Mood: Calm & Grounded</option>
+                  <option value="grateful">Mood: Grateful & Appreciative</option>
+                  <option value="overwhelmed">Mood: Overwhelmed & Letting Go</option>
+                  <option value="restless">Mood: Restless & Looking for Rest</option>
                 </select>
 
                 <input
                   type="text"
-                  placeholder="Somatic bodily note (e.g. Jaw loose, shoulders dropped)"
+                  placeholder="How does your body feel? (e.g., Shoulders relaxed)"
                   value={somaticFocus}
                   onChange={(e) => setSomaticFocus(e.target.value)}
-                  className="rounded-xl bg-midnight-950 border border-white/[0.1] text-xs text-ivory-200 px-3 py-2 focus:outline-none focus:border-teal-500"
+                  className="rounded-2xl bg-[#FAF8F4] border border-[#D5CFC2] text-[14px] text-[#263330] px-4 py-2.5 focus:outline-none focus:border-[#285B55]"
                 />
               </div>
 
               <textarea
-                rows={5}
-                placeholder="Unpack your thoughts with honest presence..."
+                rows={6}
+                placeholder="Write freely at your own pace..."
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                className="w-full text-sm leading-relaxed bg-midnight-950 border border-white/[0.1] rounded-xl p-4 text-ivory-100 focus:outline-none focus:border-teal-500"
+                className="w-full text-[16px] leading-relaxed bg-[#FAF8F4] border border-[#D5CFC2] rounded-2xl p-4 text-[#263330] focus:outline-none focus:border-[#285B55]"
               />
             </div>
 
-            <div className="pt-2 flex justify-end space-x-2">
+            <div className="pt-2 flex justify-end space-x-2.5">
               <Button size="sm" variant="ghost" onClick={() => setIsCreating(false)}>
                 Cancel
               </Button>
-              <Button size="sm" variant="primary" onClick={handleSaveEntry} leftIcon={<Check className="w-3.5 h-3.5" />}>
-                Encrypt & Save Reflection
+              <Button
+                size="sm"
+                variant="primary"
+                onClick={handleSaveEntry}
+                leftIcon={<Check className="w-4 h-4" />}
+              >
+                Save Entry
               </Button>
             </div>
           </div>
@@ -180,54 +195,56 @@ export default function JournalPage() {
 
         {/* Existing Journal Entries List */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between text-xs text-zinc-400">
-            <span>Journal Timeline ({entries.length} reflections)</span>
-            <span className="font-mono text-[10px]">GDPR Right to be Forgotten Active</span>
+          <div className="flex items-center justify-between text-[14px] text-[#52625E] px-1">
+            <span>Saved Entries ({entries.length})</span>
+            <span>You can delete any entry at any time</span>
           </div>
 
           <div className="space-y-4">
             {entries.map((entry) => (
               <div
                 key={entry.id}
-                className="p-6 rounded-3xl bg-midnight-900/80 border border-white/[0.08] hover:border-white/[0.14] transition-all space-y-3"
+                className="p-6 rounded-3xl bg-white border border-[#E6E0D6] hover:border-[#CFE2D6] transition-all shadow-sm space-y-3"
               >
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
-                    <div className="flex items-center space-x-2 text-xs">
-                      <span className="font-mono text-[10px] text-zinc-500 flex items-center space-x-1">
-                        <Calendar className="w-3 h-3" />
+                    <div className="flex flex-wrap items-center gap-2 text-[13px] text-[#52625E]">
+                      <span className="flex items-center space-x-1.5">
+                        <Calendar className="w-3.5 h-3.5 text-[#285B55]" />
                         <span>{entry.date}</span>
                       </span>
-                      <span className="text-zinc-600">&bull;</span>
+                      <span>&bull;</span>
                       <Badge variant="lavender" size="sm">
                         {entry.valence}
                       </Badge>
-                      <span className="text-[10px] text-zinc-500 font-mono flex items-center space-x-1">
-                        <Lock className="w-2.5 h-2.5 text-teal-400" />
-                        <span>Encrypted</span>
-                      </span>
                     </div>
-                    <h3 className="text-lg font-serif font-medium text-ivory-100">{entry.title}</h3>
+                    <h3 className="text-xl font-serif font-medium text-[#263330]">
+                      {entry.title}
+                    </h3>
                   </div>
 
                   <button
                     onClick={() => handleDelete(entry.id)}
-                    className="p-1.5 rounded-lg text-zinc-500 hover:text-rose-400 hover:bg-white/[0.04] transition-colors"
-                    title="Permanently Delete Reflection (GDPR Article 17)"
+                    className="p-2 rounded-xl text-[#7A8A85] hover:text-[#A4384B] hover:bg-[#FDF2F2] transition-colors"
+                    title="Delete Entry"
+                    aria-label="Delete Entry"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
 
-                <p className="text-xs sm:text-sm text-ivory-300 font-light leading-relaxed whitespace-pre-wrap">
+                <p className="text-[16px] text-[#263330] leading-relaxed whitespace-pre-wrap">
                   {entry.content}
                 </p>
 
-                <div className="pt-2 border-t border-white/[0.06] flex flex-wrap items-center justify-between gap-2 text-[11px] text-zinc-500">
-                  <span>Somatic Note: {entry.somaticFocus}</span>
-                  <div className="flex gap-1">
+                <div className="pt-3 border-t border-[#F3EFE8] flex flex-wrap items-center justify-between gap-2 text-[13.5px] text-[#52625E]">
+                  <span>Body check-in: {entry.somaticFocus}</span>
+                  <div className="flex flex-wrap gap-1.5">
                     {entry.tags.map((t) => (
-                      <span key={t} className="bg-midnight-950 px-2 py-0.5 rounded text-zinc-400 font-mono text-[10px]">
+                      <span
+                        key={t}
+                        className="bg-[#FAF8F4] border border-[#E6E0D6] px-2.5 py-0.5 rounded-full text-[#52625E] text-[13px]"
+                      >
                         #{t}
                       </span>
                     ))}

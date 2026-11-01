@@ -6,12 +6,13 @@ import { Switch } from "@/components/primitives/Switch";
 import { Slider } from "@/components/primitives/Slider";
 import { Button } from "@/components/primitives/Button";
 import { Badge } from "@/components/primitives/Badge";
-import { Bell, Moon, Volume2, ShieldCheck, Check } from "lucide-react";
+import { Bell, Moon, Check } from "lucide-react";
 import { api, QuietHoursSettings } from "@/lib/api-client";
 import { INITIAL_QUIET_HOURS } from "@/lib/reminders-seed";
 
 export default function NotificationsSettingsPage() {
-  const [quietHours, setQuietHours] = useState<QuietHoursSettings>(INITIAL_QUIET_HOURS);
+  const [quietHours, setQuietHours] =
+    useState<QuietHoursSettings>(INITIAL_QUIET_HOURS);
   const [inAppActive, setInAppActive] = useState(true);
   const [pushActive, setPushActive] = useState(true);
   const [saved, setSaved] = useState(false);
@@ -36,132 +37,138 @@ export default function NotificationsSettingsPage() {
       // Saved in state
     }
     setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    setTimeout(() => setSaved(false), 3000);
   };
 
   return (
     <SanctuaryShell>
-      <div className="max-w-3xl mx-auto space-y-8">
+      <div className="max-w-3xl mx-auto space-y-6 pb-8">
         {/* Header */}
-        <div className="space-y-1 border-b border-white/[0.08] pb-4">
-          <div className="flex items-center space-x-2 text-teal-400 text-xs font-mono uppercase tracking-widest">
+        <div className="p-6 rounded-3xl bg-white border border-[#E6E0D6] shadow-sm space-y-2">
+          <div className="flex items-center space-x-2 text-[#285B55] text-[14px] font-medium">
             <Bell className="w-4 h-4" />
-            <span>Sanctuary Attention Policy</span>
+            <span>Settings</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-serif font-normal text-ivory-100 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-serif font-medium text-[#263330]">
             Notifications & Quiet Hours
           </h1>
-          <p className="text-xs sm:text-sm text-ivory-400 font-light leading-relaxed">
-            Your attention is a finite sovereign resource. InnerOS prohibits aggressive engagement loops, streak anxiety, and off-hour interruptions.
+          <p className="text-[15px] text-[#52625E] leading-relaxed">
+            Set your peaceful hours so InnerOS never interrupts your rest, and choose how often you’d like gentle check-ins.
           </p>
         </div>
 
         {/* Quiet Hours Window */}
-        <div className="p-6 rounded-3xl bg-midnight-900/90 border border-white/[0.08] space-y-5">
-          <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
-            <span className="text-xs font-semibold text-ivory-100 flex items-center space-x-2">
-              <Moon className="w-4 h-4 text-indigo-400" />
-              <span>Circadian Quiet Hours Window</span>
+        <div className="p-6 rounded-3xl bg-white border border-[#E6E0D6] shadow-sm space-y-5">
+          <div className="flex items-center justify-between border-b border-[#F3EFE8] pb-3">
+            <span className="text-[17px] font-serif font-medium text-[#263330] flex items-center space-x-2">
+              <Moon className="w-5 h-5 text-[#5A4878]" />
+              <span>Evening & Morning Quiet Hours</span>
             </span>
-            <Badge variant="indigo" size="sm">
-              Sleep Restoration
+            <Badge variant="lavender" size="sm">
+              Rest Protected
             </Badge>
           </div>
 
           <Switch
-            label="Enforce Circadian Quiet Hours"
-            description="Silences all audio and visual check-in alerts during sleep preparation and recovery."
+            label="Turn On Quiet Hours"
+            description="Pauses all routine reminders and check-in prompts while you sleep or unwind."
             checked={quietHours.enabled}
             onChange={(val) => setQuietHours({ ...quietHours, enabled: val })}
           />
 
           <div className="grid sm:grid-cols-2 gap-4 pt-2">
             <div className="space-y-1.5">
-              <label className="text-xs text-ivory-300 font-medium">Quiet Hours Commence (Evening)</label>
+              <label className="text-[14px] text-[#263330] font-medium block">
+                Start Quiet Hours (Evening)
+              </label>
               <input
                 type="time"
                 value={quietHours.start_time}
-                onChange={(e) => setQuietHours({ ...quietHours, start_time: e.target.value })}
+                onChange={(e) =>
+                  setQuietHours({ ...quietHours, start_time: e.target.value })
+                }
                 disabled={!quietHours.enabled}
-                className="w-full text-xs bg-midnight-950 border border-white/[0.1] rounded-xl px-4 py-2.5 text-ivory-100 focus:outline-none focus:border-teal-500"
+                className="w-full text-[15px] bg-[#FAF8F4] border border-[#D5CFC2] rounded-xl px-4 py-2.5 text-[#263330] focus:outline-none focus:border-[#285B55]"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs text-ivory-300 font-medium">Quiet Hours Conclude (Morning)</label>
+              <label className="text-[14px] text-[#263330] font-medium block">
+                End Quiet Hours (Morning)
+              </label>
               <input
                 type="time"
                 value={quietHours.end_time}
-                onChange={(e) => setQuietHours({ ...quietHours, end_time: e.target.value })}
+                onChange={(e) =>
+                  setQuietHours({ ...quietHours, end_time: e.target.value })
+                }
                 disabled={!quietHours.enabled}
-                className="w-full text-xs bg-midnight-950 border border-white/[0.1] rounded-xl px-4 py-2.5 text-ivory-100 focus:outline-none focus:border-teal-500"
+                className="w-full text-[15px] bg-[#FAF8F4] border border-[#D5CFC2] rounded-xl px-4 py-2.5 text-[#263330] focus:outline-none focus:border-[#285B55]"
               />
             </div>
           </div>
 
-          <div className="space-y-1 pt-1">
-            <label className="text-xs text-ivory-300 font-medium">Circadian Timezone</label>
+          <div className="space-y-1.5 pt-1">
+            <label className="text-[14px] text-[#263330] font-medium block">
+              Your Time Zone
+            </label>
             <select
               value={quietHours.timezone}
-              onChange={(e) => setQuietHours({ ...quietHours, timezone: e.target.value })}
-              className="w-full text-xs bg-midnight-950 border border-white/[0.1] rounded-xl px-4 py-2.5 text-ivory-100 focus:outline-none focus:border-teal-500"
+              onChange={(e) =>
+                setQuietHours({ ...quietHours, timezone: e.target.value })
+              }
+              aria-label="Your Time Zone"
+              className="w-full text-[15px] bg-[#FAF8F4] border border-[#D5CFC2] rounded-xl px-4 py-2.5 text-[#263330] focus:outline-none focus:border-[#285B55]"
             >
-              <option value="America/New_York">America/New_York (Eastern)</option>
-              <option value="America/Chicago">America/Chicago (Central)</option>
-              <option value="America/Los_Angeles">America/Los_Angeles (Pacific)</option>
-              <option value="Europe/London">Europe/London (GMT)</option>
-              <option value="Europe/Sofia">Europe/Sofia (EET)</option>
-              <option value="Asia/Karachi">Asia/Karachi (PKT)</option>
+              <option value="America/New_York">Eastern Time (New York)</option>
+              <option value="America/Chicago">Central Time (Chicago)</option>
+              <option value="America/Los_Angeles">Pacific Time (Los Angeles)</option>
+              <option value="Europe/London">United Kingdom (London)</option>
+              <option value="Europe/Sofia">Eastern Europe (Sofia)</option>
+              <option value="Asia/Karachi">Pakistan Time (Karachi)</option>
             </select>
-          </div>
-
-          <div className="border-t border-white/[0.06] pt-3">
-            <Switch
-              label="Allow Emergency Crisis Safety Bypass"
-              description="Ensures critical distress outreach contacts or urgent account security alerts bypass sleep quiet hours."
-              checked={quietHours.allow_emergency_safety}
-              onChange={(val) => setQuietHours({ ...quietHours, allow_emergency_safety: val })}
-            />
           </div>
         </div>
 
-        {/* Frequency Capping */}
-        <div className="p-6 rounded-3xl bg-midnight-900/90 border border-white/[0.08] space-y-4">
-          <span className="text-xs font-semibold text-ivory-100 uppercase tracking-wider font-mono">
-            Daily Attention Throttling
-          </span>
+        {/* Daily Check-In Limit */}
+        <div className="p-6 rounded-3xl bg-white border border-[#E6E0D6] shadow-sm space-y-4">
+          <h2 className="text-[17px] font-serif font-medium text-[#263330]">
+            Daily Check-In Limit
+          </h2>
 
           <Slider
-            label="Maximum Gentle Prompts Per 24-Hour Cycle"
+            label="Maximum Gentle Check-Ins Per Day"
             min={1}
             max={3}
             step={1}
             value={quietHours.max_prompts_per_day}
-            onChange={(val) => setQuietHours({ ...quietHours, max_prompts_per_day: val })}
-            valueDisplay={`${quietHours.max_prompts_per_day} prompts / day`}
+            onChange={(val) =>
+              setQuietHours({ ...quietHours, max_prompts_per_day: val })
+            }
+            valueDisplay={`${quietHours.max_prompts_per_day} per day`}
           />
-          <p className="text-[11px] text-zinc-400">
-            Hard system ceiling: We enforce an absolute maximum of 3 unsolicited reflections per day to eliminate notification fatigue.
+          <p className="text-[14px] text-[#52625E]">
+            We cap gentle prompts at a maximum of 3 per day so you never feel overwhelmed by notifications.
           </p>
         </div>
 
-        {/* Channel Preferences */}
-        <div className="p-6 rounded-3xl bg-midnight-900/90 border border-white/[0.08] space-y-4">
-          <span className="text-xs font-semibold text-ivory-100 uppercase tracking-wider font-mono">
-            Delivery Channels
-          </span>
+        {/* How You Receive Reminders */}
+        <div className="p-6 rounded-3xl bg-white border border-[#E6E0D6] shadow-sm space-y-4">
+          <h2 className="text-[17px] font-serif font-medium text-[#263330]">
+            Where Reminders Appear
+          </h2>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             <Switch
-              label="In-App Sanctuary Cards"
-              description="Gentle banners presented only when you actively choose to open InnerOS."
+              label="In-App Gentle Cards"
+              description="Show a calm reminder banner at the top of the screen while you are using InnerOS."
               checked={inAppActive}
               onChange={setInAppActive}
             />
-            <div className="border-t border-white/[0.06] pt-3">
+            <div className="border-t border-[#F3EFE8] pt-4">
               <Switch
-                label="Browser Push Notifications (Sanitized Preview Only)"
-                description="Subtle desktop alerts during active daytime work hours. Never displays private notes or psychological details."
+                label="Browser Notifications (Private Preview)"
+                description="Send a discreet browser notification during active hours. Personal details are never shown on your lock screen."
                 checked={pushActive}
                 onChange={setPushActive}
               />
@@ -169,13 +176,20 @@ export default function NotificationsSettingsPage() {
           </div>
         </div>
 
-        {/* Action Save Bar */}
-        <div className="flex items-center justify-between p-4 rounded-2xl bg-midnight-950 border border-white/[0.06]">
-          <span className="text-xs text-zinc-400">
-            {saved ? "Preferences saved to sanctuary profile" : "Configured for Elena Vance (America/New_York)"}
+        {/* Save Bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-5 rounded-3xl bg-white border border-[#E6E0D6] shadow-sm">
+          <span className="text-[14px] text-[#52625E]">
+            {saved
+              ? "Your notification preferences have been saved"
+              : "Changes apply immediately to your scheduled reminders"}
           </span>
-          <Button size="sm" variant="primary" onClick={handleSave} leftIcon={<Check className="w-3.5 h-3.5" />}>
-            Save Notification Policy
+          <Button
+            size="sm"
+            variant="primary"
+            onClick={handleSave}
+            leftIcon={<Check className="w-4 h-4" />}
+          >
+            Save Preferences
           </Button>
         </div>
       </div>

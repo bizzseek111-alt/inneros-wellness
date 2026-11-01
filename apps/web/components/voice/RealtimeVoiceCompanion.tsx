@@ -1,31 +1,23 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import {
   Mic,
   MicOff,
-  Volume2,
   VolumeX,
-  Radio,
   Sparkles,
   Shield,
-  ShieldAlert,
-  ShieldCheck,
   AlertTriangle,
-  RotateCcw,
   Globe,
   Sliders,
-  Play,
   Pause,
+  Play,
   MessageSquare,
   PhoneOff,
-  HelpCircle,
   ChevronDown,
   Check,
-  Eye,
-  EyeOff,
-  Activity,
-  Layers,
+  X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/primitives/Badge";
@@ -39,7 +31,6 @@ import {
   VoiceProfile,
   LanguageInfo,
   VoiceTurnResponse,
-  VoiceEvaluationResponse,
 } from "@/lib/api-client";
 import {
   SEEDED_VOICE_PROFILES,
@@ -56,48 +47,42 @@ interface TranscriptMessage {
 }
 
 export const RealtimeVoiceCompanion: React.FC = () => {
-  // Voice State Machine
   const [visualState, setVisualState] = useState<VoiceCompanionVisualState>("idle");
   const [isMuted, setIsMuted] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [showTranscript, setShowTranscript] = useState(true);
   const [textFallbackMode, setTextFallbackMode] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
-  // Audio & Hardware State
   const [micPermission, setMicPermission] = useState<"prompt" | "granted" | "denied">("prompt");
   const [audioLevel, setAudioLevel] = useState(0);
-  const [connectionStatus, setConnectionStatus] = useState<"connected" | "reconnecting" | "offline">("connected");
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioStreamRef = useRef<MediaStream | null>(null);
   const currentAudioElementRef = useRef<HTMLAudioElement | null>(null);
 
-  // Profiles & Languages
   const [profiles, setProfiles] = useState<VoiceProfile[]>(SEEDED_VOICE_PROFILES);
   const [selectedVoice, setSelectedVoice] = useState<VoiceProfile>(SEEDED_VOICE_PROFILES[0]);
   const [languages, setLanguages] = useState<LanguageInfo[]>(SEEDED_VOICE_LANGUAGES);
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageInfo>(SEEDED_VOICE_LANGUAGES[0]);
 
-  // Transcripts & Chat
   const [transcripts, setTranscripts] = useState<TranscriptMessage[]>([
     {
       id: "init_msg",
       sender: "companion",
-      text: "Welcome to your voice sanctuary. I am here to listen with calm, nonjudgmental presence. Take your time.",
+      text: "Hello Elena. I am your AI voice companion. Take a slow breath and speak whenever you feel ready.",
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     },
   ]);
   const [typedInput, setTypedInput] = useState("");
-  const [screenReaderAnnouncement, setScreenReaderAnnouncement] = useState("Sanctuary presence ready. Press space to begin speaking.");
+  const [screenReaderAnnouncement, setScreenReaderAnnouncement] = useState(
+    "Voice companion ready. Press space to toggle microphone."
+  );
 
-  // Modals & Panels
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
-  const [isEvaluationDrawerOpen, setIsEvaluationDrawerOpen] = useState(false);
   const [languageSearch, setLanguageSearch] = useState("");
-  const [evaluationResults, setEvaluationResults] = useState<VoiceEvaluationResponse | null>(null);
   const [crisisAlert, setCrisisAlert] = useState<VoiceTurnResponse | null>(null);
 
-  // Fetch profiles and languages from backend
   useEffect(() => {
     async function loadData() {
       try {
@@ -114,17 +99,18 @@ export const RealtimeVoiceCompanion: React.FC = () => {
           setSelectedLanguage(langData[0]);
         }
       } catch (err) {
-        console.warn("Using offline voice seed data:", err);
+        // Offline voice seed fallback
       }
     }
     loadData();
   }, []);
 
-  // Keyboard accessibility shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't intercept when user is typing in input
-      if (document.activeElement?.tagName === "INPUT" || document.activeElement?.tagName === "TEXTAREA") {
+      if (
+        document.activeElement?.tagName === "INPUT" ||
+        document.activeElement?.tagName === "TEXTAREA"
+      ) {
         return;
       }
 
@@ -148,7 +134,6 @@ export const RealtimeVoiceCompanion: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMuted, visualState]);
 
-  // Request Microphone Permissions
   const handleRequestMicrophone = async () => {
     try {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -156,9 +141,8 @@ export const RealtimeVoiceCompanion: React.FC = () => {
         audioStreamRef.current = stream;
         setMicPermission("granted");
         setVisualState("listening");
-        setScreenReaderAnnouncement("Microphone connected. Active listening enabled.");
+        setScreenReaderAnnouncement("Microphone enabled. Listening to you.");
 
-        // Initialize Web Audio Context for volume reactive visualizer
         try {
           const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
           const ctx = new AudioCtx();
@@ -175,7 +159,7 @@ export const RealtimeVoiceCompanion: React.FC = () => {
               let sum = 0;
               for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
               const avg = sum / dataArray.length;
-              setAudioLevel(avg / 128); // 0.0 to 1.0
+              setAudioLevel(avg / 128);
             } else {
               setAudioLevel(0);
             }
@@ -183,19 +167,17 @@ export const RealtimeVoiceCompanion: React.FC = () => {
           };
           requestAnimationFrame(updateAudioLevel);
         } catch (e) {
-          console.warn("Web Audio API analyzer unavailable:", e);
+          // Web Audio analyzer fallback
         }
       }
     } catch (err: any) {
-      console.warn("Microphone permission denied:", err);
       setMicPermission("denied");
       setVisualState("resting");
       setTextFallbackMode(true);
-      setScreenReaderAnnouncement("Microphone permission denied. Switched to text fallback mode.");
+      setScreenReaderAnnouncement("Microphone unavailable. Switched to written input below.");
     }
   };
 
-  // Toggle Mute
   const handleToggleMute = () => {
     if (isMuted) {
       setIsMuted(false);
@@ -204,41 +186,51 @@ export const RealtimeVoiceCompanion: React.FC = () => {
     } else {
       setIsMuted(true);
       setVisualState("muted");
-      setScreenReaderAnnouncement("Microphone muted. Privacy protected.");
+      setScreenReaderAnnouncement("Microphone muted.");
     }
   };
 
-  // Barge-In Interruption: User speaks while companion speaks
+  const handleTogglePause = () => {
+    if (isPaused) {
+      setIsPaused(false);
+      setVisualState(isMuted ? "muted" : "listening");
+      setScreenReaderAnnouncement("Conversation resumed.");
+    } else {
+      if (currentAudioElementRef.current) {
+        currentAudioElementRef.current.pause();
+      }
+      setIsPaused(true);
+      setVisualState("resting");
+      setScreenReaderAnnouncement("Conversation paused.");
+    }
+  };
+
   const handleBargeInInterruption = async () => {
     if (visualState !== "speaking") return;
 
-    // Immediately halt companion audio playback
     if (currentAudioElementRef.current) {
       currentAudioElementRef.current.pause();
       currentAudioElementRef.current.currentTime = 0;
     }
 
     setVisualState("interrupted");
-    setScreenReaderAnnouncement("Companion speech interrupted. Resumed listening.");
+    setScreenReaderAnnouncement("Companion paused speaking to listen to you.");
 
     try {
       await api.interruptVoiceSession("session_active_voice", 0);
     } catch (e) {
-      console.warn(e);
+      // ignore offline
     }
 
-    // Smooth calm recovery back to listening
     setTimeout(() => {
       setVisualState(isMuted ? "muted" : "listening");
     }, 450);
   };
 
-  // Execute Voice Turn (Send user utterance or text)
   const handleSendTurn = async (utteranceText?: string) => {
     const textToSend = utteranceText || typedInput;
     if (!textToSend.trim()) return;
 
-    // Append user message
     const userMsg: TranscriptMessage = {
       id: `usr_${Date.now()}`,
       sender: "user",
@@ -248,7 +240,7 @@ export const RealtimeVoiceCompanion: React.FC = () => {
     setTranscripts((prev) => [...prev, userMsg]);
     setTypedInput("");
     setVisualState("thinking");
-    setScreenReaderAnnouncement(`Synthesizing response for: ${textToSend}`);
+    setScreenReaderAnnouncement(`Reflecting on: ${textToSend}`);
 
     try {
       const turnResponse: VoiceTurnResponse = await api.executeVoiceTurn({
@@ -258,7 +250,6 @@ export const RealtimeVoiceCompanion: React.FC = () => {
         sessionId: "sess_voice_current",
       });
 
-      // Handle Crisis Escalation
       if (turnResponse.is_safety_escalation) {
         setCrisisAlert(turnResponse);
         setVisualState("resting");
@@ -270,11 +261,10 @@ export const RealtimeVoiceCompanion: React.FC = () => {
           isCrisisEscalation: true,
         };
         setTranscripts((prev) => [...prev, crisisMsg]);
-        setScreenReaderAnnouncement("Emergency safety escalation triggered. Emergency resources displayed.");
+        setScreenReaderAnnouncement("Important support resources shared.");
         return;
       }
 
-      // Handle Clarification Fallback (Low confidence / noisy audio)
       if (turnResponse.clarification_requested) {
         setVisualState("listening");
         const clarMsg: TranscriptMessage = {
@@ -284,11 +274,9 @@ export const RealtimeVoiceCompanion: React.FC = () => {
           timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
         };
         setTranscripts((prev) => [...prev, clarMsg]);
-        setScreenReaderAnnouncement(`Clarification requested: ${turnResponse.transcript_companion}`);
         return;
       }
 
-      // Companion Speaking Turn
       const compMsg: TranscriptMessage = {
         id: `comp_${Date.now()}`,
         sender: "companion",
@@ -299,7 +287,6 @@ export const RealtimeVoiceCompanion: React.FC = () => {
       setVisualState("speaking");
       setScreenReaderAnnouncement(`Companion says: ${turnResponse.transcript_companion}`);
 
-      // Play Synthetic Audio if available and browser allows
       if (turnResponse.audio_base64 && typeof window !== "undefined") {
         try {
           const audio = new Audio(`data:audio/mp3;base64,${turnResponse.audio_base64}`);
@@ -307,11 +294,9 @@ export const RealtimeVoiceCompanion: React.FC = () => {
           audio.onended = () => {
             if (visualState === "speaking") {
               setVisualState(isMuted ? "muted" : "listening");
-              setScreenReaderAnnouncement("Companion finished speaking. Listening.");
             }
           };
           audio.play().catch(() => {
-            // Audio autoplay blocked in background; fallback cleanly
             setTimeout(() => {
               setVisualState(isMuted ? "muted" : "listening");
             }, turnResponse.duration_estimate_sec * 1000);
@@ -327,29 +312,16 @@ export const RealtimeVoiceCompanion: React.FC = () => {
         }, turnResponse.duration_estimate_sec * 1000);
       }
     } catch (err) {
-      console.error(err);
       setVisualState("idle");
     }
   };
 
-  // End Conversation
   const handleEndConversation = () => {
     if (currentAudioElementRef.current) {
       currentAudioElementRef.current.pause();
     }
     setVisualState("resting");
-    setScreenReaderAnnouncement("Conversation concluded peacefully. Sanctuary resting.");
-  };
-
-  // Load Evaluation Harness Benchmarks
-  const handleOpenEvaluationDrawer = async () => {
-    setIsEvaluationDrawerOpen(true);
-    try {
-      const data = await api.getVoiceEvaluationBenchmarks();
-      setEvaluationResults(data);
-    } catch (e) {
-      console.warn("Using offline evaluation summary");
-    }
+    setScreenReaderAnnouncement("Voice conversation ended peacefully.");
   };
 
   const isRTL = selectedLanguage.direction === "rtl";
@@ -359,114 +331,92 @@ export const RealtimeVoiceCompanion: React.FC = () => {
       dir={isRTL ? "rtl" : "ltr"}
       className="max-w-4xl mx-auto space-y-6 flex flex-col items-center relative"
     >
-      {/* Hidden Accessible Screen-Reader Live Region */}
-      <div
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-        className="sr-only"
-      >
+      {/* Screen-Reader Live Region */}
+      <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
         {screenReaderAnnouncement}
       </div>
 
-      {/* 1. Header Toolbar with Non-Clinical Safety & Language Badges */}
-      <div className="w-full p-4 rounded-2xl bg-midnight-950/90 border border-white/[0.08] backdrop-blur-xl shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+      {/* 1. Warm Header Bar */}
+      <div className="w-full p-5 rounded-3xl bg-white border border-[#E6E1D8] shadow-soft flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
           <div className="flex items-center space-x-2">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-teal-400">
-              Low-Latency Audio Sanctuary
-            </span>
-            <span className="text-zinc-600">&bull;</span>
-            <span className="text-[10px] font-mono text-zinc-400">24 kHz Pacing</span>
+            <h1 className="text-xl font-serif font-semibold text-[#263330]">
+              Voice Companion
+            </h1>
+            <Badge variant="teal" size="sm">
+              AI Companion
+            </Badge>
           </div>
-          <h1 className="text-lg sm:text-xl font-serif text-ivory-100 font-medium">
-            Real-Time Voice Companion
-          </h1>
+          <p className="text-sm text-[#52625E]">
+            Speak naturally and take pauses whenever you need
+          </p>
         </div>
 
-        {/* Configuration Badges */}
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Voice Selector Badge */}
+        {/* Voice, Language & Mode Selectors */}
+        <div className="flex flex-wrap items-center gap-2.5">
           <button
             onClick={() => setIsVoiceModalOpen(true)}
-            className="px-3 py-1.5 rounded-xl bg-midnight-900 border border-white/[0.1] hover:border-teal-500/50 text-xs text-ivory-200 transition-all flex items-center space-x-1.5"
+            className="px-3.5 py-2 min-h-[40px] rounded-xl bg-[#FAF8F4] border border-[#DDD7CC] hover:border-[#285B55] text-xs font-medium text-[#263330] transition-all flex items-center space-x-2"
           >
-            <Sliders className="w-3.5 h-3.5 text-teal-400" />
-            <span className="font-mono text-[11px]">{selectedVoice.name}</span>
-            <ChevronDown className="w-3 h-3 text-zinc-500" />
+            <Sliders className="w-4 h-4 text-[#285B55]" />
+            <span>Voice: {selectedVoice.name}</span>
+            <ChevronDown className="w-3.5 h-3.5 text-[#52625E]" />
           </button>
 
-          {/* Language Selector Badge */}
           <button
             onClick={() => setIsLanguageModalOpen(true)}
-            className="px-3 py-1.5 rounded-xl bg-midnight-900 border border-white/[0.1] hover:border-teal-500/50 text-xs text-ivory-200 transition-all flex items-center space-x-1.5"
+            className="px-3.5 py-2 min-h-[40px] rounded-xl bg-[#FAF8F4] border border-[#DDD7CC] hover:border-[#285B55] text-xs font-medium text-[#263330] transition-all flex items-center space-x-2"
           >
-            <Globe className="w-3.5 h-3.5 text-lavender-400" />
-            <span className="font-mono text-[11px]">{selectedLanguage.name}</span>
-            <Badge
-              variant={selectedLanguage.tier === "tier_1_clinically_reviewed" ? "teal" : selectedLanguage.tier === "tier_2_qualified_regional" ? "lavender" : "neutral"}
-              size="sm"
-            >
-              {selectedLanguage.tier === "tier_1_clinically_reviewed" ? "Tier 1" : selectedLanguage.tier === "tier_2_qualified_regional" ? "Tier 2" : "Beta"}
-            </Badge>
+            <Globe className="w-4 h-4 text-[#553E82]" />
+            <span>{selectedLanguage.name}</span>
+            <ChevronDown className="w-3.5 h-3.5 text-[#52625E]" />
           </button>
 
-          {/* Robustness Benchmark Button */}
-          <Button
-            size="xs"
-            variant="ghost"
-            onClick={handleOpenEvaluationDrawer}
-            leftIcon={<Activity className="w-3.5 h-3.5" />}
+          <Link
+            href="/companion/chat"
+            className="px-3.5 py-2 min-h-[40px] rounded-xl bg-[#E8F1EB] hover:bg-[#D5E6DC] text-[#1F4742] border border-[#CBE0D3] text-xs font-medium flex items-center space-x-1.5 transition-colors"
           >
-            Benchmarks
-          </Button>
+            <MessageSquare className="w-4 h-4 text-[#285B55]" />
+            <span>Switch to Text Chat</span>
+          </Link>
         </div>
       </div>
 
-      {/* 2. Mandatory Non-Diagnostic Clinical Safety Notice */}
-      <div className="w-full px-4 py-2 rounded-xl bg-midnight-900/60 border border-white/[0.04] flex items-center justify-between text-[11px] text-zinc-400">
-        <span className="flex items-center space-x-1.5">
-          <Shield className="w-3.5 h-3.5 text-teal-400/80 flex-shrink-0" />
-          <span>Non-Clinical Boundary: InnerOS never infers mental-health diagnoses or emotions from vocal features.</span>
-        </span>
-        <span className="font-mono text-[10px] text-zinc-500 hidden md:inline">WCAG 2.2 AA Compliant</span>
-      </div>
-
-      {/* 3. Crisis Alert Interception Banner (High Priority) */}
+      {/* 2. Crisis Support Notice (When Triggered) */}
       {crisisAlert && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="w-full p-5 rounded-2xl bg-rose-950/40 border border-rose-500/60 shadow-2xl space-y-3"
+          className="w-full p-6 rounded-3xl bg-[#FDF2F2] border border-[#F2C9CE] shadow-card space-y-4"
         >
-          <div className="flex items-center space-x-2 text-rose-300">
-            <ShieldAlert className="w-5 h-5 animate-pulse text-rose-400" />
-            <h3 className="text-sm font-semibold uppercase tracking-wider font-mono">
-              Emergency Human Support Interception Active
+          <div className="flex items-center space-x-2.5 text-[#9B1C31]">
+            <AlertTriangle className="w-5 h-5 shrink-0" />
+            <h3 className="text-base font-serif font-semibold">
+              Immediate Human Support Resources
             </h3>
           </div>
-          <p className="text-xs text-rose-100 font-light leading-relaxed">
+          <p className="text-base text-[#263330] leading-relaxed">
             {crisisAlert.transcript_companion}
           </p>
-          <div className="grid sm:grid-cols-2 gap-2 pt-1">
+          <div className="grid sm:grid-cols-2 gap-3 pt-1">
             {crisisAlert.safety_resources.map((res, i) => (
-              <div key={i} className="p-3 rounded-xl bg-midnight-950 border border-rose-800/40 text-xs">
-                <span className="font-semibold text-rose-200 block">{res.name}</span>
-                <span className="font-mono text-ivory-100 text-[11px]">{res.contact}</span>
+              <div key={i} className="p-4 rounded-2xl bg-white border border-[#F2C9CE]">
+                <span className="font-semibold text-[#9B1C31] block text-sm">{res.name}</span>
+                <span className="text-[#263330] text-sm mt-0.5 block">{res.contact}</span>
               </div>
             ))}
           </div>
           <div className="pt-2 flex justify-end">
-            <Button size="xs" variant="ghost" onClick={() => setCrisisAlert(null)}>
-              Dismiss Notice
+            <Button size="xs" variant="outline" onClick={() => setCrisisAlert(null)}>
+              Close Notice
             </Button>
           </div>
         </motion.div>
       )}
 
-      {/* 4. Central Living Voice Orb Sanctuary Canvas */}
-      <div className="w-full py-8 sm:py-12 rounded-3xl bg-midnight-950 border border-white/[0.08] shadow-2xl flex flex-col items-center justify-center relative overflow-hidden">
-        {/* Living Responsive Voice Orb */}
+      {/* 3. Main Voice Companion Sanctuary Canvas */}
+      <div className="w-full py-10 sm:py-12 px-6 rounded-3xl bg-white border border-[#E6E1D8] shadow-card flex flex-col items-center justify-center relative overflow-hidden">
+        {/* Soft Gradient Companion Orb */}
         <VoiceCompanionOrb
           state={visualState}
           audioLevel={audioLevel}
@@ -482,186 +432,192 @@ export const RealtimeVoiceCompanion: React.FC = () => {
           }}
         />
 
-        {/* Microphone Permission Prompt or Denied Alert */}
+        {/* Microphone Permission Prompt */}
         {micPermission === "prompt" && (
-          <div className="mt-4 p-3 rounded-xl bg-midnight-900 border border-teal-500/30 flex items-center space-x-3 text-xs text-ivory-200">
-            <Mic className="w-4 h-4 text-teal-400 animate-pulse" />
-            <span>Enable microphone for seamless vocal turn-taking.</span>
+          <div className="mt-4 p-4 rounded-2xl bg-[#E8F1EB]/70 border border-[#CBE0D3] flex flex-wrap items-center justify-center gap-3 text-sm text-[#1F4742]">
+            <Mic className="w-4 h-4 text-[#285B55]" />
+            <span>Enable your microphone when you are ready to talk aloud.</span>
             <Button size="xs" variant="primary" onClick={handleRequestMicrophone}>
-              Allow Microphone
+              Enable Microphone
             </Button>
           </div>
         )}
 
         {micPermission === "denied" && (
-          <div className="mt-4 p-3 rounded-xl bg-rose-950/40 border border-rose-500/30 flex items-center space-x-2 text-xs text-rose-200">
-            <AlertTriangle className="w-4 h-4 text-rose-400 flex-shrink-0" />
-            <span>Microphone blocked in browser. Using text fallback mode below.</span>
+          <div className="mt-4 p-4 rounded-2xl bg-[#F7E7E2] border border-[#E8CEC5] flex items-center space-x-2.5 text-sm text-[#7D402D]">
+            <AlertTriangle className="w-4 h-4 shrink-0" />
+            <span>Microphone access is off. You can type below instead.</span>
           </div>
         )}
 
-        {/* 5. Primary Audio Control Bar (Accessible & Keyboard-Navigable) */}
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-3 z-10">
-          {/* Mute Button */}
+        {/* 4. Accessible Primary Voice Controls */}
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3 z-10">
+          {/* Mute / Unmute */}
           <button
             onClick={handleToggleMute}
-            className={`p-3.5 rounded-2xl border transition-all flex items-center space-x-2 ${
+            className={`px-5 py-3 min-h-[48px] rounded-2xl border font-medium text-sm transition-all flex items-center space-x-2 ${
               isMuted
-                ? "bg-rose-950/80 border-rose-700 text-rose-200 shadow-lg shadow-rose-950/40"
-                : "bg-midnight-900 border-white/[0.1] text-ivory-200 hover:border-white/[0.25]"
+                ? "bg-[#FDF2F2] border-[#F2C9CE] text-[#9B1C31]"
+                : "bg-[#285B55] border-[#285B55] text-white hover:bg-[#1F4742] shadow-sm"
             }`}
-            title={isMuted ? "Unmute Microphone (Space)" : "Mute Microphone (Space)"}
-            aria-label={isMuted ? "Unmute Microphone" : "Mute Microphone"}
+            title={isMuted ? "Unmute microphone" : "Mute microphone"}
+            aria-label={isMuted ? "Unmute microphone" : "Mute microphone"}
           >
-            {isMuted ? <MicOff className="w-5 h-5 text-rose-400" /> : <Mic className="w-5 h-5 text-teal-400" />}
+            {isMuted ? (
+              <>
+                <MicOff className="w-5 h-5" />
+                <span>Unmute</span>
+              </>
+            ) : (
+              <>
+                <Mic className="w-5 h-5" />
+                <span>Microphone On</span>
+              </>
+            )}
           </button>
 
-          {/* Barge-In Interrupt Button (Active during speech) */}
+          {/* Pause / Resume */}
           <button
-            onClick={handleBargeInInterruption}
-            disabled={visualState !== "speaking"}
-            className={`px-5 py-3.5 rounded-2xl border text-xs font-medium transition-all flex items-center space-x-2 ${
-              visualState === "speaking"
-                ? "bg-amber-950/80 border-amber-500 text-amber-200 shadow-lg shadow-amber-950/50 cursor-pointer animate-pulse"
-                : "bg-midnight-900/50 border-white/[0.04] text-zinc-600 cursor-not-allowed"
-            }`}
-            title="Interrupt companion speech (Key 'I')"
-            aria-label="Interrupt companion speech"
+            onClick={handleTogglePause}
+            className="px-4 py-3 min-h-[48px] rounded-2xl bg-[#FAF8F4] hover:bg-[#F3EFE8] border border-[#DDD7CC] text-[#263330] text-sm font-medium transition-all flex items-center space-x-2"
+            title={isPaused ? "Resume conversation" : "Pause conversation"}
           >
-            <VolumeX className="w-4 h-4" />
-            <span>Interrupt Voice</span>
+            {isPaused ? <Play className="w-4 h-4 text-[#285B55]" /> : <Pause className="w-4 h-4 text-[#52625E]" />}
+            <span>{isPaused ? "Resume" : "Pause"}</span>
           </button>
 
-          {/* Simulate Voice Turn Button (For Testing/Offline Verification) */}
+          {/* Interrupt Speech (When Companion is Speaking) */}
+          {visualState === "speaking" && (
+            <button
+              onClick={handleBargeInInterruption}
+              className="px-4 py-3 min-h-[48px] rounded-2xl bg-[#F7E7E2] border border-[#E8CEC5] text-[#7D402D] text-sm font-medium transition-all flex items-center space-x-2"
+            >
+              <VolumeX className="w-4 h-4" />
+              <span>Interrupt</span>
+            </button>
+          )}
+
+          {/* Try Sample Voice Prompt */}
           <button
-            onClick={() => handleSendTurn("I had a demanding cross-functional critique today.")}
-            className="px-5 py-3.5 rounded-2xl bg-teal-600 hover:bg-teal-500 text-white font-medium text-xs flex items-center space-x-2 shadow-lg shadow-teal-900/40 transition-all"
-            aria-label="Simulate test reflection utterance"
+            onClick={() => handleSendTurn("I have been carrying a lot on my mind today and want to slow down.")}
+            className="px-4 py-3 min-h-[48px] rounded-2xl bg-[#E8F1EB] hover:bg-[#D5E6DC] border border-[#CBE0D3] text-[#1F4742] font-medium text-sm flex items-center space-x-2 transition-all"
           >
-            <Sparkles className="w-4 h-4" />
-            <span>Simulate Voice Reflection</span>
+            <Sparkles className="w-4 h-4 text-[#285B55]" />
+            <span>Share a Thought</span>
           </button>
 
-          {/* Text Fallback Toggle Button */}
+          {/* Toggle Text Input */}
           <button
             onClick={() => setTextFallbackMode(!textFallbackMode)}
-            className={`p-3.5 rounded-2xl border transition-all ${
+            className={`px-4 py-3 min-h-[48px] rounded-2xl border text-sm font-medium transition-all flex items-center space-x-2 ${
               textFallbackMode
-                ? "bg-teal-950 border-teal-500 text-teal-200"
-                : "bg-midnight-900 border-white/[0.1] text-ivory-200 hover:border-white/[0.25]"
+                ? "bg-[#EDE8F5] border-[#D0C4E8] text-[#423166]"
+                : "bg-[#FAF8F4] border-[#DDD7CC] text-[#263330] hover:bg-[#F3EFE8]"
             }`}
-            title="Toggle Text Fallback Mode (Key 'T')"
-            aria-label="Toggle Text Fallback Mode"
           >
-            <MessageSquare className="w-5 h-5" />
+            <MessageSquare className="w-4 h-4" />
+            <span>Type Instead</span>
           </button>
 
-          {/* End Conversation Button */}
+          {/* End Conversation */}
           <button
             onClick={handleEndConversation}
-            className="p-3.5 rounded-2xl bg-midnight-900 border border-white/[0.1] text-zinc-400 hover:text-rose-400 hover:border-rose-800 transition-all"
-            title="End Voice Sanctuary (Escape)"
-            aria-label="End Voice Sanctuary"
+            className="px-4 py-3 min-h-[48px] rounded-2xl bg-white hover:bg-[#FDF2F2] border border-[#DDD7CC] hover:border-[#F2C9CE] text-[#52625E] hover:text-[#9B1C31] text-sm font-medium transition-all flex items-center space-x-2"
+            title="End voice session"
           >
-            <PhoneOff className="w-5 h-5" />
+            <PhoneOff className="w-4 h-4" />
+            <span>End</span>
           </button>
-        </div>
-
-        {/* Keyboard Shortcuts Hint */}
-        <div className="mt-3 text-[10px] font-mono text-zinc-500 hidden sm:flex items-center space-x-3">
-          <span>Space: Mute</span>
-          <span>&bull;</span>
-          <span>I: Interrupt</span>
-          <span>&bull;</span>
-          <span>T: Text Mode</span>
-          <span>&bull;</span>
-          <span>Esc: End</span>
         </div>
       </div>
 
-      {/* 6. Text Fallback Input Strip (Always Available) */}
+      {/* 5. Optional Text Fallback Input */}
       {textFallbackMode && (
         <motion.div
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full p-4 rounded-2xl bg-midnight-950 border border-teal-500/30 shadow-xl space-y-2"
+          className="w-full p-5 rounded-3xl bg-white border border-[#E6E1D8] shadow-soft space-y-3"
         >
-          <div className="flex items-center justify-between text-xs text-zinc-400">
-            <span className="font-semibold text-ivory-100 flex items-center space-x-1.5">
-              <MessageSquare className="w-3.5 h-3.5 text-teal-400" />
-              <span>Quiet Text Fallback Mode</span>
+          <div className="flex items-center justify-between text-sm text-[#52625E]">
+            <span className="font-medium text-[#263330] flex items-center space-x-2">
+              <MessageSquare className="w-4 h-4 text-[#285B55]" />
+              <span>Write to your voice companion</span>
             </span>
-            <span className="text-[10px] font-mono text-zinc-500">
-              When speaking aloud is not comfortable
-            </span>
+            <span className="text-xs">Ideal when you prefer not to speak out loud</span>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             <input
               type="text"
-              placeholder={`Type a reflection in ${selectedLanguage.name}...`}
+              placeholder={`Write what is on your mind...`}
               value={typedInput}
               onChange={(e) => setTypedInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSendTurn()}
-              className="flex-1 bg-midnight-900 border border-white/[0.1] rounded-xl px-4 py-2.5 text-xs text-ivory-100 focus:outline-none focus:border-teal-500"
+              className="flex-1 bg-[#FAF8F4] border border-[#DDD7CC] rounded-2xl px-4 py-3 min-h-[48px] text-base text-[#263330] focus:outline-none focus:border-[#285B55]"
             />
-            <Button size="sm" variant="primary" onClick={() => handleSendTurn()}>
-              Reflect
+            <Button size="md" variant="primary" onClick={() => handleSendTurn()}>
+              Send
             </Button>
           </div>
         </motion.div>
       )}
 
-      {/* 7. Live Streaming Transcripts Ledger */}
-      <div className="w-full p-6 rounded-3xl bg-midnight-950 border border-white/[0.08] shadow-2xl space-y-4">
-        <div className="flex items-center justify-between border-b border-white/[0.06] pb-3 text-xs text-zinc-400">
-          <span className="font-semibold text-ivory-100 flex items-center space-x-2">
-            <Activity className="w-4 h-4 text-teal-400" />
-            <span>Streaming Dialogue Transcript</span>
-          </span>
-          <span className="font-mono text-[10px] text-zinc-500">
-            Real-Time Turn History &bull; Non-Persistent in Incognito
-          </span>
+      {/* 6. Readable Conversation Transcripts */}
+      <div className="w-full p-6 rounded-3xl bg-white border border-[#E6E1D8] shadow-soft space-y-4">
+        <div className="flex items-center justify-between border-b border-[#F3EFE8] pb-3">
+          <h3 className="text-base font-serif font-semibold text-[#263330]">
+            Conversation Transcript
+          </h3>
+          <button
+            onClick={() => setShowTranscript(!showTranscript)}
+            className="text-xs font-medium text-[#285B55] hover:underline"
+          >
+            {showTranscript ? "Hide transcript" : "Show transcript"}
+          </button>
         </div>
 
-        <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
-          {transcripts.map((t) => (
-            <div
-              key={t.id}
-              className={`p-3.5 rounded-2xl text-xs space-y-1 transition-all ${
-                t.sender === "user"
-                  ? "bg-midnight-900 border border-white/[0.06] ml-6 sm:ml-12"
-                  : t.isCrisisEscalation
-                  ? "bg-rose-950/60 border border-rose-500/40 text-rose-100"
-                  : "bg-midnight-900/60 border border-teal-800/30 mr-6 sm:mr-12"
-              }`}
-            >
-              <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400">
-                <span className={t.sender === "user" ? "text-ivory-200" : "text-teal-400"}>
-                  {t.sender === "user" ? "You (Vocal Input)" : "InnerOS Companion"}
-                </span>
-                <span>{t.timestamp}</span>
+        {showTranscript && (
+          <div className="space-y-3.5 max-h-72 overflow-y-auto pr-1">
+            {transcripts.map((t) => (
+              <div
+                key={t.id}
+                className={`p-4 rounded-2xl text-base space-y-1 transition-all ${
+                  t.sender === "user"
+                    ? "bg-[#E8F1EB]/70 border border-[#CBE0D3] text-[#1F4742] ml-4 sm:ml-10"
+                    : t.isCrisisEscalation
+                    ? "bg-[#FDF2F2] border border-[#F2C9CE] text-[#263330]"
+                    : "bg-[#FAF8F4] border border-[#E6E1D8] text-[#263330] mr-4 sm:mr-10"
+                }`}
+              >
+                <div className="flex items-center justify-between text-xs text-[#52625E]">
+                  <span className="font-medium text-[#285B55]">
+                    {t.sender === "user" ? "You" : "InnerOS Companion"}
+                  </span>
+                  <span>{t.timestamp}</span>
+                </div>
+                <p className="leading-relaxed">{t.text}</p>
               </div>
-              <p className="text-ivory-100 font-light leading-relaxed">{t.text}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* 8. Voice Profile Selector Modal */}
+      {/* 7. Voice Profile Selector Modal */}
       {isVoiceModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="w-full max-w-lg p-6 rounded-3xl bg-midnight-950 border border-teal-500/40 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
-              <h3 className="text-base font-serif text-ivory-100 flex items-center space-x-2">
-                <Sliders className="w-4 h-4 text-teal-400" />
-                <span>Select Voice Presence</span>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#263330]/40 backdrop-blur-xs">
+          <div className="w-full max-w-lg p-6 rounded-3xl bg-[#FAF8F4] border border-[#E6E1D8] shadow-elevated space-y-4 max-h-[85vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#E6E1D8] pb-3">
+              <h3 className="text-lg font-serif font-semibold text-[#263330]">
+                Choose Companion Voice
               </h3>
-              <Button size="xs" variant="ghost" onClick={() => setIsVoiceModalOpen(false)}>
-                Close
-              </Button>
+              <button
+                onClick={() => setIsVoiceModalOpen(false)}
+                className="p-2 rounded-xl bg-white border border-[#DDD7CC] text-[#52625E]"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
 
-            <div className="grid gap-2.5">
+            <div className="grid gap-3">
               {profiles.map((p) => {
                 const isSelected = selectedVoice.id === p.id;
                 return (
@@ -673,25 +629,25 @@ export const RealtimeVoiceCompanion: React.FC = () => {
                     }}
                     className={`p-4 rounded-2xl border cursor-pointer transition-all space-y-1.5 ${
                       isSelected
-                        ? "bg-teal-950 border-teal-400 shadow-lg shadow-teal-950/50"
-                        : "bg-midnight-900 border-white/[0.06] hover:border-white/[0.2]"
+                        ? "bg-[#E8F1EB] border-[#285B55] shadow-xs"
+                        : "bg-white border-[#E6E1D8] hover:border-[#285B55]/50"
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-xs text-ivory-100">{p.name}</span>
-                      <div className="flex items-center space-x-1.5">
-                        <span className="text-[10px] font-mono text-zinc-400">{p.language}</span>
-                        {isSelected && <Check className="w-4 h-4 text-teal-400" />}
+                      <span className="font-semibold text-base text-[#263330]">{p.name}</span>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs text-[#52625E]">{p.language}</span>
+                        {isSelected && <Check className="w-4 h-4 text-[#285B55]" />}
                       </div>
                     </div>
-                    <p className="text-xs text-zinc-400 font-light">{p.description}</p>
-                    <div className="flex flex-wrap gap-1 pt-1">
+                    <p className="text-sm text-[#52625E] leading-relaxed">{p.description}</p>
+                    <div className="flex flex-wrap gap-1.5 pt-1">
                       {p.tone_characteristics.map((tc) => (
                         <span
                           key={tc}
-                          className="text-[9px] font-mono px-2 py-0.5 rounded bg-midnight-950 border border-white/[0.06] text-zinc-400"
+                          className="text-xs px-2.5 py-0.5 rounded-full bg-[#FAF8F4] border border-[#E2DDD2] text-[#52625E]"
                         >
-                          #{tc}
+                          {tc}
                         </span>
                       ))}
                     </div>
@@ -703,41 +659,41 @@ export const RealtimeVoiceCompanion: React.FC = () => {
         </div>
       )}
 
-      {/* 9. Language Selector Modal (30 Languages with Tiers) */}
+      {/* 8. Language Selector Modal */}
       {isLanguageModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="w-full max-w-xl p-6 rounded-3xl bg-midnight-950 border border-teal-500/40 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#263330]/40 backdrop-blur-xs">
+          <div className="w-full max-w-xl p-6 rounded-3xl bg-[#FAF8F4] border border-[#E6E1D8] shadow-elevated space-y-4 max-h-[85vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#E6E1D8] pb-3">
               <div>
-                <h3 className="text-base font-serif text-ivory-100 flex items-center space-x-2">
-                  <Globe className="w-4 h-4 text-lavender-400" />
-                  <span>Multilingual Architecture (30 Languages)</span>
+                <h3 className="text-lg font-serif font-semibold text-[#263330]">
+                  Select Language
                 </h3>
-                <p className="text-xs text-zinc-400 mt-0.5">
-                  Language tiers reflect clinical review status, not merely cloud speech API support.
+                <p className="text-sm text-[#52625E]">
+                  Choose your preferred language for voice and text
                 </p>
               </div>
-              <Button size="xs" variant="ghost" onClick={() => setIsLanguageModalOpen(false)}>
-                Close
-              </Button>
+              <button
+                onClick={() => setIsLanguageModalOpen(false)}
+                className="p-2 rounded-xl bg-white border border-[#DDD7CC] text-[#52625E]"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
 
-            {/* Search Filter */}
             <input
               type="text"
-              placeholder="Search language or dialect..."
+              placeholder="Search language..."
               value={languageSearch}
               onChange={(e) => setLanguageSearch(e.target.value)}
-              className="w-full text-xs bg-midnight-900 border border-white/[0.1] rounded-xl px-4 py-2 text-ivory-100 focus:outline-none focus:border-teal-500"
+              className="w-full text-base bg-white border border-[#DDD7CC] rounded-2xl px-4 py-2.5 text-[#263330] focus:outline-none focus:border-[#285B55]"
             />
 
-            <div className="grid gap-2 max-h-96 overflow-y-auto pr-1">
+            <div className="grid gap-2.5 max-h-96 overflow-y-auto pr-1">
               {languages
                 .filter(
                   (l) =>
                     l.name.toLowerCase().includes(languageSearch.toLowerCase()) ||
-                    l.native_name.toLowerCase().includes(languageSearch.toLowerCase()) ||
-                    l.code.toLowerCase().includes(languageSearch.toLowerCase())
+                    l.native_name.toLowerCase().includes(languageSearch.toLowerCase())
                 )
                 .map((lang) => {
                   const isSelected = selectedLanguage.code === lang.code;
@@ -748,100 +704,22 @@ export const RealtimeVoiceCompanion: React.FC = () => {
                         setSelectedLanguage(lang);
                         setIsLanguageModalOpen(false);
                       }}
-                      className={`p-3.5 rounded-2xl border cursor-pointer transition-all space-y-1 ${
+                      className={`p-3.5 rounded-2xl border cursor-pointer transition-all flex items-center justify-between ${
                         isSelected
-                          ? "bg-teal-950 border-teal-400 shadow-md shadow-teal-950"
-                          : "bg-midnight-900 border-white/[0.06] hover:border-white/[0.2]"
+                          ? "bg-[#E8F1EB] border-[#285B55]"
+                          : "bg-white border-[#E6E1D8] hover:border-[#285B55]/50"
                       }`}
                     >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <span className="font-semibold text-xs text-ivory-100">
-                            {lang.name} ({lang.native_name})
-                          </span>
-                          <span className="text-[10px] font-mono text-zinc-400">{lang.code.toUpperCase()}</span>
-                        </div>
-                        <Badge
-                          variant={lang.tier === "tier_1_clinically_reviewed" ? "teal" : lang.tier === "tier_2_qualified_regional" ? "lavender" : "neutral"}
-                          size="sm"
-                        >
-                          {lang.tier === "tier_1_clinically_reviewed" ? "Tier 1: Reviewed" : lang.tier === "tier_2_qualified_regional" ? "Tier 2: Qualified" : "Beta"}
-                        </Badge>
+                      <div>
+                        <span className="font-semibold text-base text-[#263330]">
+                          {lang.name} ({lang.native_name})
+                        </span>
                       </div>
-
-                      {lang.caveats && (
-                        <p className="text-[11px] text-zinc-400 font-light">{lang.caveats}</p>
-                      )}
+                      {isSelected && <Check className="w-4 h-4 text-[#285B55]" />}
                     </div>
                   );
                 })}
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* 10. Voice Evaluation Benchmark Results Drawer */}
-      {isEvaluationDrawerOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="w-full max-w-2xl p-6 rounded-3xl bg-midnight-950 border border-teal-500/40 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
-              <div>
-                <h3 className="text-base font-serif text-ivory-100 flex items-center space-x-2">
-                  <Activity className="w-4 h-4 text-teal-400" />
-                  <span>Voice Robustness & Dialect Benchmark Suite</span>
-                </h3>
-                <p className="text-xs text-zinc-400 mt-0.5">
-                  Verifies Urdu/Bulgarian dialects, code-switching, low SNR noise fallback, and streaming crisis checks.
-                </p>
-              </div>
-              <Button size="xs" variant="ghost" onClick={() => setIsEvaluationDrawerOpen(false)}>
-                Close
-              </Button>
-            </div>
-
-            {evaluationResults ? (
-              <div className="space-y-4">
-                {/* Stats Summary Bar */}
-                <div className="grid grid-cols-3 gap-3 text-center">
-                  <div className="p-3 rounded-2xl bg-midnight-900 border border-white/[0.06]">
-                    <span className="text-[10px] font-mono text-zinc-400 uppercase block">Total Fixtures</span>
-                    <span className="text-xl font-serif text-ivory-100 font-semibold">{evaluationResults.total_cases}</span>
-                  </div>
-                  <div className="p-3 rounded-2xl bg-midnight-900 border border-white/[0.06]">
-                    <span className="text-[10px] font-mono text-zinc-400 uppercase block">Passing Cases</span>
-                    <span className="text-xl font-serif text-teal-400 font-semibold">{evaluationResults.passed_cases}</span>
-                  </div>
-                  <div className="p-3 rounded-2xl bg-midnight-900 border border-white/[0.06]">
-                    <span className="text-[10px] font-mono text-zinc-400 uppercase block">Pass Rate</span>
-                    <span className="text-xl font-serif text-teal-400 font-semibold">{evaluationResults.pass_rate_pct}%</span>
-                  </div>
-                </div>
-
-                {/* Fixture Cases Scrollable List */}
-                <div className="space-y-2 max-h-72 overflow-y-auto pr-1 text-xs">
-                  {evaluationResults.results.map((res: any) => (
-                    <div
-                      key={res.case_id}
-                      className="p-3 rounded-xl bg-midnight-900/80 border border-white/[0.04] space-y-1"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-mono text-[11px] text-teal-300 font-medium">{res.case_id}</span>
-                        <Badge variant={res.passed ? "teal" : "emergency"} size="sm">
-                          {res.passed ? "Passed" : "Failed"}
-                        </Badge>
-                      </div>
-                      <p className="text-zinc-400 text-[11px] font-light">
-                        Response: {res.response_transcript_preview}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="p-6 text-center text-zinc-400 text-xs">
-                Loading automated evaluation benchmarks...
-              </div>
-            )}
           </div>
         </div>
       )}

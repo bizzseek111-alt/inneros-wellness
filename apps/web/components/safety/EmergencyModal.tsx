@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { X, Phone, MessageSquare, ExternalLink, ShieldAlert } from "lucide-react";
+import { X, Phone, MessageSquare, ExternalLink, HeartHandshake } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface EmergencyModalProps {
@@ -18,101 +18,149 @@ export const EmergencyModal: React.FC<EmergencyModalProps> = ({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#263330]/45 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="support-modal-title"
+        >
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            initial={{ opacity: 0, scale: 0.97, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            exit={{ opacity: 0, scale: 0.97, y: 8 }}
             transition={{ duration: 0.2 }}
-            className="w-full max-w-lg bg-zinc-950 border border-rose-900/60 rounded-2xl p-6 shadow-2xl relative overflow-hidden"
+            className="w-full max-w-xl bg-[#FAF8F4] border border-[#E6E1D8] rounded-3xl p-6 sm:p-8 shadow-elevated relative overflow-hidden max-h-[90vh] overflow-y-auto"
           >
-            {/* Top Alert Header */}
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center space-x-2.5 text-rose-400">
-                <ShieldAlert className="w-6 h-6 shrink-0" />
-                <h3 className="text-lg font-semibold tracking-tight text-rose-200">
-                  Immediate Support & Helplines
-                </h3>
+            {/* Header */}
+            <div className="flex items-start justify-between mb-5">
+              <div className="flex items-center space-x-3">
+                <div className="w-11 h-11 rounded-2xl bg-[#F7E7E2] border border-[#E8CEC5] flex items-center justify-center text-[#9B1C31] shrink-0">
+                  <HeartHandshake className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3
+                    id="support-modal-title"
+                    className="text-xl font-serif font-semibold text-[#263330]"
+                  >
+                    You Are Not Alone — Human Support
+                  </h3>
+                  <p className="text-sm text-[#52625E]">
+                    Free, confidential 24/7 support from caring professionals
+                  </p>
+                </div>
               </div>
               <button
                 onClick={onClose}
-                className="p-1 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900"
+                className="p-2 min-h-[40px] min-w-[40px] rounded-xl bg-white border border-[#E4E0D8] text-[#52625E] hover:text-[#263330] flex items-center justify-center"
+                aria-label="Close support dialog"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Non-Clinical Notice */}
-            <div className="p-3.5 rounded-xl bg-rose-950/30 border border-rose-800/40 text-rose-200/90 text-sm mb-5 leading-relaxed">
+            {/* Reassuring Non-Clinical Notice */}
+            <div className="p-4 rounded-2xl bg-[#F7E7E2]/70 border border-[#E8CEC5] text-[#263330] text-base mb-6 leading-relaxed">
               {customMessage || (
                 <span>
-                  <strong>InnerOS is an emotional wellbeing companion, not a crisis medical service.</strong> If you or someone you know is in distress or experiencing thoughts of self-harm, please reach out to trained human support immediately. These services are free, confidential, and available 24/7.
+                  <strong>InnerOS is an AI companion for everyday reflection, not a medical or emergency service.</strong> If you are going through a difficult moment or feeling unsafe, please connect with a real person below right now.
                 </span>
               )}
             </div>
 
             {/* Helpline Cards */}
-            <div className="space-y-3">
+            <div className="space-y-3.5">
               {/* 988 US / Canada */}
-              <div className="p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-800 flex items-center justify-between">
+              <div className="p-4 rounded-2xl bg-white border border-[#E6E1D8] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
                 <div>
-                  <div className="font-semibold text-zinc-100 flex items-center space-x-2">
+                  <div className="font-semibold text-[#263330] flex items-center space-x-2">
                     <span>988 Suicide & Crisis Lifeline</span>
-                    <span className="text-[10px] bg-emerald-950 border border-emerald-800 text-emerald-400 px-1.5 py-0.5 rounded">
+                    <span className="text-xs bg-[#E8F1EB] border border-[#CBE0D3] text-[#1F4742] px-2.5 py-0.5 rounded-full font-medium">
                       US & Canada
                     </span>
                   </div>
-                  <p className="text-xs text-zinc-400 mt-0.5">Call or Text 988 • 24/7 Free & Confidential</p>
+                  <p className="text-sm text-[#52625E] mt-1">
+                    Call or Text 988 &bull; 24/7 Free & Confidential
+                  </p>
                 </div>
                 <a
                   href="tel:988"
-                  className="px-3.5 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold flex items-center space-x-1.5 transition-colors"
+                  className="px-4 py-2.5 min-h-[44px] rounded-xl bg-[#285B55] hover:bg-[#1F4742] text-white text-sm font-medium flex items-center justify-center space-x-2 transition-colors shrink-0"
                 >
-                  <Phone className="w-3.5 h-3.5" />
+                  <Phone className="w-4 h-4" />
                   <span>Call 988</span>
                 </a>
               </div>
 
-              {/* Crisis Text Line */}
-              <div className="p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-800 flex items-center justify-between">
+              {/* UK NHS & Samaritans */}
+              <div className="p-4 rounded-2xl bg-white border border-[#E6E1D8] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
                 <div>
-                  <div className="font-semibold text-zinc-100">Crisis Text Line</div>
-                  <p className="text-xs text-zinc-400 mt-0.5">Text HOME to 741741</p>
+                  <div className="font-semibold text-[#263330] flex items-center space-x-2">
+                    <span>Samaritans & NHS Mental Health</span>
+                    <span className="text-xs bg-[#EDE8F5] border border-[#D8CEEA] text-[#423166] px-2.5 py-0.5 rounded-full font-medium">
+                      United Kingdom
+                    </span>
+                  </div>
+                  <p className="text-sm text-[#52625E] mt-1">
+                    Call 116 123 (Samaritans) or 111 (NHS) &bull; Text SHOUT to 85258
+                  </p>
                 </div>
                 <a
-                  href="sms:741741?body=HOME"
-                  className="px-3.5 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-medium flex items-center space-x-1.5 transition-colors"
+                  href="tel:116123"
+                  className="px-4 py-2.5 min-h-[44px] rounded-xl bg-[#E8F1EB] hover:bg-[#D5E6DC] text-[#1F4742] border border-[#CBE0D3] text-sm font-medium flex items-center justify-center space-x-2 transition-colors shrink-0"
                 >
-                  <MessageSquare className="w-3.5 h-3.5" />
-                  <span>Text Now</span>
+                  <Phone className="w-4 h-4" />
+                  <span>Call 116 123</span>
                 </a>
               </div>
 
-              {/* International Befrienders */}
-              <div className="p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-800 flex items-center justify-between">
+              {/* Europe & Bulgaria */}
+              <div className="p-4 rounded-2xl bg-white border border-[#E6E1D8] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
                 <div>
-                  <div className="font-semibold text-zinc-100">International Support (32 Countries)</div>
-                  <p className="text-xs text-zinc-400 mt-0.5">Befrienders Worldwide Directory</p>
+                  <div className="font-semibold text-[#263330] flex items-center space-x-2">
+                    <span>European & Bulgarian Support</span>
+                    <span className="text-xs bg-[#F7E7E2] border border-[#E8CEC5] text-[#7D402D] px-2.5 py-0.5 rounded-full font-medium">
+                      EU & Bulgaria
+                    </span>
+                  </div>
+                  <p className="text-sm text-[#52625E] mt-1">
+                    112 (Emergency) &bull; 0800 88 001 (БЧК Support) &bull; 116 123 (Emotional Support)
+                  </p>
                 </div>
                 <a
-                  href="https://www.befrienders.org"
+                  href="tel:112"
+                  className="px-4 py-2.5 min-h-[44px] rounded-xl bg-[#E8F1EB] hover:bg-[#D5E6DC] text-[#1F4742] border border-[#CBE0D3] text-sm font-medium flex items-center justify-center space-x-2 transition-colors shrink-0"
+                >
+                  <Phone className="w-4 h-4" />
+                  <span>Call 112</span>
+                </a>
+              </div>
+
+              {/* International Directory */}
+              <div className="p-4 rounded-2xl bg-white border border-[#E6E1D8] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+                <div>
+                  <div className="font-semibold text-[#263330]">Find A Helpline (130+ Countries)</div>
+                  <p className="text-sm text-[#52625E] mt-1">
+                    Verified local crisis lines worldwide via Befrienders & Find A Helpline
+                  </p>
+                </div>
+                <a
+                  href="https://findahelpline.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3.5 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-medium flex items-center space-x-1.5 transition-colors"
+                  className="px-4 py-2.5 min-h-[44px] rounded-xl bg-white hover:bg-[#F3EFE8] text-[#263330] border border-[#DDD8CE] text-sm font-medium flex items-center justify-center space-x-2 transition-colors shrink-0"
                 >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  <span>Find Local</span>
+                  <span>Open Directory</span>
+                  <ExternalLink className="w-4 h-4" />
                 </a>
               </div>
             </div>
 
-            {/* Footer Dismiss */}
-            <div className="mt-6 flex justify-end">
+            <div className="mt-6 pt-4 border-t border-[#E6E1D8] flex justify-end">
               <button
                 onClick={onClose}
-                className="px-4 py-2 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200"
+                className="px-5 py-2.5 min-h-[44px] rounded-2xl bg-white border border-[#DDD8CE] text-[#263330] text-sm font-medium hover:bg-[#F3EFE8]"
               >
-                Return to Sanctuary
+                Return to InnerOS
               </button>
             </div>
           </motion.div>

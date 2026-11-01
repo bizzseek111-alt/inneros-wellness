@@ -1,24 +1,21 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import {
   Send,
   RefreshCw,
   Shield,
   AlertTriangle,
-  Lock,
   Trash2,
   Sliders,
   Sparkles,
-  Volume2,
   BookOpen,
-  Compass,
-  CheckCircle2,
-  HeartHandshake,
   Ear,
   HelpCircle,
   Wrench,
   Wind,
+  Mic,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { api, ConversationMode, ChatResponse } from "@/lib/api-client";
@@ -51,40 +48,40 @@ const MODES: Array<{
     id: "just_listen",
     label: "Just Listen",
     icon: Ear,
-    badge: "Zero Advice",
-    description: "Holding compassionate emotional space. Reflects feelings without fixing.",
+    badge: "No Advice",
+    description: "I will simply listen and reflect your feelings without trying to fix anything.",
     allowsAdvice: false,
   },
   {
     id: "help_me_understand",
     label: "Help Me Understand",
     icon: HelpCircle,
-    badge: "Clarifying Questions",
-    description: "Gently untangles conflicting emotions, bodily sensations, and core needs.",
+    badge: "Gentle Questions",
+    description: "We will gently explore what you are feeling and what matters most right now.",
     allowsAdvice: false,
   },
   {
     id: "help_me_solve",
     label: "Help Me Solve",
     icon: Wrench,
-    badge: "Micro-Steps",
-    description: "Collaborative, values-aligned action breakdown for overwhelming tasks.",
+    badge: "Small Steps",
+    description: "Together we can break down an overwhelming situation into calm, manageable steps.",
     allowsAdvice: true,
   },
   {
     id: "teach_me",
     label: "Teach Me",
     icon: BookOpen,
-    badge: "Psychoeducation",
-    description: "Evidence-informed concepts: ACT cognitive defusion & Polyvagal biology.",
+    badge: "Psychology",
+    description: "Learn practical, evidence-informed psychology concepts for everyday life.",
     allowsAdvice: true,
   },
   {
     id: "help_me_settle",
     label: "Help Me Settle",
     icon: Wind,
-    badge: "Somatic Pacing",
-    description: "Guided 4-4-4-4 Box Breathing and physical sensory grounding.",
+    badge: "Grounding",
+    description: "Slow breathing and sensory grounding exercises to help your body feel settled.",
     allowsAdvice: true,
   },
 ];
@@ -106,7 +103,7 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
       id: "initial_welcome",
       role: "assistant",
       content:
-        "Welcome back to your sanctuary, Elena. I am your non-clinical AI emotional companion. I am not a human therapist or medical doctor, but I am here to listen, untangle, or settle with you. How are you experiencing this moment?",
+        "Hello Elena. I am your AI wellbeing companion. I am not a human therapist or doctor, but I am here as a quiet, supportive space to listen, untangle thoughts, or help you settle. How are you feeling right now?",
       recalledMemoryCount: 2,
       modeApplied: "just_listen",
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
@@ -124,14 +121,15 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   };
 
   useEffect(() => {
-    scrollToBottom();
+    if (messages.length > 1 || streamingContent) {
+      scrollToBottom();
+    }
   }, [messages, streamingContent]);
 
-  // Load session history on mount
   useEffect(() => {
     let isMounted = true;
     async function loadHistory() {
@@ -151,7 +149,7 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
           setMessages(mapped);
         }
       } catch (err) {
-        // Graceful offline fallback: keep default welcome
+        // Keep initial welcome on offline fallback
       }
     }
     loadHistory();
@@ -161,7 +159,7 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
   }, [sessionId]);
 
   const handleClearSession = async () => {
-    if (window.confirm("Clear all conversation history in this session? This action cannot be undone.")) {
+    if (window.confirm("Start a fresh conversation? Your current messages in this view will be cleared.")) {
       try {
         await api.clearSessionHistory(sessionId);
       } catch (e) {
@@ -171,7 +169,7 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
         {
           id: `welcome_reset_${Date.now()}`,
           role: "assistant",
-          content: "Conversation history cleared. I am right here with you whenever you are ready to begin anew.",
+          content: "We have a fresh page. Take your time—I am right here whenever you want to share.",
           modeApplied: currentMode,
           timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
         },
@@ -279,15 +277,14 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
         onTriggerEmergencyModal(response.safety_evaluation.de_escalation_message);
       }
     } catch (offlineErr) {
-      // Local graceful emergency or reflection fallback
       const isCrisis =
         text.toLowerCase().includes("die") ||
         text.toLowerCase().includes("suicide") ||
         text.toLowerCase().includes("kill myself");
 
       const offlineReply = isCrisis
-        ? "I hear your pain. Please know you are not alone. Please reach out to 988 or trusted human support immediately."
-        : "I am right here with you in this sanctuary. Let's take a slow, deep breath together. What is one small thing within your control in this moment?";
+        ? "I hear how much pain you are carrying. Please know you are not alone—please reach out to 988 or trusted human support right away."
+        : "I am right here with you. Let's take a slow breath together. What feels most important to share in this moment?";
 
       setMessages((prev) => [
         ...prev,
@@ -315,28 +312,48 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
   const activeModeData = MODES.find((m) => m.id === currentMode) || MODES[0];
 
   return (
-    <div className="flex-1 flex flex-col h-full max-w-4xl w-full mx-auto" role="region" aria-label="InnerOS Conversation Sanctuary">
-      {/* Explicit AI Identity & Non-Clinical Safety Banner */}
-      <div className="flex flex-wrap items-center justify-between pb-3 mb-3 border-b border-white/[0.08] gap-2">
-        <div className="flex items-center space-x-2">
-          <Badge variant="teal" size="sm">
-            <span className="flex items-center space-x-1">
-              <Sparkles className="w-3 h-3 text-teal-400" />
-              <span className="font-mono">Explicit AI Identity • Non-Clinical</span>
-            </span>
-          </Badge>
-          <span className="text-[11px] text-ivory-300/60 hidden sm:inline">
-            Holds space without diagnosing or prescribing.
-          </span>
+    <div
+      className="flex-1 flex flex-col h-full max-w-4xl w-full mx-auto space-y-4"
+      role="region"
+      aria-label="Conversation with your InnerOS AI companion"
+    >
+      {/* Top Companion Header & Controls */}
+      <div className="flex flex-wrap items-center justify-between p-4 sm:p-5 rounded-3xl bg-white border border-[#E6E1D8] shadow-soft gap-3">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-2xl bg-[#E8F1EB] border border-[#CBE0D3] flex items-center justify-center text-[#285B55]">
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center space-x-2">
+              <h1 className="text-lg font-serif font-semibold text-[#263330]">
+                Companion Conversation
+              </h1>
+              <Badge variant="teal" size="sm">
+                AI Companion
+              </Badge>
+            </div>
+            <p className="text-xs text-[#52625E]">
+              Supportive space for reflection &bull; Not a medical service
+            </p>
+          </div>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Switch to Voice Mode */}
+          <Link
+            href="/companion/voice"
+            className="px-3.5 py-2 min-h-[40px] rounded-xl bg-[#E8F1EB] hover:bg-[#D5E6DC] text-[#1F4742] border border-[#CBE0D3] text-xs font-medium flex items-center space-x-1.5 transition-colors"
+          >
+            <Mic className="w-4 h-4 text-[#285B55]" />
+            <span>Switch to Voice</span>
+          </Link>
+
           {/* Language Selector */}
           <select
             value={currentLanguage}
             onChange={(e) => setCurrentLanguage(e.target.value)}
-            className="text-xs bg-midnight-950 border border-white/10 text-ivory-200 rounded-lg px-2 py-1 focus:outline-none focus:border-teal-500"
-            aria-label="Select dialogue language"
+            className="text-xs min-h-[40px] bg-white border border-[#DDD7CC] text-[#263330] rounded-xl px-3 py-2 focus:outline-none focus:border-[#285B55]"
+            aria-label="Select conversation language"
           >
             {LANGUAGES.map((l) => (
               <option key={l.code} value={l.code}>
@@ -345,47 +362,47 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
             ))}
           </select>
 
-          {/* Config & Calibration Toggle */}
+          {/* Tone & Style Drawer Toggle */}
           <button
             onClick={() => setShowConfig(!showConfig)}
-            className={`p-1.5 rounded-lg border text-xs transition-colors flex items-center space-x-1 ${
+            className={`px-3 py-2 min-h-[40px] rounded-xl border text-xs font-medium transition-colors flex items-center space-x-1.5 ${
               showConfig
-                ? "bg-indigo-950/80 border-indigo-500/50 text-indigo-200"
-                : "bg-midnight-950 border-white/10 text-ivory-300 hover:text-ivory-100"
+                ? "bg-[#EDE8F5] border-[#D0C4E8] text-[#423166]"
+                : "bg-white border-[#DDD7CC] text-[#52625E] hover:text-[#263330]"
             }`}
-            title="Configure Warmth & Directness Calibration"
+            title="Adjust companion warmth and style"
             aria-expanded={showConfig}
           >
-            <Sliders className="w-3.5 h-3.5" />
-            <span className="hidden md:inline">Calibration</span>
+            <Sliders className="w-4 h-4" />
+            <span className="hidden sm:inline">Tone &amp; Style</span>
           </button>
 
-          {/* Clear Session */}
+          {/* Fresh Conversation */}
           <button
             onClick={handleClearSession}
-            className="p-1.5 rounded-lg bg-midnight-950 border border-white/10 text-ivory-300 hover:text-rose-300 hover:border-rose-800/40 transition-colors"
-            title="Reset Conversation Session"
+            className="p-2.5 min-h-[40px] min-w-[40px] rounded-xl bg-white border border-[#DDD7CC] text-[#52625E] hover:text-[#9B1C31] hover:bg-[#FDF2F2] transition-colors flex items-center justify-center"
+            title="Start a fresh conversation"
             aria-label="Clear conversation history"
           >
-            <Trash2 className="w-3.5 h-3.5" />
+            <Trash2 className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* Calibration Sliders Drawer */}
+      {/* Tone & Style Sliders Drawer */}
       <AnimatePresence>
         {showConfig && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden bg-midnight-950/90 border border-white/[0.08] rounded-2xl p-4 mb-3 space-y-3"
+            className="overflow-hidden bg-white border border-[#E6E1D8] rounded-3xl p-5 shadow-soft space-y-4"
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <div className="flex justify-between text-xs text-ivory-200 mb-1">
-                  <span className="font-medium">Warmth Calibration</span>
-                  <span className="font-mono text-teal-400">{Math.round(warmth * 100)}%</span>
+                <div className="flex justify-between text-sm text-[#263330] mb-1.5">
+                  <span className="font-medium">Warmth &amp; Gentleness</span>
+                  <span className="font-semibold text-[#285B55]">{Math.round(warmth * 100)}%</span>
                 </div>
                 <input
                   type="range"
@@ -394,18 +411,18 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
                   step="0.05"
                   value={warmth}
                   onChange={(e) => setWarmth(parseFloat(e.target.value))}
-                  className="w-full accent-teal-400 cursor-pointer"
-                  aria-label="Companion warmth calibration"
+                  className="w-full accent-[#285B55] cursor-pointer"
+                  aria-label="Companion warmth"
                 />
-                <p className="text-[10px] text-ivory-300/50 mt-1">
-                  0% Objective/Reserved ↔ 100% Deeply Gentle/Reassuring
+                <p className="text-xs text-[#52625E] mt-1">
+                  Adjust from calm and matter-of-fact to deeply warm and reassuring.
                 </p>
               </div>
 
               <div>
-                <div className="flex justify-between text-xs text-ivory-200 mb-1">
-                  <span className="font-medium">Directness Calibration</span>
-                  <span className="font-mono text-indigo-400">{Math.round(directness * 100)}%</span>
+                <div className="flex justify-between text-sm text-[#263330] mb-1.5">
+                  <span className="font-medium">Directness</span>
+                  <span className="font-semibold text-[#553E82]">{Math.round(directness * 100)}%</span>
                 </div>
                 <input
                   type="range"
@@ -414,11 +431,11 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
                   step="0.05"
                   value={directness}
                   onChange={(e) => setDirectness(parseFloat(e.target.value))}
-                  className="w-full accent-indigo-400 cursor-pointer"
-                  aria-label="Companion directness calibration"
+                  className="w-full accent-[#553E82] cursor-pointer"
+                  aria-label="Companion directness"
                 />
-                <p className="text-[10px] text-ivory-300/50 mt-1">
-                  0% Spacious/Exploratory ↔ 100% Crisp/Focused Reflection
+                <p className="text-xs text-[#52625E] mt-1">
+                  Adjust from open, spacious reflection to clear, practical focus.
                 </p>
               </div>
             </div>
@@ -427,49 +444,48 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
       </AnimatePresence>
 
       {/* 5 Conversation Modes Selector */}
-      <div className="flex overflow-x-auto gap-2 pb-2 mb-3 no-scrollbar" role="tablist" aria-label="Conversation Modes">
-        {MODES.map((m) => {
-          const Icon = m.icon;
-          const isActive = currentMode === m.id;
-          return (
-            <button
-              key={m.id}
-              onClick={() => setCurrentMode(m.id)}
-              role="tab"
-              aria-selected={isActive}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-medium shrink-0 transition-all border ${
-                isActive
-                  ? "bg-teal-950/60 border-teal-500/50 text-teal-200 shadow-[0_0_15px_rgba(52,134,128,0.2)]"
-                  : "bg-midnight-950/70 border-white/[0.06] text-ivory-300/80 hover:text-ivory-100 hover:border-white/10"
-              }`}
-            >
-              <Icon className={`w-3.5 h-3.5 ${isActive ? "text-teal-400" : "text-ivory-300/60"}`} />
-              <span>{m.label}</span>
-              <span
-                className={`text-[9px] px-1.5 py-0.5 rounded-full uppercase tracking-wider font-mono ${
-                  isActive ? "bg-teal-900/80 text-teal-300" : "bg-white/[0.04] text-ivory-300/40"
+      <div className="space-y-2">
+        <div
+          className="flex overflow-x-auto gap-2.5 pb-1 no-scrollbar"
+          role="tablist"
+          aria-label="How would you like me to support you?"
+        >
+          {MODES.map((m) => {
+            const Icon = m.icon;
+            const isActive = currentMode === m.id;
+            return (
+              <button
+                key={m.id}
+                onClick={() => setCurrentMode(m.id)}
+                role="tab"
+                aria-selected={isActive}
+                className={`flex items-center space-x-2 px-4 py-2.5 min-h-[44px] rounded-2xl text-sm font-medium shrink-0 transition-all border ${
+                  isActive
+                    ? "bg-[#285B55] border-[#285B55] text-white shadow-sm"
+                    : "bg-white border-[#E6E1D8] text-[#263330] hover:bg-[#E8F1EB]/60"
                 }`}
               >
-                {m.badge}
-              </span>
-            </button>
-          );
-        })}
+                <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-[#285B55]"}`} />
+                <span>{m.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Mode Intent Guidance */}
+        <div className="text-sm px-4 py-2.5 rounded-2xl bg-[#E8F1EB]/60 border border-[#CBE0D3] text-[#1F4742] flex flex-wrap items-center justify-between gap-2">
+          <span>{activeModeData.description}</span>
+          {!activeModeData.allowsAdvice && (
+            <span className="text-xs font-medium bg-white px-2.5 py-0.5 rounded-full border border-[#CBE0D3] text-[#285B55]">
+              Listening only — no unsolicited advice
+            </span>
+          )}
+        </div>
       </div>
 
-      {/* Mode Intent Guidance Banner */}
-      <div className="text-[11px] px-3 py-1.5 rounded-xl bg-midnight-950/40 border border-white/[0.04] text-ivory-300/70 flex items-center justify-between mb-3">
-        <span>{activeModeData.description}</span>
-        {!activeModeData.allowsAdvice && (
-          <span className="text-teal-400/90 font-mono text-[10px] shrink-0 ml-2">
-            • Respects advice boundaries
-          </span>
-        )}
-      </div>
-
-      {/* Conversation Feed */}
+      {/* Spacious Conversation Feed */}
       <div
-        className="flex-1 overflow-y-auto space-y-4 mb-3 pr-2 scrollbar-thin scrollbar-thumb-white/10"
+        className="flex-1 overflow-y-auto space-y-5 p-4 sm:p-6 rounded-3xl bg-white/70 border border-[#E6E1D8] min-h-[380px] max-h-[520px]"
         role="log"
         aria-live="polite"
       >
@@ -480,41 +496,34 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
               key={m.id}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.18 }}
+              transition={{ duration: 0.2 }}
               className={`flex flex-col ${isUser ? "items-end" : "items-start"}`}
             >
               <div
-                className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                className={`max-w-[85%] sm:max-w-[78%] rounded-3xl px-5 py-4 text-base leading-relaxed ${
                   isUser
-                    ? "bg-teal-950/50 border border-teal-700/40 text-ivory-100 rounded-br-sm"
+                    ? "bg-[#285B55] text-white rounded-br-md shadow-xs"
                     : m.isCrisis
-                    ? "bg-rose-950/50 border border-rose-700/60 text-rose-100 rounded-bl-sm"
-                    : "bg-midnight-950/80 border border-white/[0.08] text-ivory-200 rounded-bl-sm shadow-md"
+                    ? "bg-[#FDF2F2] border border-[#F2C9CE] text-[#263330] rounded-bl-md"
+                    : "bg-white border border-[#E6E1D8] text-[#263330] rounded-bl-md shadow-soft"
                 }`}
               >
                 {m.content}
               </div>
 
-              {/* Message Metadata Badges */}
-              <div className="flex items-center space-x-2 mt-1 px-1 text-[10px] text-ivory-300/50 font-mono">
-                <span>{m.timestamp}</span>
-                {!isUser && m.recalledMemoryCount !== undefined && m.recalledMemoryCount > 0 && (
-                  <span className="text-teal-400/80 flex items-center space-x-1">
-                    <span>•</span>
-                    <span>{m.recalledMemoryCount} memories recalled</span>
-                  </span>
-                )}
+              {/* Subtle, friendly message footer */}
+              <div className="flex items-center space-x-2.5 mt-1.5 px-2 text-xs text-[#52625E]">
+                <span>{isUser ? "You" : "InnerOS"} &bull; {m.timestamp}</span>
                 {!isUser && m.adviceOmitted && (
-                  <span className="text-indigo-300/80 flex items-center space-x-1">
-                    <span>•</span>
-                    <span>Advice Withheld</span>
+                  <span className="text-[#285B55]">
+                    &bull; Just listening
                   </span>
                 )}
                 {m.isCrisis && (
-                  <span className="text-rose-400 flex items-center space-x-1 font-semibold">
-                    <span>•</span>
-                    <AlertTriangle className="w-3 h-3" />
-                    <span>Crisis Intercept Active</span>
+                  <span className="text-[#9B1C31] flex items-center space-x-1 font-medium">
+                    <span>&bull;</span>
+                    <AlertTriangle className="w-3.5 h-3.5" />
+                    <span>Support resources shared</span>
                   </span>
                 )}
               </div>
@@ -522,20 +531,20 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
           );
         })}
 
-        {/* Live Streaming Assistant Message */}
+        {/* Streaming Message */}
         {isStreaming && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="flex flex-col items-start"
           >
-            <div className="max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed bg-midnight-950/80 border border-teal-500/30 text-ivory-100 rounded-bl-sm shadow-lg">
+            <div className="max-w-[85%] rounded-3xl px-5 py-4 text-base leading-relaxed bg-white border border-[#CBE0D3] text-[#263330] rounded-bl-md shadow-soft">
               {streamingContent}
-              <span className="inline-block w-1.5 h-3.5 bg-teal-400 ml-1 animate-pulse" />
+              <span className="inline-block w-2 h-4 bg-[#285B55] ml-1.5 animate-pulse rounded-xs" />
             </div>
-            <div className="flex items-center space-x-2 mt-1 px-1 text-[10px] text-teal-400/80 font-mono">
-              <RefreshCw className="w-2.5 h-2.5 animate-spin" />
-              <span>Streaming in {activeModeData.label} mode...</span>
+            <div className="flex items-center space-x-2 mt-1.5 px-2 text-xs text-[#285B55]">
+              <RefreshCw className="w-3 h-3 animate-spin" />
+              <span>Responding thoughtfully...</span>
             </div>
           </motion.div>
         )}
@@ -543,27 +552,27 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Contextual Quick Inquiries */}
-      <div className="flex flex-wrap gap-1.5 mb-2">
+      {/* Gentle Conversation Starters */}
+      <div className="flex flex-wrap gap-2">
         {[
-          "I don't want advice, I just need to vent.",
-          "Why did this critique trigger my defensiveness?",
-          "Can we break this project into 5-minute micro-steps?",
-          "Guide me through a 4-4-4-4 breathing anchor.",
+          "I don't want advice right now, I just need to vent.",
+          "Help me understand why today felt overwhelming.",
+          "Can we break a big task into small, calm steps?",
+          "Guide me through a slow breathing exercise.",
         ].map((prompt) => (
           <button
             key={prompt}
             onClick={() => handleSend(prompt)}
             disabled={isStreaming}
-            className="text-xs px-2.5 py-1 rounded-full bg-midnight-950/80 hover:bg-midnight-900 border border-white/[0.06] text-ivory-300/70 hover:text-ivory-100 transition-colors"
+            className="text-xs sm:text-sm px-3.5 py-2 rounded-full bg-white hover:bg-[#E8F1EB] border border-[#E6E1D8] text-[#52625E] hover:text-[#1F4742] transition-colors shadow-2xs"
           >
             {prompt}
           </button>
         ))}
       </div>
 
-      {/* Input Composer */}
-      <div className="relative flex items-center bg-midnight-950/90 border border-white/[0.1] focus-within:border-teal-500/60 rounded-2xl p-2 shadow-xl transition-all">
+      {/* Warm, Spacious Input Composer */}
+      <div className="relative flex items-center bg-white border border-[#DDD7CC] focus-within:border-[#285B55] focus-within:ring-2 focus-within:ring-[#285B55]/15 rounded-3xl p-2.5 shadow-card transition-all">
         <textarea
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
@@ -573,33 +582,35 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
               handleSend();
             }
           }}
-          placeholder={`Reflect or speak with InnerOS (${activeModeData.label} mode)... [Shift + Enter for new line]`}
+          placeholder={`Write what is on your mind (${activeModeData.label})...`}
           rows={1}
-          className="w-full bg-transparent resize-none text-sm text-ivory-100 placeholder:text-ivory-300/40 px-3 py-1.5 focus:outline-none max-h-32"
-          aria-label="Message InnerOS companion"
+          className="w-full bg-transparent resize-none text-base text-[#263330] placeholder:text-[#7F8E8A] px-4 py-2 focus:outline-none max-h-36"
+          aria-label="Write a message to your companion"
         />
 
-        <div className="flex items-center space-x-1.5 shrink-0 pr-1">
+        <div className="flex items-center space-x-2 shrink-0 pr-1">
           <button
             onClick={() => handleSend()}
             disabled={!inputValue.trim() || isStreaming}
-            className="p-2 rounded-xl bg-teal-600 hover:bg-teal-500 disabled:opacity-30 disabled:hover:bg-teal-600 text-white transition-all shadow-md focus:outline-none focus:ring-2 focus:ring-teal-400"
-            title="Send Message"
+            className="p-3 min-h-[46px] min-w-[46px] rounded-2xl bg-[#285B55] hover:bg-[#1F4742] disabled:opacity-35 text-white transition-all shadow-sm flex items-center justify-center"
+            title="Send message"
             aria-label="Send message"
           >
             {isStreaming ? (
-              <RefreshCw className="w-4 h-4 animate-spin" />
+              <RefreshCw className="w-5 h-5 animate-spin" />
             ) : (
-              <Send className="w-4 h-4" />
+              <Send className="w-5 h-5" />
             )}
           </button>
         </div>
       </div>
 
-      {/* Non-Clinical Safeguard Footer */}
-      <div className="mt-2 text-center text-[11px] text-ivory-300/40 flex items-center justify-center space-x-2">
-        <Shield className="w-3.5 h-3.5 text-teal-400/70" />
-        <span>Non-Clinical Sanctuary • Not for medical diagnoses or emergency response • Crisis? Dial 988</span>
+      {/* Reassuring Footer */}
+      <div className="text-center text-xs text-[#52625E] flex items-center justify-center space-x-2 pt-1">
+        <Shield className="w-4 h-4 text-[#285B55]" />
+        <span>
+          InnerOS is an AI companion, not a medical professional. If you are in crisis, please call 988 or 112.
+        </span>
       </div>
     </div>
   );
