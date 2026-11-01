@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import {
   MarketingShell,
@@ -95,6 +95,18 @@ function MarketingHomeContent() {
   const { localeConfig, openCrisisModal } = useMarketingLocale();
   const [billingAnnual, setBillingAnnual] = useState(true);
   const [activeModeIdx, setActiveModeIdx] = useState(0);
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (heroVideoRef.current) {
+      heroVideoRef.current.muted = true;
+      heroVideoRef.current.defaultMuted = true;
+      const playPromise = heroVideoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {});
+      }
+    }
+  }, []);
 
   const modes = [
     {
@@ -137,20 +149,26 @@ function MarketingHomeContent() {
       />
 
       {/* =====================================================================
-          SECTION 1: PINTEREST (PYKO) BOTANICAL MOSS HERO SECTION
+          SECTION 1: HERO SECTION WITH LOOPING BACKGROUND VIDEO & LIQUID GLASS
           ===================================================================== */}
-      <section className="relative min-h-[90vh] flex flex-col justify-between pt-8 pb-16 px-4 sm:px-8 overflow-hidden bg-[#0A110C]">
-        {/* Full-Screen Looping Background Video with Liquid Glass Overlay */}
+      <section className="relative min-h-[92vh] flex flex-col justify-between pt-8 pb-16 px-4 sm:px-8 overflow-hidden bg-black">
+        {/* Full-Screen Looping Background Video */}
         <video
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none scale-105 transition-transform duration-1000"
+          ref={heroVideoRef}
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none scale-105"
           autoPlay
           muted
           loop
           playsInline
-          poster="/images/hero-moss-arch.jpg"
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260511_230229_7c9bc431-46cf-489a-948d-e8144d8eb5d4.mp4"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0A110C]/75 via-[#121B14]/40 to-[#0D1510]/95 pointer-events-none" />
+        >
+          <source src="/videos/hero-background.mp4" type="video/mp4" />
+          <source
+            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260511_230229_7c9bc431-46cf-489a-948d-e8144d8eb5d4.mp4"
+            type="video/mp4"
+          />
+        </video>
+        {/* Neutral semi-transparent overlay to ensure crisp contrast without obscuring the video */}
+        <div className="absolute inset-0 bg-black/40 pointer-events-none" />
 
         <div className="relative z-10 max-w-6xl mx-auto w-full pt-6 sm:pt-12 text-center space-y-6">
           {/* Uppercase Micro Eyebrow */}
