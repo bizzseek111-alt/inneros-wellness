@@ -37,6 +37,37 @@ class Settings(BaseSettings):
     VOICE_STT_PROVIDER: str = "synthetic"
     VOICE_TTS_PROVIDER: str = "synthetic"
 
+    # Live LLM Provider Credentials (Optional — auto-activates live providers when set)
+    OPENAI_API_KEY: str = ""
+    OPENAI_MODEL: str = "gpt-4o-mini"
+    OPENAI_BASE_URL: str = "https://api.openai.com/v1"
+    ANTHROPIC_API_KEY: str = ""
+    ANTHROPIC_MODEL: str = "claude-3-5-sonnet-latest"
+    GEMINI_API_KEY: str = ""
+    GEMINI_MODEL: str = "gemini-2.0-flash"
+    OLLAMA_BASE_URL: str = ""
+    OLLAMA_MODEL: str = "llama3.2"
+
+    # Live Voice STT/TTS Credentials (Optional)
+    DEEPGRAM_API_KEY: str = ""
+    ELEVENLABS_API_KEY: str = ""
+    ELEVENLABS_VOICE_ID: str = "21m00Tcm4TlvDq8ikWAM"
+
+    # Live Google Calendar OAuth 2.0 Credentials (Optional)
+    GOOGLE_CLIENT_ID: str = ""
+    GOOGLE_CLIENT_SECRET: str = ""
+    GOOGLE_REDIRECT_URI: str = "http://localhost:3000/integrations/oauth/callback"
+
+    # Live Email (SMTP / Resend) & Web Push (VAPID) Delivery (Optional)
+    SMTP_HOST: str = ""
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_FROM_EMAIL: str = "sanctuary@inneros.app"
+    SUPPORT_INBOX_EMAIL: str = "care@inneros.app"
+    RESEND_API_KEY: str = ""
+    VAPID_PUBLIC_KEY: str = "BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U"
+
     # Non-Clinical Safety & Regional Helpline
     SAFETY_ENGINE_ENABLED: bool = True
     DEFAULT_REGION: str = "US"

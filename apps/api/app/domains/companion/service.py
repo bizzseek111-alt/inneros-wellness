@@ -14,6 +14,7 @@ from app.domains.companion.schemas import (
 from app.domains.companion.session_store import session_store
 from app.domains.safety.evaluator import safety_evaluator
 from app.domains.memory.service import memory_service
+from app.domains.wellbeing.service import wellbeing_service
 from app.gateways.ai.gateway import ai_gateway
 from app.gateways.ai.base import CompletionRequest, Message
 from app.core.security import UserContext
@@ -22,6 +23,64 @@ from app.core.observability import logger
 
 class CompanionService:
     """Manages the full lifecycle of companion conversational turns with safety circuit-breakers."""
+
+    def _assemble_personal_context(self, user_id: str) -> tuple[str, int, dict]:
+        """Assembles consent-governed Memories, Journal Entries, Growth Goals, and Daily Check-Ins."""
+        user_memories = memory_service.list_memories(user_id)
+        consent = memory_service.get_consent(user_id)
+
+        memory_snippets = [f"- {m.fact_statement or m.fact_text} (Category: {m.category})" for m in user_memories]
+        journal_snippets: List[str] = []
+        goal_snippets: List[str] = []
+        checkin_snippets: List[str] = []
+        wellbeing_meta: dict = {
+            "journal_titles": [],
+            "goal_titles": [],
+            "latest_checkin": None,
+        }
+
+        if consent.allow_memory_system and not consent.is_memory_recording_paused:
+            recent_journals = wellbeing_service.list_journal_entries(user_id)[:3]
+            for j in recent_journals:
+                journal_snippets.append(f"- Journal '{j.title}' ({j.mood_valence}): {j.content[:140]}")
+                wellbeing_meta["journal_titles"].append(j.title)
+
+            active_goals = wellbeing_service.list_growth_goals(user_id)[:3]
+            for g in active_goals:
+                done_steps = sum(1 for s in g.steps if s.completed)
+                goal_snippets.append(
+                    f"- Growth Goal '{g.title}' [{g.category}] ({done_steps}/{len(g.steps)} steps complete): {g.why_it_matters}"
+                )
+                wellbeing_meta["goal_titles"].append(g.title)
+
+            recent_checkins = wellbeing_service.list_check_ins(user_id)[:2]
+            for c in recent_checkins:
+                emotions_str = ", ".join(c.emotions) if c.emotions else "unspecified"
+                checkin_snippets.append(
+                    f"- Check-In (Energy {c.energy_level}/5, Stress {c.stress_level}/5, Emotions: {emotions_str}): {c.note}"
+                )
+            if recent_checkins:
+                c0 = recent_checkins[0]
+                wellbeing_meta["latest_checkin"] = {
+                    "energy_level": c0.energy_level,
+                    "stress_level": c0.stress_level,
+                    "emotions": c0.emotions,
+                    "needs": c0.needs,
+                }
+
+        sections: List[str] = []
+        if memory_snippets:
+            sections.append("Confirmed Memory Facts:\n" + "\n".join(memory_snippets))
+        if journal_snippets:
+            sections.append("Recent Journal Reflections:\n" + "\n".join(journal_snippets))
+        if goal_snippets:
+            sections.append("Active Personal Growth Goals:\n" + "\n".join(goal_snippets))
+        if checkin_snippets:
+            sections.append("Recent Daily Check-Ins:\n" + "\n".join(checkin_snippets))
+
+        context_text = "\n\n".join(sections) if sections else "No recalled memories."
+        total_recalled = len(user_memories) + len(journal_snippets) + len(goal_snippets) + len(checkin_snippets)
+        return context_text, total_recalled, wellbeing_meta
 
     def _build_system_prompt(
         self,
@@ -79,7 +138,7 @@ class CompanionService:
             f"- Warmth Level: {warmth:.1f} / 1.0. Directness Level: {directness:.1f} / 1.0.\n"
             f"- Advice Permitted: {'YES' if allow_advice else 'NO - STRICTLY WITHHOLD ALL ADVICE'}.\n\n"
             f"{mode_instructions.get(mode, mode_instructions[ConversationMode.JUST_LISTEN])}\n\n"
-            f"User Personal Memory Context (Consent-Permitted):\n{memory_context}"
+            f"User Personal Memory & Wellbeing Context (Consent-Permitted):\n{memory_context}"
         )
 
     async def chat(self, req: ChatRequest, user: UserContext) -> ChatResponse:
@@ -131,10 +190,8 @@ class CompanionService:
                 advice_omitted=not allow_advice,
             )
 
-        # 2. Consent-Governed Memory Context Assembly
-        user_memories = memory_service.list_memories(user.user_id)
-        memory_snippets = [f"- {m.fact_text} (Category: {m.category})" for m in user_memories]
-        memory_context = "\n".join(memory_snippets) if memory_snippets else "No recalled memories."
+        # 2. Consent-Governed Memory, Journal, Growth Goals & Check-In Context Assembly
+        memory_context, recalled_count, wellbeing_meta = self._assemble_personal_context(user.user_id)
 
         # 3. Construct Mode-Specific System Prompt
         system_prompt = self._build_system_prompt(
@@ -163,7 +220,10 @@ class CompanionService:
             language=req.language or "en",
             user_id=user.user_id,
             session_id=session_id,
-            metadata={"country_code": req.country_code or "US"},
+            metadata={
+                "country_code": req.country_code or "US",
+                "wellbeing_summary": wellbeing_meta,
+            },
         )
         ai_res = await ai_gateway.complete(ai_req)
         reply_content = ai_res.content
@@ -188,7 +248,7 @@ class CompanionService:
                 content=reply_content,
                 timestamp=now,
                 is_crisis=False,
-                recalled_memory_count=len(user_memories),
+                recalled_memory_count=recalled_count,
             ),
             user.user_id,
         )
@@ -198,7 +258,7 @@ class CompanionService:
             reply=reply_content,
             mode_used=active_mode,
             safety_evaluation=safety_eval,
-            recalled_memory_count=len(user_memories),
+            recalled_memory_count=recalled_count,
             provider_used=ai_res.provider,
             model_used=ai_res.model,
             timestamp=now,
@@ -245,10 +305,8 @@ class CompanionService:
             yield "data: [DONE]\n\n"
             return
 
-        # Memory Context
-        user_memories = memory_service.list_memories(user.user_id)
-        memory_snippets = [f"- {m.fact_text} (Category: {m.category})" for m in user_memories]
-        memory_context = "\n".join(memory_snippets) if memory_snippets else "No recalled memories."
+        # Memory & Wellbeing Context
+        memory_context, recalled_count, wellbeing_meta = self._assemble_personal_context(user.user_id)
 
         # Prompt & Messages
         system_prompt = self._build_system_prompt(
@@ -275,6 +333,7 @@ class CompanionService:
             user_id=user.user_id,
             session_id=session_id,
             stream=True,
+            metadata={"wellbeing_summary": wellbeing_meta},
         )
 
         full_reply = ""
@@ -303,7 +362,7 @@ class CompanionService:
                 content=full_reply,
                 timestamp=datetime.now(timezone.utc),
                 is_crisis=False,
-                recalled_memory_count=len(user_memories),
+                recalled_memory_count=recalled_count,
             ),
             user.user_id,
         )

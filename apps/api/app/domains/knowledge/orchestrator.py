@@ -19,6 +19,7 @@ from app.domains.knowledge.schemas import (
 )
 from app.domains.knowledge.seed_data import SEEDED_KNOWLEDGE_RECORDS
 from app.domains.knowledge.taxonomy import PSYCHOLOGY_TAXONOMY, DepartmentTaxonomyInfo
+from app.db.database import save_domain_item, load_domain_items
 from app.core.observability import logger
 
 
@@ -33,8 +34,15 @@ class ChiefPsychologyKnowledgeOrchestrator:
     )
 
     def __init__(self):
-        # In-memory repository seeded with validated evidence records
-        self._records: Dict[str, KnowledgeRecord] = {r.id: r for r in SEEDED_KNOWLEDGE_RECORDS}
+        # Seeded baseline repository hydrated with any persisted SQL review overrides
+        self._records: Dict[str, KnowledgeRecord] = {r.id: r.model_copy(deep=True) for r in SEEDED_KNOWLEDGE_RECORDS}
+        try:
+            persisted = load_domain_items("knowledge_records")
+            for p in persisted:
+                rec = KnowledgeRecord.model_validate(p.get("payload", p))
+                self._records[rec.id] = rec
+        except Exception:
+            pass
 
     def list_records(
         self,
@@ -219,6 +227,12 @@ class ChiefPsychologyKnowledgeOrchestrator:
             clinical_safety_audit_passed=(decision == ReviewStatus.APPROVED_FOR_COMPANION),
         )
         record.review_history.append(review_entry)
+        save_domain_item(
+            "knowledge_records",
+            reviewer_id,
+            record.id,
+            record.model_dump(mode="json"),
+        )
         logger.info(f"Knowledge record '{record_id}' updated to status '{decision}' by {reviewer_name}.")
         return record
 

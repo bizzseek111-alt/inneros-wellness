@@ -109,6 +109,50 @@ async def get_audit_logs(
     return reminders_service.get_audit_history(user.user_id, limit=limit)
 
 
+@router.get("/push-subscriptions", response_model=List[Dict[str, Any]])
+async def list_push_subscriptions(user: UserContext = Depends(get_current_user)):
+    """Returns registered Web Push (VAPID) subscriptions for the authenticated user."""
+    from app.core.dispatcher import notification_dispatcher
+    subs = notification_dispatcher.list_push_subscriptions(user.user_id)
+    return [s.model_dump(mode="json") for s in subs]
+
+
+@router.post("/push-subscriptions", status_code=status.HTTP_201_CREATED)
+async def register_push_subscription(
+    payload: Dict[str, Any],
+    user: UserContext = Depends(get_current_user),
+):
+    """Registers a browser Web Push subscription endpoint and keys for external reminder delivery."""
+    from app.core.dispatcher import notification_dispatcher
+    from app.config import settings
+    endpoint = str(payload.get("endpoint") or "https://fcm.googleapis.com/fcm/send/inneros-browser-sub")
+    keys = payload.get("keys") or {}
+    p256dh = str(keys.get("p256dh") or payload.get("p256dh_key") or "BEl62iUYgUivxIkv69yViEuiBIa")
+    auth = str(keys.get("auth") or payload.get("auth_key") or "auth_secret_token")
+    sub = notification_dispatcher.register_push_subscription(
+        user_id=user.user_id,
+        endpoint=endpoint,
+        p256dh_key=p256dh,
+        auth_key=auth,
+        user_agent=payload.get("user_agent"),
+    )
+    return {
+        "subscription": sub.model_dump(mode="json"),
+        "vapid_public_key": settings.VAPID_PUBLIC_KEY,
+    }
+
+
+@router.get("/outbox", response_model=List[Dict[str, Any]])
+async def get_notification_outbox(
+    limit: int = Query(50, ge=1, le=200),
+    user: UserContext = Depends(get_current_user),
+):
+    """Returns the relational notification outbox (Email SMTP/Resend & Web Push VAPID deliveries) for the user."""
+    from app.core.dispatcher import notification_dispatcher
+    records = notification_dispatcher.list_outbox(user_id=user.user_id, limit=limit)
+    return [r.model_dump(mode="json") for r in records]
+
+
 @router.get("/{reminder_id}", response_model=ReminderItem)
 async def get_reminder(
     reminder_id: str,

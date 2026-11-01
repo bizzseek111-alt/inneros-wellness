@@ -485,7 +485,8 @@ export const api = {
   }): Promise<ChatResponse> {
     const res = await fetch(`${API_BASE}/api/v1/companion/chat`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify({
         session_id: params.sessionId || "session_default",
         utterance: params.utterance,
@@ -521,7 +522,8 @@ export const api = {
     try {
       const res = await fetch(`${API_BASE}/api/v1/companion/chat/stream`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: this.getAuthHeaders(),
+        credentials: "include",
         body: JSON.stringify({
           session_id: params.sessionId || "session_default",
           utterance: params.utterance,
@@ -570,13 +572,19 @@ export const api = {
   },
 
   async getConversationModes(): Promise<ModeMetadata[]> {
-    const res = await fetch(`${API_BASE}/api/v1/companion/modes`);
+    const res = await fetch(`${API_BASE}/api/v1/companion/modes`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
     if (!res.ok) throw new Error("Failed to fetch modes");
     return res.json();
   },
 
   async getSessionHistory(sessionId: string): Promise<SessionHistoryResponse> {
-    const res = await fetch(`${API_BASE}/api/v1/companion/sessions/${sessionId}`);
+    const res = await fetch(`${API_BASE}/api/v1/companion/sessions/${sessionId}`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
     if (!res.ok) throw new Error("Failed to fetch session");
     return res.json();
   },
@@ -584,6 +592,8 @@ export const api = {
   async clearSessionHistory(sessionId: string): Promise<boolean> {
     const res = await fetch(`${API_BASE}/api/v1/companion/sessions/${sessionId}`, {
       method: "DELETE",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
     });
     return res.ok;
   },
@@ -595,7 +605,8 @@ export const api = {
   }): Promise<{ benchmark_prompt: string; results: BenchmarkResult[] }> {
     const res = await fetch(`${API_BASE}/api/v1/companion/benchmark`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify({
         prompt: params.prompt,
         mode: params.mode || "just_listen",
@@ -607,7 +618,10 @@ export const api = {
   },
 
   async getMemories(): Promise<MemoryItem[]> {
-    const res = await fetch(`${API_BASE}/api/v1/memory/records`);
+    const res = await fetch(`${API_BASE}/api/v1/memory/records`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
     if (!res.ok) throw new Error("Failed to fetch memories");
     return res.json();
   },
@@ -623,7 +637,10 @@ export const api = {
     if (params?.status && params.status !== "all") url.searchParams.set("status", params.status);
     if (params?.recordType && params.recordType !== "all") url.searchParams.set("record_type", params.recordType);
     if (params?.query) url.searchParams.set("query", params.query);
-    const res = await fetch(url.toString());
+    const res = await fetch(url.toString(), {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
     if (!res.ok) throw new Error("Failed to fetch memory records");
     return res.json();
   },
@@ -638,7 +655,8 @@ export const api = {
   }): Promise<MemoryRecord> {
     const res = await fetch(`${API_BASE}/api/v1/memory/records`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify(data),
     });
     if (!res.ok) {
@@ -651,7 +669,8 @@ export const api = {
   async updateMemoryRecord(id: string, data: Partial<MemoryRecord>): Promise<MemoryRecord> {
     const res = await fetch(`${API_BASE}/api/v1/memory/records/${id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error("Failed to update memory record");
@@ -661,6 +680,8 @@ export const api = {
   async forgetMemory(id: string): Promise<boolean> {
     const res = await fetch(`${API_BASE}/api/v1/memory/records/${id}`, {
       method: "DELETE",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
     });
     return res.status === 204;
   },
@@ -672,7 +693,8 @@ export const api = {
   ): Promise<MemoryRecord> {
     const res = await fetch(`${API_BASE}/api/v1/memory/records/${id}/action`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify({
         action,
         adjusted_statement: adjustedStatement,
@@ -683,7 +705,10 @@ export const api = {
   },
 
   async getLifeGraph(): Promise<LifeGraphResponse> {
-    const res = await fetch(`${API_BASE}/api/v1/memory/life-graph`);
+    const res = await fetch(`${API_BASE}/api/v1/memory/life-graph`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
     if (!res.ok) throw new Error("Failed to fetch Life Graph");
     return res.json();
   },
@@ -697,7 +722,8 @@ export const api = {
   }): Promise<LifeGraphNode> {
     const res = await fetch(`${API_BASE}/api/v1/memory/life-graph/nodes`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error("Failed to create Life Graph node");
@@ -707,6 +733,8 @@ export const api = {
   async deleteLifeGraphNode(nodeId: string): Promise<boolean> {
     const res = await fetch(`${API_BASE}/api/v1/memory/life-graph/nodes/${nodeId}`, {
       method: "DELETE",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
     });
     return res.status === 204;
   },
@@ -718,7 +746,8 @@ export const api = {
   }): Promise<LifeGraphEdge> {
     const res = await fetch(`${API_BASE}/api/v1/memory/life-graph/edges`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error("Failed to create Life Graph edge");
@@ -728,12 +757,17 @@ export const api = {
   async deleteLifeGraphEdge(edgeId: string): Promise<boolean> {
     const res = await fetch(`${API_BASE}/api/v1/memory/life-graph/edges/${edgeId}`, {
       method: "DELETE",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
     });
     return res.status === 204;
   },
 
   async getMemoryConsent(): Promise<UserMemoryConsent> {
-    const res = await fetch(`${API_BASE}/api/v1/memory/consent`);
+    const res = await fetch(`${API_BASE}/api/v1/memory/consent`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
     if (!res.ok) throw new Error("Failed to fetch consent settings");
     return res.json();
   },
@@ -741,27 +775,44 @@ export const api = {
   async updateMemoryConsent(data: Partial<UserMemoryConsent>): Promise<UserMemoryConsent> {
     const res = await fetch(`${API_BASE}/api/v1/memory/consent`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error("Failed to update consent settings");
     return res.json();
   },
 
+  async updateConsentSettings(data: Partial<UserMemoryConsent>): Promise<UserMemoryConsent> {
+    return this.updateMemoryConsent(data);
+  },
+
   async pauseMemory(): Promise<UserMemoryConsent> {
-    const res = await fetch(`${API_BASE}/api/v1/memory/pause`, { method: "POST" });
+    const res = await fetch(`${API_BASE}/api/v1/memory/pause`, {
+      method: "POST",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
     if (!res.ok) throw new Error("Failed to pause memory");
     return res.json();
   },
 
   async resumeMemory(): Promise<UserMemoryConsent> {
-    const res = await fetch(`${API_BASE}/api/v1/memory/resume`, { method: "POST" });
+    const res = await fetch(`${API_BASE}/api/v1/memory/resume`, {
+      method: "POST",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
     if (!res.ok) throw new Error("Failed to resume memory");
     return res.json();
   },
 
   async purgeAllMemory(): Promise<any> {
-    const res = await fetch(`${API_BASE}/api/v1/memory/purge-all`, { method: "POST" });
+    const res = await fetch(`${API_BASE}/api/v1/memory/purge-all`, {
+      method: "POST",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
     if (!res.ok) throw new Error("Failed to purge all memory");
     return res.json();
   },
@@ -894,13 +945,40 @@ export const api = {
   },
 
   async getVoiceEvaluationBenchmarks(): Promise<VoiceEvaluationResponse> {
-    const res = await fetch(`${API_BASE}/api/v1/voice/evaluation/benchmarks`);
+    const res = await fetch(`${API_BASE}/api/v1/voice/evaluation/benchmarks`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
     if (!res.ok) throw new Error("Failed to fetch voice benchmarks");
     return res.json();
   },
 
+  async synthesizeSpeech(params: {
+    text: string;
+    voiceId?: string;
+    language?: string;
+    speed?: number;
+  }): Promise<{ audio_base64: string; format: string; duration_estimate_sec: number }> {
+    const res = await fetch(`${API_BASE}/api/v1/voice/synthesize`, {
+      method: "POST",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+      body: JSON.stringify({
+        text: params.text,
+        voice_id: params.voiceId || "voice_sanctuary_calm",
+        language: params.language || "en-US",
+        speed: params.speed || 1.0,
+      }),
+    });
+    if (!res.ok) throw new Error("Voice synthesis failed");
+    return res.json();
+  },
+
   async getReminders(): Promise<ReminderItem[]> {
-    const res = await fetch(`${API_BASE}/api/v1/reminders`);
+    const res = await fetch(`${API_BASE}/api/v1/reminders`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
     if (!res.ok) throw new Error("Failed to fetch reminders");
     return res.json();
   },
@@ -921,7 +999,8 @@ export const api = {
   }): Promise<ReminderItem> {
     const res = await fetch(`${API_BASE}/api/v1/reminders`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify(data),
     });
     if (!res.ok) {
@@ -934,7 +1013,8 @@ export const api = {
   async updateReminder(id: string, data: Partial<ReminderItem>): Promise<ReminderItem> {
     const res = await fetch(`${API_BASE}/api/v1/reminders/${id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error("Failed to update reminder");
@@ -944,6 +1024,8 @@ export const api = {
   async deleteReminder(id: string): Promise<boolean> {
     const res = await fetch(`${API_BASE}/api/v1/reminders/${id}`, {
       method: "DELETE",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
     });
     return res.status === 204;
   },
@@ -951,7 +1033,8 @@ export const api = {
   async snoozeReminder(id: string, minutes: number = 15): Promise<ReminderItem> {
     const res = await fetch(`${API_BASE}/api/v1/reminders/${id}/snooze`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify({ minutes }),
     });
     if (!res.ok) throw new Error("Failed to snooze reminder");
@@ -961,6 +1044,8 @@ export const api = {
   async dismissReminder(id: string): Promise<ReminderItem> {
     const res = await fetch(`${API_BASE}/api/v1/reminders/${id}/dismiss`, {
       method: "POST",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to dismiss reminder");
     return res.json();
@@ -974,7 +1059,8 @@ export const api = {
   ): Promise<DispatchResult> {
     const res = await fetch(`${API_BASE}/api/v1/reminders/${id}/dispatch`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify({
         idempotency_key: idempotencyKey,
         channel_override: channelOverride,
@@ -988,13 +1074,18 @@ export const api = {
   async reportMissedCheckin(id: string, reason: string = "user_engaged_in_life"): Promise<any> {
     const res = await fetch(`${API_BASE}/api/v1/reminders/${id}/missed?reason=${encodeURIComponent(reason)}`, {
       method: "POST",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to report missed checkin");
     return res.json();
   },
 
   async getQuietHours(): Promise<QuietHoursSettings> {
-    const res = await fetch(`${API_BASE}/api/v1/reminders/quiet-hours`);
+    const res = await fetch(`${API_BASE}/api/v1/reminders/quiet-hours`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
     if (!res.ok) throw new Error("Failed to fetch quiet hours");
     return res.json();
   },
@@ -1002,7 +1093,8 @@ export const api = {
   async updateQuietHours(settings: QuietHoursSettings): Promise<QuietHoursSettings> {
     const res = await fetch(`${API_BASE}/api/v1/reminders/quiet-hours`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify(settings),
     });
     if (!res.ok) throw new Error("Failed to update quiet hours");
@@ -1010,7 +1102,10 @@ export const api = {
   },
 
   async getNotifications(unreadOnly: boolean = false): Promise<InAppNotification[]> {
-    const res = await fetch(`${API_BASE}/api/v1/reminders/notifications?unread_only=${unreadOnly}`);
+    const res = await fetch(`${API_BASE}/api/v1/reminders/notifications?unread_only=${unreadOnly}`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
     if (!res.ok) throw new Error("Failed to fetch notifications");
     return res.json();
   },
@@ -1018,6 +1113,8 @@ export const api = {
   async markNotificationRead(id: string): Promise<InAppNotification> {
     const res = await fetch(`${API_BASE}/api/v1/reminders/notifications/${id}/read`, {
       method: "POST",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to mark notification read");
     return res.json();
@@ -1026,6 +1123,8 @@ export const api = {
   async dismissNotification(id: string): Promise<InAppNotification> {
     const res = await fetch(`${API_BASE}/api/v1/reminders/notifications/${id}`, {
       method: "DELETE",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to dismiss notification");
     return res.json();
@@ -1034,21 +1133,51 @@ export const api = {
   async clearAllNotifications(): Promise<{ cleared_count: number }> {
     const res = await fetch(`${API_BASE}/api/v1/reminders/notifications`, {
       method: "DELETE",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to clear notifications");
     return res.json();
   },
 
   async getReminderAuditLogs(limit: number = 50): Promise<NotificationAuditLogItem[]> {
-    const res = await fetch(`${API_BASE}/api/v1/reminders/audit-logs?limit=${limit}`);
+    const res = await fetch(`${API_BASE}/api/v1/reminders/audit-logs?limit=${limit}`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
     if (!res.ok) throw new Error("Failed to fetch reminder audit logs");
+    return res.json();
+  },
+
+  async registerPushSubscription(payload: {
+    endpoint: string;
+    p256dh_key?: string;
+    auth_key?: string;
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/reminders/push-subscriptions`, {
+      method: "POST",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error("Failed to register push subscription");
+    return res.json();
+  },
+
+  async getNotificationOutbox(limit: number = 50): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/reminders/outbox?limit=${limit}`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch notification outbox");
     return res.json();
   },
 
   async previewImport(data: { source: string; raw_sample_text: string }): Promise<any> {
     const res = await fetch(`${API_BASE}/api/v1/integrations/import/preview`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error("Import preview failed");
@@ -1063,7 +1192,8 @@ export const api = {
   }): Promise<ImportBatchResponse> {
     const res = await fetch(`${API_BASE}/api/v1/integrations/import/upload`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error("Import upload failed");
@@ -1071,7 +1201,10 @@ export const api = {
   },
 
   async getStagedBatch(batchId: string): Promise<ImportBatchResponse> {
-    const res = await fetch(`${API_BASE}/api/v1/integrations/import/batches/${batchId}`);
+    const res = await fetch(`${API_BASE}/api/v1/integrations/import/batches/${batchId}`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
     if (!res.ok) throw new Error("Failed to fetch staged batch");
     return res.json();
   },
@@ -1083,7 +1216,8 @@ export const api = {
   ): Promise<ImportBatchResponse> {
     const res = await fetch(`${API_BASE}/api/v1/integrations/import/batches/${batchId}/selection`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify({
         item_ids_to_include: includeIds,
         item_ids_to_exclude: excludeIds,
@@ -1100,7 +1234,8 @@ export const api = {
   ): Promise<ConfirmImportResponse> {
     const res = await fetch(`${API_BASE}/api/v1/integrations/import/batches/${batchId}/confirm`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify({
         approved_candidate_ids: approvedCandidateIds,
         rejected_candidate_ids: rejectedCandidateIds,
@@ -1113,13 +1248,18 @@ export const api = {
   async revokeImportBatch(batchId: string): Promise<any> {
     const res = await fetch(`${API_BASE}/api/v1/integrations/import/batches/${batchId}`, {
       method: "DELETE",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to revoke import batch");
     return res.json();
   },
 
   async listOAuthConnections(): Promise<OAuthConnection[]> {
-    const res = await fetch(`${API_BASE}/api/v1/integrations/oauth/connections`);
+    const res = await fetch(`${API_BASE}/api/v1/integrations/oauth/connections`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
     if (!res.ok) throw new Error("Failed to list OAuth connections");
     return res.json();
   },
@@ -1127,6 +1267,8 @@ export const api = {
   async initiateOAuth(provider: string = "google_calendar"): Promise<any> {
     const res = await fetch(`${API_BASE}/api/v1/integrations/oauth/initiate?provider=${provider}`, {
       method: "POST",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to initiate OAuth");
     return res.json();
@@ -1135,7 +1277,8 @@ export const api = {
   async completeOAuthCallback(provider: string, code: string, stateToken: string): Promise<OAuthConnection> {
     const res = await fetch(`${API_BASE}/api/v1/integrations/oauth/callback`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify({ provider, code, state_token: stateToken }),
     });
     if (!res.ok) throw new Error("Failed to complete OAuth callback");
@@ -1145,6 +1288,8 @@ export const api = {
   async syncGoogleCalendar(connectionId: string): Promise<CalendarSyncResponse> {
     const res = await fetch(`${API_BASE}/api/v1/integrations/oauth/sync/${connectionId}`, {
       method: "POST",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to sync calendar");
     return res.json();
@@ -1153,13 +1298,18 @@ export const api = {
   async revokeOAuthConnection(connectionId: string): Promise<any> {
     const res = await fetch(`${API_BASE}/api/v1/integrations/oauth/${connectionId}`, {
       method: "DELETE",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to revoke connection");
     return res.json();
   },
 
   async getPhase2ArchitectureSpecs(): Promise<PhaseTwoArchitectureSpec[]> {
-    const res = await fetch(`${API_BASE}/api/v1/integrations/phase2-architecture`);
+    const res = await fetch(`${API_BASE}/api/v1/integrations/phase2-architecture`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
     if (!res.ok) throw new Error("Failed to fetch Phase 2 specifications");
     return res.json();
   },

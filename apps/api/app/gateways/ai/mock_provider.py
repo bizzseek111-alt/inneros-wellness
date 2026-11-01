@@ -196,9 +196,46 @@ class SyntheticMockProvider(BaseAIProvider):
             "I am here to support you at your own pace. How would you like to proceed?"
         )
 
+    def _append_wellbeing_context_if_relevant(self, base_reply: str, request: CompletionRequest) -> str:
+        """Links persisted Journal Entries, Growth Goals, and Daily Check-Ins into the companion reply when asked."""
+        wb = (request.metadata or {}).get("wellbeing_summary") or {}
+        if not wb:
+            return base_reply
+
+        last_user_msg = ""
+        for m in reversed(request.messages):
+            if m.role == "user":
+                last_user_msg = m.content.strip().lower()
+                break
+
+        context_notes: List[str] = []
+        journal_titles = wb.get("journal_titles") or []
+        goal_titles = wb.get("goal_titles") or []
+        latest_checkin = wb.get("latest_checkin")
+
+        if any(k in last_user_msg for k in ["journal", "wrote", "entry", "reflection"]) and journal_titles:
+            context_notes.append(f"Reflecting on your recent journal entry '{journal_titles[0]}'")
+        if any(k in last_user_msg for k in ["goal", "growth", "habit", "intention"]) and goal_titles:
+            context_notes.append(f"holding in mind your growth goal '{goal_titles[0]}'")
+        if any(k in last_user_msg for k in ["check-in", "checkin", "energy", "mood"]) and latest_checkin:
+            emotions = ", ".join(latest_checkin.get("emotions") or [])
+            context_notes.append(
+                f"noting your recent check-in (energy {latest_checkin.get('energy_level')}/5"
+                + (f", feeling {emotions}" if emotions else "")
+                + ")"
+            )
+
+        if not context_notes:
+            return base_reply
+
+        joined = " and ".join(context_notes)
+        return f"{base_reply} ({joined[0].upper() + joined[1:]}.)"
+
     async def complete(self, request: CompletionRequest) -> CompletionResponse:
         start_time = time.perf_counter()
-        reply = self._generate_synthetic_reply(request)
+        reply = self._append_wellbeing_context_if_relevant(
+            self._generate_synthetic_reply(request), request
+        )
         latency = (time.perf_counter() - start_time) * 1000
 
         return CompletionResponse(
@@ -212,7 +249,9 @@ class SyntheticMockProvider(BaseAIProvider):
         )
 
     async def stream_complete(self, request: CompletionRequest) -> AsyncIterator[str]:
-        reply = self._generate_synthetic_reply(request)
+        reply = self._append_wellbeing_context_if_relevant(
+            self._generate_synthetic_reply(request), request
+        )
         words = reply.split(" ")
         for i, word in enumerate(words):
             yield word + (" " if i < len(words) - 1 else "")

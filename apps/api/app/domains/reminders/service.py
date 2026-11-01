@@ -29,13 +29,36 @@ from app.domains.reminders.schemas import (
     DispatchResult,
     NotificationAuditLogItem,
 )
+from app.db.database import (
+    save_domain_item,
+    load_domain_items,
+    delete_domain_item,
+    delete_domain_namespace_for_user,
+)
+from app.core.dispatcher import notification_dispatcher
 
-# In-memory stores partitioned by user_id
+# In-memory cache backed by SQLAlchemy domain_state_store partitioned by user_id
 _REMINDERS_STORE: Dict[str, List[ReminderItem]] = {}
 _QUIET_HOURS_STORE: Dict[str, QuietHoursSettings] = {}
 _NOTIFICATIONS_STORE: Dict[str, List[InAppNotification]] = {}
 _AUDIT_LOGS_STORE: Dict[str, List[NotificationAuditLogItem]] = {}
 _IDEMPOTENCY_CACHE: Dict[str, DispatchResult] = {}
+
+
+def _sync_reminder_to_db(user_id: str, item: ReminderItem) -> None:
+    save_domain_item("reminders_items", user_id, item.id, item.model_dump(mode="json"))
+
+
+def _sync_quiet_hours_to_db(user_id: str, qh: QuietHoursSettings) -> None:
+    save_domain_item("reminders_quiet_hours", user_id, f"qh_{user_id}", qh.model_dump(mode="json"))
+
+
+def _sync_notification_to_db(user_id: str, notif: InAppNotification) -> None:
+    save_domain_item("reminders_notifications", user_id, notif.id, notif.model_dump(mode="json"))
+
+
+def _sync_audit_to_db(user_id: str, log_item: NotificationAuditLogItem) -> None:
+    save_domain_item("reminders_audit", user_id, log_item.id, log_item.model_dump(mode="json"))
 
 SENSITIVE_PSYCH_TERMS = [
     "panic",
@@ -156,8 +179,31 @@ def is_in_quiet_hours(
 
 
 def _init_synthetic_user_state(user_id: str) -> None:
-    """Initializes rich synthetic data for Elena Vance or default user."""
+    """Hydrates user state from SQLAlchemy domain_state_store or seeds default state once."""
     if user_id in _REMINDERS_STORE:
+        return
+
+    db_reminders = load_domain_items("reminders_items", user_id=user_id)
+    db_qh = load_domain_items("reminders_quiet_hours", user_id=user_id)
+    db_notifs = load_domain_items("reminders_notifications", user_id=user_id)
+    db_audits = load_domain_items("reminders_audit", user_id=user_id)
+
+    if db_reminders or db_qh:
+        _REMINDERS_STORE[user_id] = [ReminderItem.model_validate(r.get("payload", r)) for r in db_reminders]
+        if db_qh:
+            _QUIET_HOURS_STORE[user_id] = QuietHoursSettings.model_validate(db_qh[0].get("payload", db_qh[0]))
+        else:
+            _QUIET_HOURS_STORE[user_id] = QuietHoursSettings(
+                enabled=True,
+                start_time="22:00",
+                end_time="07:30",
+                timezone="America/New_York",
+                suppress_audio=True,
+                allow_emergency_safety=True,
+                max_prompts_per_day=3,
+            )
+        _NOTIFICATIONS_STORE[user_id] = [InAppNotification.model_validate(n.get("payload", n)) for n in db_notifs]
+        _AUDIT_LOGS_STORE[user_id] = [NotificationAuditLogItem.model_validate(a.get("payload", a)) for a in db_audits]
         return
 
     now = datetime.now(timezone.utc)
@@ -173,6 +219,7 @@ def _init_synthetic_user_state(user_id: str) -> None:
         allow_emergency_safety=True,
         max_prompts_per_day=3,
     )
+    _sync_quiet_hours_to_db(user_id, _QUIET_HOURS_STORE[user_id])
 
     # Synthetic Scheduled Reminders (User-Controlled Routine)
     reminders = [
@@ -281,6 +328,8 @@ def _init_synthetic_user_state(user_id: str) -> None:
         ),
     ]
     _REMINDERS_STORE[user_id] = reminders
+    for rem in reminders:
+        _sync_reminder_to_db(user_id, rem)
 
     # Seed Notifications in the In-App Notification Center
     _NOTIFICATIONS_STORE[user_id] = [
@@ -317,6 +366,8 @@ def _init_synthetic_user_state(user_id: str) -> None:
             behavioral_safety_tag="autonomous_buddy_consent_verified",
         ),
     ]
+    for nf in _NOTIFICATIONS_STORE[user_id]:
+        _sync_notification_to_db(user_id, nf)
 
     # Seed Audit Log Entries
     _AUDIT_LOGS_STORE[user_id] = [
@@ -341,6 +392,8 @@ def _init_synthetic_user_state(user_id: str) -> None:
             timestamp=now - timedelta(days=1),
         ),
     ]
+    for al in _AUDIT_LOGS_STORE[user_id]:
+        _sync_audit_to_db(user_id, al)
 
 
 class RemindersService:
@@ -396,6 +449,7 @@ class RemindersService:
             updated_at=now,
         )
         _REMINDERS_STORE[user_id].append(item)
+        _sync_reminder_to_db(user_id, item)
 
         # Audit log creation
         self._record_audit(
@@ -449,6 +503,7 @@ class RemindersService:
                     r.buffer_minutes = req.buffer_minutes
 
                 r.updated_at = datetime.now(timezone.utc)
+                _sync_reminder_to_db(user_id, r)
                 self._record_audit(
                     user_id=user_id,
                     reminder_id=r.id,
@@ -467,6 +522,7 @@ class RemindersService:
         deleted = len(_REMINDERS_STORE[user_id]) < initial_len
 
         if deleted:
+            delete_domain_item("reminders_items", user_id, reminder_id)
             self._record_audit(
                 user_id=user_id,
                 reminder_id=reminder_id,
@@ -498,6 +554,7 @@ class RemindersService:
     ) -> QuietHoursSettings:
         _init_synthetic_user_state(user_id)
         _QUIET_HOURS_STORE[user_id] = settings
+        _sync_quiet_hours_to_db(user_id, settings)
         self._record_audit(
             user_id=user_id,
             event_type="quiet_hours_updated",
@@ -524,6 +581,7 @@ class RemindersService:
         now = datetime.now(timezone.utc)
         reminder.snoozed_until = now + timedelta(minutes=minutes)
         reminder.updated_at = now
+        _sync_reminder_to_db(user_id, reminder)
 
         self._record_audit(
             user_id=user_id,
@@ -543,12 +601,14 @@ class RemindersService:
         now = datetime.now(timezone.utc)
         reminder.snoozed_until = None
         reminder.updated_at = now
+        _sync_reminder_to_db(user_id, reminder)
 
         # Dismiss associated active notifications
         for n in _NOTIFICATIONS_STORE.get(user_id, []):
             if n.reminder_id == reminder_id and not n.is_dismissed:
                 n.is_dismissed = True
                 n.status = DeliveryStatus.DISMISSED
+                _sync_notification_to_db(user_id, n)
 
         self._record_audit(
             user_id=user_id,
@@ -653,6 +713,23 @@ class RemindersService:
         channel = req.channel_override or reminder.channels[0]
         text_sent_externally = reminder.sanitized_lockscreen_text
 
+        # 6. External Delivery via NotificationDispatcher (Email / Web Push + Durable Outbox)
+        if channel == NotificationChannel.EMAIL:
+            notification_dispatcher.dispatch_email(
+                user_id=user_id,
+                recipient_email=f"{user_id}@sanctuary.inneros.app",
+                subject=f"InnerOS Gentle Cue: {reminder.title}",
+                sanitized_body=text_sent_externally,
+                metadata={"reminder_id": reminder.id, "job_id": job_id},
+            )
+        elif channel == NotificationChannel.WEB_PUSH:
+            notification_dispatcher.dispatch_web_push(
+                user_id=user_id,
+                title=reminder.title,
+                sanitized_body=text_sent_externally,
+                metadata={"reminder_id": reminder.id, "job_id": job_id},
+            )
+
         # Create In-App Notification Record
         notif = InAppNotification(
             id=f"notif_{uuid.uuid4().hex[:8]}",
@@ -673,9 +750,11 @@ class RemindersService:
             behavioral_safety_tag="autonomous_buddy_consent_verified",
         )
         _NOTIFICATIONS_STORE.setdefault(user_id, []).insert(0, notif)
+        _sync_notification_to_db(user_id, notif)
 
         reminder.last_delivered_at = now
         reminder.snoozed_until = None
+        _sync_reminder_to_db(user_id, reminder)
 
         self._record_audit(
             user_id=user_id,
@@ -714,10 +793,6 @@ class RemindersService:
     ) -> Dict[str, Any]:
         """CRITICAL SAFETY INVARIANT:
         Never infer that a user is in danger or crisis merely because they missed a check-in.
-        
-        Missing a scheduled check-in is an ordinary part of human existence (busy, resting,
-        socializing). InnerOS forbids alarming the user, guilt-tripping them, or triggering
-        emergency wellness checks without explicit, active signs of distress.
         """
         _init_synthetic_user_state(user_id)
         now = datetime.now(timezone.utc)
@@ -770,6 +845,7 @@ class RemindersService:
         for n in _NOTIFICATIONS_STORE.get(user_id, []):
             if n.id == notification_id:
                 n.read = True
+                _sync_notification_to_db(user_id, n)
                 return n
         return None
 
@@ -781,6 +857,7 @@ class RemindersService:
             if n.id == notification_id:
                 n.is_dismissed = True
                 n.status = DeliveryStatus.DISMISSED
+                _sync_notification_to_db(user_id, n)
                 return n
         return None
 
@@ -789,6 +866,7 @@ class RemindersService:
         items = _NOTIFICATIONS_STORE.get(user_id, [])
         count = len(items)
         _NOTIFICATIONS_STORE[user_id] = []
+        delete_domain_namespace_for_user("reminders_notifications", user_id)
         return count
 
     # --- Audit History ---
@@ -820,6 +898,7 @@ class RemindersService:
             timestamp=datetime.now(timezone.utc),
         )
         _AUDIT_LOGS_STORE.setdefault(user_id, []).append(log_item)
+        _sync_audit_to_db(user_id, log_item)
         return log_item
 
 

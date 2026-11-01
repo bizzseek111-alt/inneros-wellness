@@ -397,6 +397,30 @@ class WellbeingService:
                 created_at=now,
             )
             db.add(row)
+
+        from app.core.dispatcher import notification_dispatcher
+        from app.config import settings
+
+        notification_dispatcher.dispatch_email(
+            user_id="public_contact",
+            recipient_email=req.email.strip().lower(),
+            subject=f"InnerOS Sanctuary — Inquiry Received ({sub_id})",
+            sanitized_body=(
+                f"Hello {req.name.strip()},\n\n"
+                f"We have received your '{req.inquiry_type}' inquiry (Ref: {sub_id}). "
+                "Our team will review your message and respond within 1–2 business days.\n\n"
+                "Warm regards,\nInnerOS Sanctuary Team"
+            ),
+            metadata={"submission_id": sub_id, "inquiry_type": req.inquiry_type},
+        )
+        notification_dispatcher.dispatch_email(
+            user_id="public_contact",
+            recipient_email=settings.SUPPORT_INBOX_EMAIL,
+            subject=f"[InnerOS Contact] {req.inquiry_type} from {req.name.strip()}",
+            sanitized_body=f"From: {req.name.strip()} <{req.email.strip().lower()}>\n\n{req.message.strip()}",
+            metadata={"submission_id": sub_id},
+        )
+
         return ContactSubmissionResponse(
             id=sub_id,
             status="received",

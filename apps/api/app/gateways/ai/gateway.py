@@ -14,6 +14,12 @@ from app.gateways.ai.base import (
     ProviderBenchmarkResult,
 )
 from app.gateways.ai.mock_provider import SyntheticMockProvider
+from app.gateways.ai.live_provider import (
+    OpenAICompatibleProvider,
+    AnthropicProvider,
+    GeminiProvider,
+)
+from app.config import settings
 from app.core.observability import logger
 
 
@@ -33,6 +39,48 @@ class AIGateway:
         }
         self.primary_provider_name: str = "synthetic"
         self.fallback_provider_name: str = "mock-fast"
+        self.configure_from_settings()
+
+    def configure_from_settings(self) -> None:
+        """Auto-registers live LLM providers when API keys or local endpoints are present."""
+        if settings.OPENAI_API_KEY:
+            self.register_provider(
+                "openai",
+                OpenAICompatibleProvider(
+                    api_key=settings.OPENAI_API_KEY,
+                    base_url=settings.OPENAI_BASE_URL,
+                    model_name=settings.OPENAI_MODEL,
+                    provider_label="openai",
+                ),
+            )
+        if settings.ANTHROPIC_API_KEY:
+            self.register_provider(
+                "anthropic",
+                AnthropicProvider(
+                    api_key=settings.ANTHROPIC_API_KEY,
+                    model_name=settings.ANTHROPIC_MODEL,
+                ),
+            )
+        if settings.GEMINI_API_KEY:
+            self.register_provider(
+                "gemini",
+                GeminiProvider(
+                    api_key=settings.GEMINI_API_KEY,
+                    model_name=settings.GEMINI_MODEL,
+                ),
+            )
+        if settings.OLLAMA_BASE_URL:
+            self.register_provider(
+                "ollama",
+                OpenAICompatibleProvider(
+                    api_key="ollama",
+                    base_url=f"{settings.OLLAMA_BASE_URL.rstrip('/')}/v1",
+                    model_name=settings.OLLAMA_MODEL,
+                    provider_label="ollama",
+                ),
+            )
+        if settings.AI_PRIMARY_PROVIDER in self._providers:
+            self.primary_provider_name = settings.AI_PRIMARY_PROVIDER
 
     def register_provider(self, name: str, provider: BaseAIProvider) -> None:
         """Dynamically registers an AI provider adapter."""

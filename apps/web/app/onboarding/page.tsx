@@ -18,6 +18,7 @@ import { Button } from "@/components/primitives/Button";
 import { Switch } from "@/components/primitives/Switch";
 import { Slider } from "@/components/primitives/Slider";
 import { prototypeService } from "@/lib/prototype-service";
+import { api } from "@/lib/api-client";
 
 const VOICE_OPTIONS = [
   {
@@ -66,12 +67,26 @@ export default function OnboardingPage() {
     null
   );
 
-  const playVoiceSample = (id: string) => {
+  const playVoiceSample = async (id: string) => {
     setActiveVoicePlaying(id);
+    try {
+      const res = await api.synthesizeSpeech({
+        text: "Welcome to your calm sanctuary.",
+        voiceId: id,
+        language: selectedLang,
+      });
+      if (res.audio_base64 && typeof window !== "undefined") {
+        const mime = res.format === "wav" ? "audio/wav" : "audio/mpeg";
+        const audio = new Audio(`data:${mime};base64,${res.audio_base64}`);
+        audio.play().catch(() => {});
+      }
+    } catch {
+      // Offline fallback timer
+    }
     setTimeout(() => setActiveVoicePlaying(null), 2200);
   };
 
-  const handleFinishOnboarding = () => {
+  const handleFinishOnboarding = async () => {
     const state = prototypeService.getState();
     state.user.name = name;
     state.user.preferredName = name.split(" ")[0];
@@ -85,6 +100,25 @@ export default function OnboardingPage() {
     state.companionConfig.warmthLevel = warmthLevel / 100;
     state.companionConfig.pacing = pacing / 100;
     prototypeService.saveState(state);
+
+    try {
+      await api.updateConsentSettings({
+        allow_memory_system: deriveMemory,
+        is_memory_recording_paused: !storeConversations,
+      });
+      if (deriveMemory) {
+        await api.createMemoryRecord({
+          category: "communication_preferences",
+          fact_statement: `Preferred name: ${name.trim()} | Tone style: ${toneMode} (Warmth ${warmthLevel}%, Pacing ${pacing}%)`,
+          record_type: "stored_fact",
+          status: "confirmed",
+          emotional_valence: "positive",
+          tags: ["onboarding", toneMode, selectedLang],
+        });
+      }
+    } catch {
+      // Local state already persisted if offline
+    }
 
     router.push("/dashboard");
   };
