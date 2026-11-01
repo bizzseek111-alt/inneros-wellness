@@ -139,13 +139,18 @@ function MarketingHomeContent() {
       {/* =====================================================================
           SECTION 1: PINTEREST (PYKO) BOTANICAL MOSS HERO SECTION
           ===================================================================== */}
-      <section className="relative min-h-[90vh] flex flex-col justify-between pt-8 pb-16 px-4 sm:px-8 overflow-hidden bg-[#121B14]">
-        {/* 3D Sculptural Moss & Bonsai Backdrop */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-85 scale-105 transition-transform duration-1000 pointer-events-none"
-          style={{ backgroundImage: "url('/images/hero-moss-arch.jpg')" }}
+      <section className="relative min-h-[90vh] flex flex-col justify-between pt-8 pb-16 px-4 sm:px-8 overflow-hidden bg-[#0A110C]">
+        {/* Full-Screen Looping Background Video with Liquid Glass Overlay */}
+        <video
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none scale-105 transition-transform duration-1000"
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="/images/hero-moss-arch.jpg"
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260511_230229_7c9bc431-46cf-489a-948d-e8144d8eb5d4.mp4"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0A110C]/80 via-[#253326]/45 to-[#0D1510] pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0A110C]/75 via-[#121B14]/40 to-[#0D1510]/95 pointer-events-none" />
 
         <div className="relative z-10 max-w-6xl mx-auto w-full pt-6 sm:pt-12 text-center space-y-6">
           {/* Uppercase Micro Eyebrow */}
