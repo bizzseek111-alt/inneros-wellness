@@ -293,6 +293,14 @@ export const SanctuaryShell: React.FC<SanctuaryShellProps> = ({ children }) => {
             <p className="text-xs text-[#52625E] leading-relaxed">
               InnerOS is a supportive AI space for reflection. For medical advice or crisis care, human help is always one click away.
             </p>
+            <div className="pt-1 border-t border-[#CFE2D6]">
+              <Link
+                href="/"
+                className="text-xs font-semibold text-[#285B55] hover:underline inline-flex items-center space-x-1"
+              >
+                <span>Visit Public Website &amp; Guide &rarr;</span>
+              </Link>
+            </div>
           </div>
         </aside>
 
