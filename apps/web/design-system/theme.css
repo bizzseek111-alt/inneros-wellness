@@ -1,0 +1,193 @@
+/**
+ * InnerOS Semantic CSS Theme Variables
+ * Complete Light & Dark modes, Accessibility & Reduced Motion standards.
+ */
+
+:root {
+  /* DARK THEME (DEFAULT SANCTUARY MODE) */
+  --bg-canvas: #070b14;
+  --bg-surface: #0b111e;
+  --bg-card: #101828;
+  --bg-card-hover: #162035;
+  --bg-subtle: #1a253a;
+  --bg-input: #0b111e;
+  
+  --text-primary: #f6f3ee;
+  --text-secondary: #c4c0e3;
+  --text-muted: #7e776d;
+  --text-dim: #4d4968;
+  
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.14);
+  --border-accent: rgba(79, 100, 170, 0.35);
+  --border-teal: rgba(52, 134, 128, 0.35);
+
+  --accent-teal: #348680;
+  --accent-teal-light: #6ec2bc;
+  --accent-teal-glow: rgba(52, 134, 128, 0.25);
+
+  --accent-lavender: #8983b3;
+  --accent-lavender-light: #c4c0e3;
+  --accent-lavender-glow: rgba(137, 131, 179, 0.2);
+
+  --accent-indigo: #4f64aa;
+  --accent-indigo-light: #8b9cd6;
+  --accent-indigo-glow: rgba(79, 100, 170, 0.25);
+
+  --accent-ivory: #faf8f5;
+  --accent-ivory-warm: #efebe3;
+
+  --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-surface: 0 4px 24px -2px rgba(0, 0, 0, 0.45);
+  --shadow-elevated: 0 16px 48px -4px rgba(0, 0, 0, 0.6);
+  --glow-ambient: radial-gradient(circle at 50% 0%, rgba(79, 100, 170, 0.15) 0%, rgba(52, 134, 128, 0.08) 40%, rgba(7, 11, 20, 0) 75%);
+
+  --ring-focus: 0 0 0 2px #348680;
+}
+
+/* LIGHT THEME (WARM ALABASTER SANCTUARY) */
+.light {
+  --bg-canvas: #faf8f5;
+  --bg-surface: #f4f0e9;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f9f7f4;
+  --bg-subtle: #ebe6dc;
+  --bg-input: #ffffff;
+
+  --text-primary: #151a24;
+  --text-secondary: #3b3833;
+  --text-muted: #6e6961;
+  --text-dim: #999388;
+
+  --border-subtle: rgba(0, 0, 0, 0.07);
+  --border-medium: rgba(0, 0, 0, 0.13);
+  --border-accent: rgba(79, 100, 170, 0.25);
+  --border-teal: rgba(38, 104, 99, 0.25);
+
+  --accent-teal: #266863;
+  --accent-teal-light: #1b4d49;
+  --accent-teal-glow: rgba(38, 104, 99, 0.12);
+
+  --accent-lavender: #69648d;
+  --accent-lavender-light: #4d4968;
+  --accent-lavender-glow: rgba(105, 100, 141, 0.1);
+
+  --accent-indigo: #2e3b66;
+  --accent-indigo-light: #222b4c;
+  --accent-indigo-glow: rgba(46, 59, 102, 0.12);
+
+  --accent-ivory: #ffffff;
+  --accent-ivory-warm: #f6f3ee;
+
+  --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-surface: 0 4px 20px -2px rgba(21, 26, 36, 0.08);
+  --shadow-elevated: 0 12px 36px -4px rgba(21, 26, 36, 0.12);
+  --glow-ambient: radial-gradient(circle at 50% 0%, rgba(220, 227, 246, 0.6) 0%, rgba(206, 239, 235, 0.35) 40%, rgba(250, 248, 245, 0) 75%);
+
+  --ring-focus: 0 0 0 2px #266863;
+}
+
+/* Base Body Application */
+body {
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  transition: background-color 300ms ease, color 300ms ease;
+}
+
+/* Editorial Typography Utility Classes */
+.font-serif-editorial {
+  font-family: var(--font-serif, "Newsreader", "Playfair Display", "Cormorant Garamond", Georgia, serif);
+  font-feature-settings: "onum" 1, "pnum" 1;
+}
+
+.font-sans-ui {
+  font-family: var(--font-sans, "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  font-feature-settings: "cv02" 1, "cv03" 1, "cv04" 1, "cv11" 1;
+}
+
+.font-mono-data {
+  font-family: var(--font-mono, "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace);
+  font-feature-settings: "zero" 1;
+}
+
+/* Ambient Radial Glow */
+.sanctuary-atmosphere {
+  background: var(--glow-ambient);
+  pointer-events: none;
+}
+
+/* Keyframe Animations */
+@keyframes breatheOrganic {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.82;
+  }
+  50% {
+    transform: scale(1.09);
+    opacity: 1;
+  }
+}
+
+@keyframes resonanceWave {
+  0% {
+    transform: scale(0.96);
+    box-shadow: 0 0 0 0 var(--accent-teal-glow);
+  }
+  70% {
+    transform: scale(1.04);
+    box-shadow: 0 0 0 16px rgba(52, 134, 128, 0);
+  }
+  100% {
+    transform: scale(0.96);
+    box-shadow: 0 0 0 0 rgba(52, 134, 128, 0);
+  }
+}
+
+@keyframes celestialOrbital {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-breathe {
+  animation: breatheOrganic 7s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+.animate-resonance {
+  animation: resonanceWave 3.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+.animate-orbital {
+  animation: celestialOrbital 24s linear infinite;
+}
+
+/* ACCESSIBILITY: REDUCED MOTION STANDARD */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-breathe,
+  .animate-resonance,
+  .animate-orbital {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* User reduced motion class override */
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}

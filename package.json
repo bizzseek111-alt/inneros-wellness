@@ -1,0 +1,24 @@
+{
+  "name": "inneros",
+  "version": "0.1.0",
+  "private": true,
+  "description": "InnerOS - Global AI-Powered Personal Emotional Wellbeing & Life Companion",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bash scripts/dev.sh",
+    "dev:web": "pnpm --filter @inneros/web dev",
+    "dev:api": "bash scripts/dev_api.sh",
+    "build": "pnpm --filter @inneros/web build",
+    "test": "bash scripts/test.sh",
+    "test:web": "pnpm --filter @inneros/web test",
+    "test:api": "bash scripts/test_api.sh",
+    "lint": "bash scripts/lint.sh",
+    "seed": "python3 scripts/seed_synthetic_data.py"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  }
+}
