@@ -152,14 +152,19 @@ function MarketingHomeContent() {
           SECTION 1: HERO SECTION WITH LOOPING BACKGROUND VIDEO & LIQUID GLASS
           ===================================================================== */}
       <section className="relative min-h-screen flex flex-col justify-between pt-36 pb-16 px-4 sm:px-8 overflow-hidden bg-black">
-        {/* Full-Screen Looping Background Video */}
+        {/* Full-Screen 4K Ultra-Clear Looping Background Video */}
         <video
           ref={heroVideoRef}
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none scale-105"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
           autoPlay
           muted
           loop
           playsInline
+          style={{
+            imageRendering: "-webkit-optimize-contrast",
+            WebkitBackfaceVisibility: "hidden",
+            transform: "translateZ(0)",
+          }}
         >
           <source src="/videos/hero-background.mp4" type="video/mp4" />
           <source
@@ -167,26 +172,24 @@ function MarketingHomeContent() {
             type="video/mp4"
           />
         </video>
-        {/* Neutral semi-transparent overlay to ensure crisp contrast without obscuring the video */}
-        <div className="absolute inset-0 bg-black/40 pointer-events-none" />
 
         <div className="relative z-10 max-w-6xl mx-auto w-full pt-6 sm:pt-12 text-center space-y-6">
           {/* Uppercase Micro Eyebrow */}
-          <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/85 text-[11.5px] uppercase tracking-[0.22em] font-medium">
+          <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white text-[11.5px] uppercase tracking-[0.22em] font-medium shadow-md">
             <Sparkles className="w-3.5 h-3.5 text-[#D9F296]" />
             <span>{localeConfig.heroBadge} &bull; FOR MINDS THAT SEEK CLARITY</span>
           </div>
 
-          {/* Giant Editorial Headline (Geometric Sans + Italic Serif) */}
-          <h1 className="text-4xl sm:text-6xl lg:text-[74px] font-medium text-white tracking-tight leading-[1.04] max-w-4xl mx-auto">
+          {/* Giant Editorial Headline (Geometric Sans + Italic Serif) with crisp contrast */}
+          <h1 className="text-4xl sm:text-6xl lg:text-[74px] font-medium text-white tracking-tight leading-[1.04] max-w-4xl mx-auto drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]">
             Become the most aware{" "}
-            <span className="font-serif italic font-normal text-[#ECF4E8] block mt-1">
+            <span className="font-serif italic font-normal text-[#ECF4E8] block mt-1 drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]">
               version of yourself.
             </span>
           </h1>
 
           {/* Subtitle */}
-          <p className="text-[16.5px] sm:text-[18px] text-white/80 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-[16.5px] sm:text-[18px] text-white max-w-2xl mx-auto leading-relaxed drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]">
             {localeConfig.heroSubheadline}
           </p>
 
