@@ -135,20 +135,23 @@ export default function AdminOperationsConsolePage() {
 
   return (
     <SanctuaryShell>
-      <div className="max-w-6xl mx-auto space-y-8 pb-12">
+      <div className="max-w-[1440px] mx-auto space-y-6 pb-12">
         {/* Top Hero Banner */}
-        <div className="p-7 sm:p-8 rounded-3xl bg-white border border-[#E4E0D8] shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E5F1E8] text-[#285B55] text-xs font-semibold">
+        <div className="peopleflow-card p-7 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="space-y-2.5 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#D9F296] text-[#1A1E1C] text-xs font-bold">
               <ShieldCheck className="w-4 h-4" />
               <span>Zero-Knowledge Platform Stewardship &amp; Operations</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-serif font-medium text-[#263330]">
-              InnerOS Operations &amp; Governance Console
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1A1E1C]">
+              InnerOS Operations &amp;{" "}
+              <span className="font-serif italic font-normal text-[#285B55]">
+                Governance Console
+              </span>
             </h1>
-            <p className="text-sm sm:text-[15px] text-[#52625E] leading-relaxed">
+            <p className="text-sm sm:text-[15px] text-[#5C6661] leading-relaxed">
               Monitor platform health, AI/voice pipelines, localization readiness, and feature flags.{" "}
-              <strong className="text-[#263330]">
+              <strong className="text-[#1A1E1C]">
                 By architectural design, private user conversations, voice recordings, and personal memories are never accessible here.
               </strong>
             </p>
@@ -176,111 +179,131 @@ export default function AdminOperationsConsolePage() {
         </div>
 
         {statusMessage && (
-          <div className="p-4 rounded-2xl bg-[#E5F1E8] border border-[#285B55]/25 text-sm text-[#1F4742] flex items-center justify-between">
+          <div className="p-4 rounded-2xl bg-[#D9F296]/60 border border-[#1A1E1C]/15 text-sm text-[#1A1E1C] font-medium flex items-center justify-between">
             <span>{statusMessage}</span>
             <button
               type="button"
               onClick={() => setStatusMessage(null)}
-              className="text-xs font-semibold underline ml-4"
+              className="text-xs font-bold underline ml-4"
             >
               Dismiss
             </button>
           </div>
         )}
 
-        {/* 1. Primary Operational Metrics Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-5 rounded-3xl bg-white border border-[#E4E0D8] shadow-sm space-y-2">
-            <div className="flex items-center justify-between text-xs font-medium text-[#52625E]">
+        {/* 1. Primary Operational Metrics Grid (PeopleFlow Bento Cards) */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="peopleflow-card p-6 space-y-3">
+            <div className="flex items-center justify-between text-xs font-semibold text-[#5C6661]">
               <span>Platform &amp; Database</span>
-              <Activity className="w-4 h-4 text-[#285B55]" />
+              <span className="w-8 h-8 rounded-full bg-[#D9F296] flex items-center justify-center text-[#1A1E1C]">
+                <Activity className="w-4 h-4" />
+              </span>
             </div>
-            <div className="text-xl font-serif font-semibold text-[#263330]">
+            <div className="text-2xl font-bold text-[#1A1E1C]">
               {overview?.platform_health?.status === "healthy" ? "Healthy (200 OK)" : "Operational"}
             </div>
-            <p className="text-xs text-[#52625E]">
+            <div className="w-full h-2 rounded-full bg-[#EDF1EF] overflow-hidden">
+              <div className="h-full w-[98%] bg-[#CDE5D3] rounded-full" />
+            </div>
+            <p className="text-xs text-[#5C6661]">
               {overview?.platform_health?.database_engine || "SQLAlchemy 2.0 Relational Engine"}
             </p>
           </div>
 
-          <div className="p-5 rounded-3xl bg-white border border-[#E4E0D8] shadow-sm space-y-2">
-            <div className="flex items-center justify-between text-xs font-medium text-[#52625E]">
+          <div className="peopleflow-card p-6 space-y-3">
+            <div className="flex items-center justify-between text-xs font-semibold text-[#5C6661]">
               <span>AI &amp; Voice Gateway</span>
-              <Cpu className="w-4 h-4 text-[#553E82]" />
+              <span className="w-8 h-8 rounded-full bg-[#CBD8F6] flex items-center justify-center text-[#1A1E1C]">
+                <Cpu className="w-4 h-4" />
+              </span>
             </div>
-            <div className="text-xl font-serif font-semibold text-[#263330]">
+            <div className="text-2xl font-bold text-[#1A1E1C]">
               {overview?.ai_and_voice_providers?.voice_latency_p95_ms ?? 340}ms p95
             </div>
-            <p className="text-xs text-[#52625E]">
+            <div className="w-full h-2 rounded-full bg-[#EDF1EF] overflow-hidden">
+              <div className="h-full w-[86%] bg-[#CBD8F6] rounded-full" />
+            </div>
+            <p className="text-xs text-[#5C6661]">
               Pre-LLM Crisis Interceptor Active
             </p>
           </div>
 
-          <div className="p-5 rounded-3xl bg-white border border-[#E4E0D8] shadow-sm space-y-2">
-            <div className="flex items-center justify-between text-xs font-medium text-[#52625E]">
+          <div className="peopleflow-card p-6 space-y-3">
+            <div className="flex items-center justify-between text-xs font-semibold text-[#5C6661]">
               <span>Psychology Library</span>
-              <BookOpen className="w-4 h-4 text-[#285B55]" />
+              <span className="w-8 h-8 rounded-full bg-[#CDE5D3] flex items-center justify-center text-[#1A1E1C]">
+                <BookOpen className="w-4 h-4" />
+              </span>
             </div>
-            <div className="text-xl font-serif font-semibold text-[#263330]">
+            <div className="text-2xl font-bold text-[#1A1E1C]">
               {overview?.knowledge_governance?.departments_count ?? 17} Departments
             </div>
-            <p className="text-xs text-[#52625E]">
+            <div className="w-full h-2 rounded-full bg-[#EDF1EF] overflow-hidden">
+              <div className="h-full w-[92%] bg-[#D9F296] rounded-full" />
+            </div>
+            <p className="text-xs text-[#5C6661]">
               {overview?.knowledge_governance?.approved_records ?? 10} Approved •{" "}
               {overview?.knowledge_governance?.pending_review_records ?? 2} Pending Review
             </p>
           </div>
 
-          <div className="p-5 rounded-3xl bg-white border border-[#E4E0D8] shadow-sm space-y-2">
-            <div className="flex items-center justify-between text-xs font-medium text-[#52625E]">
+          <div className="peopleflow-card p-6 space-y-3">
+            <div className="flex items-center justify-between text-xs font-semibold text-[#5C6661]">
               <span>Localization &amp; RTL</span>
-              <Globe className="w-4 h-4 text-[#3A7CA5]" />
+              <span className="w-8 h-8 rounded-full bg-[#F6D4DC] flex items-center justify-center text-[#1A1E1C]">
+                <Globe className="w-4 h-4" />
+              </span>
             </div>
-            <div className="text-xl font-serif font-semibold text-[#263330]">
+            <div className="text-2xl font-bold text-[#1A1E1C]">
               {overview?.localization_status?.supported_locales_count ?? 12} Locales Ready
             </div>
-            <p className="text-xs text-[#52625E]">
+            <div className="w-full h-2 rounded-full bg-[#EDF1EF] overflow-hidden">
+              <div className="h-full w-full bg-[#F6D4DC] rounded-full" />
+            </div>
+            <p className="text-xs text-[#5C6661]">
               Includes Arabic, Hebrew &amp; Urdu RTL + 8 Regional Helplines
             </p>
           </div>
         </div>
 
         {/* 2. Feature Flag Governance & Subsystem Status */}
-        <div className="grid lg:grid-cols-12 gap-6">
+        <div className="grid lg:grid-cols-12 gap-5">
           {/* Feature Flags Column */}
-          <div className="lg:col-span-7 p-6 sm:p-7 rounded-3xl bg-white border border-[#E4E0D8] shadow-sm space-y-5">
-            <div className="flex items-center justify-between border-b border-[#F3EFE8] pb-4">
+          <div className="lg:col-span-7 peopleflow-card p-6 sm:p-7 space-y-5">
+            <div className="flex items-center justify-between border-b border-[#E5EAE7] pb-4">
               <div className="flex items-center gap-2.5">
-                <Sliders className="w-5 h-5 text-[#285B55]" />
+                <Sliders className="w-5 h-5 text-[#1A1E1C]" />
                 <div>
-                  <h2 className="text-lg font-serif font-medium text-[#263330]">
+                  <h2 className="text-lg font-bold text-[#1A1E1C]">
                     Platform Feature Flags
                   </h2>
-                  <p className="text-xs text-[#52625E]">
+                  <p className="text-xs text-[#5C6661]">
                     Persisted in relational storage with immutable audit logging
                   </p>
                 </div>
               </div>
-              <Badge variant="sage" size="sm">
+              <span className="px-3 py-1 rounded-full bg-[#D9F296] text-[#1A1E1C] text-xs font-bold">
                 Live Controls
-              </Badge>
+              </span>
             </div>
 
             <div className="space-y-3">
               {flags.map((flag) => (
                 <div
                   key={flag.key}
-                  className="p-4 rounded-2xl bg-[#FFFBF7] border border-[#E4E0D8] flex items-start justify-between gap-4"
+                  className="p-4 rounded-2xl bg-[#F7F9F8] border border-[#E5EAE7] flex items-start justify-between gap-4"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-[#263330]">
+                      <span className="text-sm font-bold text-[#1A1E1C]">
                         {flag.label}
                       </span>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-[#F3EFE8] text-[#52625E]">
+                      <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-[#CBD8F6]/60 text-[#1E3463]">
                         {flag.category}
                       </span>
                     </div>
-                    <p className="text-xs text-[#52625E] leading-relaxed">
+                    <p className="text-xs text-[#5C6661] leading-relaxed">
                       {flag.description}
                     </p>
                   </div>
@@ -290,10 +313,10 @@ export default function AdminOperationsConsolePage() {
                     disabled={togglingKey === flag.key}
                     onClick={() => handleToggleFlag(flag.key, flag.enabled)}
                     aria-pressed={flag.enabled}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-semibold shrink-0 transition-colors ${
+                    className={`px-4 py-2 rounded-full text-xs font-bold shrink-0 transition-colors ${
                       flag.enabled
-                        ? "bg-[#285B55] text-white hover:bg-[#1F4742]"
-                        : "bg-[#F9E5DC] text-[#7D402D] hover:bg-[#EED0C6]"
+                        ? "bg-[#1A1E1C] text-white hover:bg-[#2C3330]"
+                        : "bg-[#F6D4DC] text-[#6E2537] hover:bg-[#EFC0CC]"
                     }`}
                   >
                     {togglingKey === flag.key
@@ -308,41 +331,43 @@ export default function AdminOperationsConsolePage() {
           </div>
 
           {/* Subsystems & Delivery Health Column */}
-          <div className="lg:col-span-5 space-y-6">
-            <div className="p-6 rounded-3xl bg-white border border-[#E4E0D8] shadow-sm space-y-4">
-              <div className="flex items-center gap-2.5 border-b border-[#F3EFE8] pb-3">
-                <Bell className="w-5 h-5 text-[#285B55]" />
-                <h2 className="text-lg font-serif font-medium text-[#263330]">
+          <div className="lg:col-span-5 space-y-5">
+            <div className="peopleflow-card p-6 space-y-4">
+              <div className="flex items-center gap-2.5 border-b border-[#E5EAE7] pb-3">
+                <Bell className="w-5 h-5 text-[#1A1E1C]" />
+                <h2 className="text-lg font-bold text-[#1A1E1C]">
                   Reminders &amp; Connected Archives
                 </h2>
               </div>
 
-              <div className="space-y-3 text-xs text-[#52625E]">
-                <div className="p-3.5 rounded-2xl bg-[#E5F1E8]/60 border border-[#285B55]/15 flex items-center justify-between">
-                  <span className="font-medium text-[#263330]">Quiet Hours Suppression</span>
-                  <span className="inline-flex items-center gap-1 text-[#285B55] font-semibold">
+              <div className="space-y-3 text-xs text-[#5C6661]">
+                <div className="p-3.5 rounded-2xl bg-[#CDE5D3]/45 border border-[#CDE5D3] flex items-center justify-between">
+                  <span className="font-semibold text-[#1A1E1C]">Quiet Hours Suppression</span>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#D9F296] text-[#1A1E1C] font-bold">
                     <CheckCircle2 className="w-3.5 h-3.5" /> Enforced
                   </span>
                 </div>
-                <div className="p-3.5 rounded-2xl bg-[#E5F1E8]/60 border border-[#285B55]/15 flex items-center justify-between">
-                  <span className="font-medium text-[#263330]">Crisis Reminder Pause Guard</span>
-                  <span className="inline-flex items-center gap-1 text-[#285B55] font-semibold">
+                <div className="p-3.5 rounded-2xl bg-[#CDE5D3]/45 border border-[#CDE5D3] flex items-center justify-between">
+                  <span className="font-semibold text-[#1A1E1C]">Crisis Reminder Pause Guard</span>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#D9F296] text-[#1A1E1C] font-bold">
                     <CheckCircle2 className="w-3.5 h-3.5" /> Enforced
                   </span>
                 </div>
-                <div className="p-3.5 rounded-2xl bg-[#EEE7FA]/60 border border-[#6B519E]/15 flex items-center justify-between">
-                  <span className="font-medium text-[#263330]">OAuth Token Envelope Encryption</span>
-                  <span className="font-semibold text-[#553E82]">AES-256-GCM + HKDF</span>
+                <div className="p-3.5 rounded-2xl bg-[#CBD8F6]/45 border border-[#CBD8F6] flex items-center justify-between">
+                  <span className="font-semibold text-[#1A1E1C]">OAuth Token Envelope Encryption</span>
+                  <span className="px-2.5 py-1 rounded-full bg-[#CBD8F6] font-bold text-[#1E3463]">
+                    AES-256-GCM + HKDF
+                  </span>
                 </div>
               </div>
             </div>
 
-            <div className="p-6 rounded-3xl bg-[#FFFBF7] border border-[#E4E0D8] shadow-sm space-y-3">
-              <div className="flex items-center gap-2 text-[#285B55] text-sm font-semibold">
+            <div className="peopleflow-card p-6 bg-hatch-neutral space-y-3">
+              <div className="flex items-center gap-2 text-[#1A1E1C] text-sm font-bold">
                 <Lock className="w-4 h-4" />
                 <span>Zero-Knowledge Privacy Boundary</span>
               </div>
-              <p className="text-xs text-[#52625E] leading-relaxed">
+              <p className="text-xs text-[#5C6661] leading-relaxed">
                 Administrators and support stewards can never view user chat transcripts, voice audio, Life Graph nodes, or personal journal entries. Safety circuit-breaker logs record only one-way SHA-256 hashes and regional helpline dispatch status.
               </p>
             </div>

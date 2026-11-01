@@ -1,177 +1,189 @@
 /**
  * InnerOS Semantic CSS Theme Variables
- * Design Concept: "Warm Human Minimalism with Gentle Futurism"
- * Light Mode by Default (#FAF8F4), with Optional Calm Dark Mode, WCAG 2.2 AA Contrast & Reduced Motion.
+ * Visual System: "Botanical Glassmorphism (Pyko) + Soft Alabaster Bento (PeopleFlow)"
+ * Combines the organic mossy 3D glassmorphic editorial aesthetic on the public website
+ * with the crisp #EDF1EF alabaster-sage Bento canvas, #1A1E1C charcoal active pills,
+ * #D9F296 lime-chartreuse callouts, #CBD8F6 periwinkle gauges, #CDE5D3 mint bars,
+ * and #F6D4DC blush waves across the personal sanctuary & admin backend.
  */
 
 :root,
 .light {
-  /* LIGHT THEME (DEFAULT WARM HUMAN SANCTUARY) */
-  --bg-canvas: #FFFBF7;
+  /* PEOPLEFLOW ALABASTER-SAGE BENTO PALETTE (DEFAULT) */
+  --bg-canvas: #EDF1EF;
   --bg-canvas-warm: #FAF8F4;
-  --bg-surface: #F3EFE8;
+  --bg-surface: #E4EAE7;
   --bg-card: #FFFFFF;
-  --bg-card-hover: #FCFBF9;
-  --bg-subtle: #EAE5DC;
+  --bg-card-hover: #F9FBFA;
+  --bg-subtle: #DFE6E2;
   --bg-input: #FFFFFF;
 
-  --surface-sage: #E5F1E8;
-  --surface-peach: #F9E5DC;
-  --surface-lavender: #EEE7FA;
-  --surface-sky: #E4F1FA;
+  /* SKIN & ACCENT COLORS FROM ATTACHED REFERENCE */
+  --surface-lime: #D9F296;
+  --surface-lime-strong: #9EE838;
+  --surface-periwinkle: #CBD8F6;
+  --surface-sage: #CDE5D3;
+  --surface-blush: #F6D4DC;
+  --surface-peach: #F7E5DC;
+  --surface-lavender: #EAE4F7;
+  --surface-sky: #DCE7FA;
 
-  --text-primary: #263330;
-  --text-secondary: #52625E;
-  --text-muted: #687873;
-  --text-dim: #7F8E8A;
+  --text-primary: #1A1E1C;
+  --text-secondary: #4A5752;
+  --text-muted: #687670;
+  --text-dim: #83918B;
 
-  --border-subtle: rgba(38, 51, 48, 0.08);
-  --border-medium: rgba(38, 51, 48, 0.14);
-  --border-accent: rgba(40, 91, 85, 0.30);
-  --border-teal: rgba(40, 91, 85, 0.25);
+  --border-subtle: rgba(26, 30, 28, 0.07);
+  --border-medium: rgba(26, 30, 28, 0.13);
+  --border-accent: rgba(40, 91, 85, 0.28);
+  --border-teal: rgba(40, 91, 85, 0.22);
 
+  --accent-ink: #1A1E1C;
   --accent-primary: #285B55;
-  --accent-primary-hover: #1F4742;
+  --accent-primary-hover: #1D4540;
   --accent-teal: #285B55;
-  --accent-teal-light: #E8F1EB;
+  --accent-teal-light: #E3EFE8;
   --accent-teal-glow: rgba(40, 91, 85, 0.10);
 
-  --accent-lavender: #6B519E;
-  --accent-lavender-light: #EDE8F5;
-  --accent-lavender-glow: rgba(107, 81, 158, 0.10);
+  --accent-lavender: #5D488A;
+  --accent-lavender-light: #ECE7F7;
+  --accent-lavender-glow: rgba(93, 72, 138, 0.10);
 
-  --accent-indigo: #49588A;
-  --accent-indigo-light: #EDE8F5;
-  --accent-indigo-glow: rgba(73, 88, 138, 0.10);
+  --accent-indigo: #465B8C;
+  --accent-indigo-light: #E2EAF8;
+  --accent-indigo-glow: rgba(70, 91, 140, 0.10);
 
   --accent-ivory: #FFFFFF;
-  --accent-ivory-warm: #FAF8F4;
+  --accent-ivory-warm: #F4F6F5;
 
-  --shadow-subtle: 0 2px 8px rgba(38, 51, 48, 0.04);
-  --shadow-surface: 0 6px 24px -4px rgba(38, 51, 48, 0.06);
-  --shadow-elevated: 0 16px 40px -6px rgba(38, 51, 48, 0.09);
-  --glow-ambient: radial-gradient(circle at 50% 0%, rgba(232, 241, 235, 0.75) 0%, rgba(247, 231, 226, 0.45) 45%, rgba(250, 248, 244, 0) 80%);
+  --shadow-subtle: 0 2px 10px rgba(26, 30, 28, 0.035);
+  --shadow-surface: 0 8px 28px -6px rgba(26, 30, 28, 0.055);
+  --shadow-elevated: 0 20px 48px -8px rgba(26, 30, 28, 0.09);
+  --glow-ambient: radial-gradient(circle at 25% 0%, rgba(205, 229, 211, 0.55) 0%, rgba(203, 216, 246, 0.35) 45%, rgba(237, 241, 239, 0) 80%);
 
   --ring-focus: 0 0 0 3px rgba(40, 91, 85, 0.35);
 }
 
-/* OPTIONAL DARK MODE (CALM EVENING SANCTUARY) */
+/* OPTIONAL DARK MODE (BOTANICAL MOSS SANCTUARY) */
 .dark {
-  --bg-canvas: #141B19;
-  --bg-surface: #1A2321;
-  --bg-card: #202B28;
-  --bg-card-hover: #263330;
-  --bg-subtle: #2C3A37;
-  --bg-input: #1A2321;
+  --bg-canvas: #0E1510;
+  --bg-surface: #152018;
+  --bg-card: #1B281F;
+  --bg-card-hover: #223227;
+  --bg-subtle: #283B2E;
+  --bg-input: #152018;
 
-  --surface-sage: rgba(40, 91, 85, 0.25);
-  --surface-peach: rgba(184, 107, 82, 0.20);
-  --surface-lavender: rgba(107, 81, 158, 0.22);
+  --surface-lime: rgba(158, 232, 56, 0.22);
+  --surface-periwinkle: rgba(203, 216, 246, 0.18);
+  --surface-sage: rgba(205, 229, 211, 0.18);
+  --surface-blush: rgba(246, 212, 220, 0.16);
+  --surface-peach: rgba(247, 229, 220, 0.16);
+  --surface-lavender: rgba(234, 228, 247, 0.18);
 
-  --text-primary: #F4F1EA;
-  --text-secondary: #C5D1CD;
-  --text-muted: #93A39E;
-  --text-dim: #6E7E7A;
+  --text-primary: #F2F6F3;
+  --text-secondary: #C2CEC6;
+  --text-muted: #8FA195;
+  --text-dim: #687A6E;
 
-  --border-subtle: rgba(244, 241, 234, 0.10);
-  --border-medium: rgba(244, 241, 234, 0.16);
-  --border-accent: rgba(120, 172, 141, 0.35);
+  --border-subtle: rgba(242, 246, 243, 0.10);
+  --border-medium: rgba(242, 246, 243, 0.16);
+  --border-accent: rgba(158, 232, 56, 0.35);
   --border-teal: rgba(120, 172, 141, 0.30);
 
-  --accent-primary: #579A8F;
-  --accent-primary-hover: #6EB3A7;
-  --accent-teal: #579A8F;
+  --accent-ink: #F2F6F3;
+  --accent-primary: #8CE232;
+  --accent-primary-hover: #A4EE54;
+  --accent-teal: #65B891;
   --accent-teal-light: #A8CBB5;
-  --accent-teal-glow: rgba(87, 154, 143, 0.20);
+  --accent-teal-glow: rgba(140, 226, 50, 0.18);
 
-  --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.25);
-  --shadow-surface: 0 8px 28px -4px rgba(0, 0, 0, 0.40);
-  --shadow-elevated: 0 18px 44px -6px rgba(0, 0, 0, 0.55);
-  --glow-ambient: radial-gradient(circle at 50% 0%, rgba(40, 91, 85, 0.22) 0%, rgba(107, 81, 158, 0.12) 45%, rgba(20, 27, 25, 0) 80%);
+  --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.28);
+  --shadow-surface: 0 10px 32px -4px rgba(0, 0, 0, 0.45);
+  --shadow-elevated: 0 22px 52px -6px rgba(0, 0, 0, 0.65);
+  --glow-ambient: radial-gradient(circle at 50% 0%, rgba(140, 226, 50, 0.14) 0%, rgba(40, 91, 85, 0.16) 45%, rgba(14, 21, 16, 0) 80%);
 
-  --ring-focus: 0 0 0 3px rgba(87, 154, 143, 0.45);
+  --ring-focus: 0 0 0 3px rgba(140, 226, 50, 0.45);
 }
 
 /* Base Body Application */
 body {
   background-color: var(--bg-canvas);
   color: var(--text-primary);
-  font-size: 16.5px;
-  line-height: 1.65;
+  font-size: 16px;
+  line-height: 1.62;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 250ms ease, color 250ms ease;
 }
 
-/* Typography Readability Floor: Eliminate microscopic 9px-11px labels */
+/* Typography Readability Floor */
 .text-\[9px\],
 .text-\[10px\],
 .text-\[11px\] {
-  font-size: 0.8125rem !important; /* 13px minimum readable floor */
+  font-size: 0.78rem !important;
   line-height: 1.45 !important;
-}
-
-/* Normalize hardcoded dark-mode utility borders & zinc colors in Light Mode */
-:root:not(.dark) [class*="border-white/"] {
-  border-color: rgba(38, 51, 48, 0.09) !important;
-}
-
-:root:not(.dark) [class*="bg-white/[0.0"] {
-  background-color: rgba(38, 51, 48, 0.035) !important;
-}
-
-:root:not(.dark) .text-zinc-300,
-:root:not(.dark) .text-zinc-400,
-:root:not(.dark) .text-zinc-500 {
-  color: #52625E !important;
-}
-
-:root:not(.dark) .bg-amber-950\/30,
-:root:not(.dark) .bg-amber-950\/40,
-:root:not(.dark) .bg-amber-950\/60,
-:root:not(.dark) .bg-amber-950\/80 {
-  background-color: #FDF6EC !important;
-  color: #6B4415 !important;
-  border-color: #EED5B3 !important;
-}
-
-:root:not(.dark) .text-amber-200,
-:root:not(.dark) .text-amber-300,
-:root:not(.dark) .text-amber-400 {
-  color: #7C4D12 !important;
-}
-
-:root:not(.dark) .bg-rose-950\/30,
-:root:not(.dark) .bg-rose-950\/40,
-:root:not(.dark) .bg-rose-950\/60,
-:root:not(.dark) .bg-rose-950\/70 {
-  background-color: #FDF2F2 !important;
-  color: #881B2B !important;
-  border-color: #F2C9CE !important;
-}
-
-:root:not(.dark) .text-rose-200,
-:root:not(.dark) .text-rose-300,
-:root:not(.dark) .text-rose-400 {
-  color: #9B1C31 !important;
-}
-
-:root:not(.dark) .bg-emerald-950\/40,
-:root:not(.dark) .bg-emerald-950\/60,
-:root:not(.dark) .bg-emerald-900\/30 {
-  background-color: #E8F1EB !important;
-  color: #1F4742 !important;
-}
-
-:root:not(.dark) .text-emerald-300,
-:root:not(.dark) .text-emerald-400 {
-  color: #1F573E !important;
 }
 
 /* Editorial Typography Utility Classes */
 .font-serif-editorial {
-  font-family: var(--font-serif, "Newsreader", "Playfair Display", "Cormorant Garamond", Georgia, serif);
+  font-family: var(--font-serif, "Newsreader", "Playfair Display", "Instrument Serif", "Cormorant Garamond", Georgia, serif);
   font-feature-settings: "onum" 1, "pnum" 1;
+}
+
+/* Architectural Diagonal Hatch Patterns (from PeopleFlow reference) */
+.bg-hatch-neutral {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(26, 30, 28, 0.045),
+    rgba(26, 30, 28, 0.045) 4px,
+    transparent 4px,
+    transparent 9px
+  );
+}
+
+.bg-hatch-sage {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(40, 91, 85, 0.08),
+    rgba(40, 91, 85, 0.08) 4px,
+    rgba(205, 229, 211, 0.25) 4px,
+    rgba(205, 229, 211, 0.25) 9px
+  );
+}
+
+.bg-hatch-periwinkle {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(70, 91, 140, 0.09),
+    rgba(70, 91, 140, 0.09) 4px,
+    rgba(203, 216, 246, 0.28) 4px,
+    rgba(203, 216, 246, 0.28) 9px
+  );
+}
+
+/* PeopleFlow Bento & Pyko Glassmorphic Cards */
+.peopleflow-card {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 28px;
+  box-shadow: 0 8px 30px -6px rgba(26, 30, 28, 0.045), 0 1px 2px rgba(26, 30, 28, 0.03);
+  backdrop-filter: blur(16px);
+}
+
+.pyko-glass {
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+}
+
+.pyko-glass-light {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 18px 42px -10px rgba(20, 32, 24, 0.12);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 /* Sanctuary Surface Classes */
@@ -195,7 +207,7 @@ body {
 @keyframes calm-breathe {
   0%, 100% {
     transform: scale(1);
-    opacity: 0.85;
+    opacity: 0.88;
   }
   50% {
     transform: scale(1.06);
@@ -208,7 +220,7 @@ body {
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-5px);
+    transform: translateY(-6px);
   }
 }
 
