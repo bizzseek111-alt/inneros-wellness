@@ -14,12 +14,17 @@ class Settings(BaseSettings):
     PORT: int = 8000
     HOST: str = "0.0.0.0"
 
-    # Security & Encryption
+    # Database & Persistence
+    DATABASE_URL: str = "sqlite:///./inneros.db"
+
+    # Security, Sessions & Encryption
     # Master key is 32 bytes (64 hex characters)
     INNEROS_MASTER_ENCRYPTION_KEY: str = (
         "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
     )
     JWT_SECRET_KEY: str = "inneros_dev_secret_jwt_key_synthetic_only_not_for_prod"
+    SESSION_COOKIE_NAME: str = "inneros_session"
+    SESSION_TTL_HOURS: int = 168
 
     # CORS
     CORS_ORIGINS: List[str] = [

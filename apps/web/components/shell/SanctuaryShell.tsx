@@ -101,6 +101,7 @@ export const SanctuaryShell: React.FC<SanctuaryShellProps> = ({ children }) => {
     { href: "/integrations", label: "Connected Apps", icon: Link2 },
     { href: "/settings/privacy", label: "Privacy", icon: ShieldCheck },
     { href: "/settings/notifications", label: "Settings", icon: Sliders },
+    { href: "/admin", label: "Admin Console", icon: Sparkles },
     { href: "/safety", label: "Help and Support", icon: LifeBuoy },
   ];
 

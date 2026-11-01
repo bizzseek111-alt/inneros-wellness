@@ -6,6 +6,7 @@ import { Button } from "@/components/primitives/Button";
 import { Badge } from "@/components/primitives/Badge";
 import { BookOpen, Sparkles, Trash2, Plus, Calendar, Check } from "lucide-react";
 import { prototypeService, JournalEntry } from "@/lib/prototype-service";
+import { api } from "@/lib/api-client";
 
 const GUIDED_PROMPTS = [
   {
@@ -34,32 +35,92 @@ export default function JournalPage() {
   const [tagInput, setTagInput] = useState("reflection");
 
   useEffect(() => {
-    setEntries(prototypeService.getState().journal);
+    let mounted = true;
+    api
+      .getJournalEntries()
+      .then((rows) => {
+        if (!mounted) return;
+        const mapped: JournalEntry[] = rows.map((r: any) => ({
+          id: r.id,
+          title: r.title,
+          content: r.content,
+          date: new Date(r.created_at).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+          valence: (r.mood_valence || "reflective") as any,
+          energyScore: 7,
+          somaticFocus: r.prompt || "Slow, steady breathing",
+          isEncrypted: true,
+          tags: Array.isArray(r.tags) ? r.tags : ["reflection"],
+        }));
+        setEntries(mapped);
+      })
+      .catch(() => {
+        if (mounted) {
+          setEntries(prototypeService.getState().journal);
+        }
+      });
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  const handleSaveEntry = () => {
+  const handleSaveEntry = async () => {
     if (!title.trim() || !content.trim()) return;
+    const parsedTags = tagInput
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
 
-    const newEntry = prototypeService.addJournalEntry({
-      title,
-      content,
-      valence,
-      energyScore: 7,
-      somaticFocus,
-      tags: tagInput
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean),
-    });
+    try {
+      const saved = await api.createJournalEntry({
+        title,
+        content,
+        prompt: somaticFocus,
+        tags: parsedTags,
+        mood_valence: valence,
+      });
+      const mappedEntry: JournalEntry = {
+        id: saved.id,
+        title: saved.title,
+        content: saved.content,
+        date: new Date(saved.created_at).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        }),
+        valence: (saved.mood_valence || valence) as any,
+        energyScore: 7,
+        somaticFocus: saved.prompt || somaticFocus,
+        isEncrypted: true,
+        tags: saved.tags || parsedTags,
+      };
+      setEntries((prev) => [mappedEntry, ...prev]);
+    } catch {
+      const newEntry = prototypeService.addJournalEntry({
+        title,
+        content,
+        valence,
+        energyScore: 7,
+        somaticFocus,
+        tags: parsedTags,
+      });
+      setEntries((prev) => [newEntry, ...prev]);
+    }
 
-    setEntries((prev) => [newEntry, ...prev]);
     setIsCreating(false);
     setTitle("");
     setContent("");
   };
 
-  const handleDelete = (id: string) => {
-    prototypeService.deleteJournalEntry(id);
+  const handleDelete = async (id: string) => {
+    try {
+      await api.deleteJournalEntry(id);
+    } catch {
+      prototypeService.deleteJournalEntry(id);
+    }
     setEntries((prev) => prev.filter((e) => e.id !== id));
   };
 

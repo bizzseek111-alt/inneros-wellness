@@ -27,14 +27,15 @@ module.exports = {
       colors: {
         // Warm Human Minimalism Core Tokens
         canvas: {
-          DEFAULT: "#FAF8F4",
+          DEFAULT: "#FFFBF7",
+          warm: "#FAF8F4",
           subtle: "#F3EFE8",
           card: "#FFFFFF",
           elevated: "#FCFBF9",
         },
         sage: {
           50: "#F4F8F5",
-          100: "#E8F1EB", // Soft sage primary token
+          100: "#E5F1E8", // Pale sage primary token
           200: "#D0E3D7",
           300: "#A8CBB5",
           400: "#78AC8D",
@@ -46,7 +47,7 @@ module.exports = {
         },
         peach: {
           50: "#FDF8F6",
-          100: "#F7E7E2", // Warm peach primary token
+          100: "#F9E5DC", // Warm peach primary token
           200: "#EED0C6",
           300: "#E0B0A0",
           400: "#CE8A74",
@@ -56,7 +57,7 @@ module.exports = {
         },
         lavender: {
           50: "#F7F5FA",
-          100: "#EDE8F5", // Gentle lavender primary token
+          100: "#EEE7FA", // Soft lilac primary token
           200: "#DCD3EC",
           300: "#C2B3DF",
           400: "#A38ECF",
@@ -66,10 +67,17 @@ module.exports = {
           800: "#423166",
           900: "#31254C",
         },
+        sky: {
+          50: "#F3F9FD",
+          100: "#E4F1FA", // Soft sky blue primary token
+          200: "#C5E2F5",
+          500: "#3A7CA5",
+          700: "#235372",
+        },
         accent: {
           DEFAULT: "#285B55", // Primary accent
           hover: "#1F4742",
-          light: "#E8F1EB",
+          light: "#E5F1E8",
           subtle: "#D5E6DC",
         },
         ink: {

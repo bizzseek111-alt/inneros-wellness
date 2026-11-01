@@ -6,6 +6,7 @@ import { Button } from "@/components/primitives/Button";
 import { Badge } from "@/components/primitives/Badge";
 import { Target, Plus } from "lucide-react";
 import { prototypeService, GrowthGoal } from "@/lib/prototype-service";
+import { api } from "@/lib/api-client";
 
 export default function GrowthPage() {
   const [goals, setGoals] = useState<GrowthGoal[]>([]);
@@ -15,41 +16,101 @@ export default function GrowthPage() {
   const [coreValue, setCoreValue] = useState("Kindness & Balance");
 
   useEffect(() => {
-    setGoals(prototypeService.getState().goals);
+    let mounted = true;
+    api
+      .getGrowthGoals()
+      .then((rows) => {
+        if (!mounted) return;
+        const mapped: GrowthGoal[] = rows.map((r: any) => ({
+          id: r.id,
+          horizonTitle: r.title,
+          category: (r.category || "boundaries") as any,
+          intention: r.why_it_matters || "Moving forward at a sustainable, compassionate pace.",
+          coreValue: r.category || "Rest & Boundaries",
+          status: (r.status || "active") as any,
+          reflectionNotes: "Saved in your personal sanctuary.",
+          milestones: Array.isArray(r.steps) ? r.steps : [],
+        }));
+        setGoals(mapped);
+      })
+      .catch(() => {
+        if (mounted) {
+          setGoals(prototypeService.getState().goals);
+        }
+      });
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  const toggleMilestone = (goalId: string, milestoneId: string) => {
-    const state = prototypeService.getState();
-    const targetGoal = state.goals.find((g) => g.id === goalId);
-    if (targetGoal) {
-      const ms = targetGoal.milestones.find((m) => m.id === milestoneId);
-      if (ms) ms.completed = !ms.completed;
-      prototypeService.saveState(state);
-      setGoals([...state.goals]);
+  const toggleMilestone = async (goalId: string, milestoneId: string) => {
+    try {
+      const updated = await api.toggleGrowthStep(goalId, milestoneId);
+      setGoals((prev) =>
+        prev.map((g) =>
+          g.id === goalId
+            ? {
+                ...g,
+                milestones: Array.isArray(updated.steps) ? updated.steps : g.milestones,
+              }
+            : g
+        )
+      );
+    } catch {
+      const state = prototypeService.getState();
+      const targetGoal = state.goals.find((g) => g.id === goalId);
+      if (targetGoal) {
+        const ms = targetGoal.milestones.find((m) => m.id === milestoneId);
+        if (ms) ms.completed = !ms.completed;
+        prototypeService.saveState(state);
+        setGoals([...state.goals]);
+      }
     }
   };
 
-  const handleCreateGoal = () => {
+  const handleCreateGoal = async () => {
     if (!title.trim() || !intention.trim()) return;
 
-    const state = prototypeService.getState();
-    const newGoal: GrowthGoal = {
-      id: `goal_${Date.now()}`,
-      horizonTitle: title,
-      category: "boundaries",
-      intention,
-      coreValue,
-      status: "active",
-      reflectionNotes: "Started with a gentle intention today.",
-      milestones: [
-        { id: `m_${Date.now()}_1`, label: "Practice one small step this week", completed: false },
-        { id: `m_${Date.now()}_2`, label: "Reflect on what felt helpful without judgment", completed: false },
-      ],
-    };
+    const initialSteps = [
+      { id: `m_${Date.now()}_1`, label: "Practice one small step this week", completed: false },
+      { id: `m_${Date.now()}_2`, label: "Reflect on what felt helpful without judgment", completed: false },
+    ];
 
-    state.goals.push(newGoal);
-    prototypeService.saveState(state);
-    setGoals([...state.goals]);
+    try {
+      const created = await api.createGrowthGoal({
+        title,
+        category: coreValue || "Rest & Boundaries",
+        why_it_matters: intention,
+        steps: initialSteps,
+      });
+      const mappedGoal: GrowthGoal = {
+        id: created.id,
+        horizonTitle: created.title,
+        category: "boundaries",
+        intention: created.why_it_matters,
+        coreValue: created.category,
+        status: "active",
+        reflectionNotes: "Started with a gentle intention today.",
+        milestones: created.steps || initialSteps,
+      };
+      setGoals((prev) => [mappedGoal, ...prev]);
+    } catch {
+      const state = prototypeService.getState();
+      const newGoal: GrowthGoal = {
+        id: `goal_${Date.now()}`,
+        horizonTitle: title,
+        category: "boundaries",
+        intention,
+        coreValue,
+        status: "active",
+        reflectionNotes: "Started with a gentle intention today.",
+        milestones: initialSteps,
+      };
+      state.goals.push(newGoal);
+      prototypeService.saveState(state);
+      setGoals([...state.goals]);
+    }
+
     setIsAdding(false);
     setTitle("");
     setIntention("");

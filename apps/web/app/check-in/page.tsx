@@ -7,6 +7,7 @@ import { Button } from "@/components/primitives/Button";
 import { Badge } from "@/components/primitives/Badge";
 import { Heart, Check, Sparkles, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { api } from "@/lib/api-client";
 
 const BODY_AREAS = [
   { id: "jaw", label: "Face & Jaw", note: "Holding tension or unspoken thoughts" },
@@ -30,7 +31,18 @@ export default function CheckInPage() {
   const [selectedNeed, setSelectedNeed] = useState("clarity");
   const [saved, setSaved] = useState(false);
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    try {
+      await api.createCheckIn({
+        energy_level: Math.max(1, Math.min(5, Math.round(energy / 2))),
+        stress_level: valence >= 0 ? 2 : 4,
+        emotions: [valence >= 0 ? "Light & Steady" : "Heavy or Tired", `Body: ${selectedBodyPart}`],
+        needs: [selectedNeed],
+        note: `Mood valence ${valence}, energy ${energy * 10}%, body focus: ${selectedBodyPart}`,
+      });
+    } catch {
+      // Fallback gracefully if offline
+    }
     setSaved(true);
     setTimeout(() => setSaved(false), 4000);
   };

@@ -6,6 +6,7 @@ import { MarketingShell } from "@/components/marketing/MarketingShell";
 import { Badge } from "@/components/primitives/Badge";
 import { Button } from "@/components/primitives/Button";
 import { trackMarketingEvent } from "@/lib/marketing-analytics";
+import { api } from "@/lib/api-client";
 import {
   Mail,
   LifeBuoy,
@@ -25,13 +26,23 @@ export default function ContactAndSupportPage() {
   const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim() || !message.trim()) {
       setErrorMsg("Please fill in your name, email address, and message.");
       return;
     }
     setErrorMsg(null);
+    try {
+      await api.submitContactForm({
+        name: name.trim(),
+        email: email.trim(),
+        inquiry_type: topic,
+        message: message.trim(),
+      });
+    } catch {
+      // Allow offline confirmation UI even if backend is unreachable
+    }
     setSubmitted(true);
     trackMarketingEvent("contact_form_submitted", { topic });
   };

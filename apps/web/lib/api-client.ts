@@ -1163,4 +1163,282 @@ export const api = {
     if (!res.ok) throw new Error("Failed to fetch Phase 2 specifications");
     return res.json();
   },
+
+  // ---------------------------------------------------------------------------
+  // Authentication & Session Identity
+  // ---------------------------------------------------------------------------
+  getStoredSessionToken(): string | null {
+    if (typeof window === "undefined") return null;
+    return window.localStorage.getItem("inneros_auth_token_v1");
+  },
+
+  getAuthHeaders(): Record<string, string> {
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    const token = this.getStoredSessionToken();
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    return headers;
+  },
+
+  async signup(data: {
+    email: string;
+    password: string;
+    display_name: string;
+    locale?: string;
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/auth/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Signup failed");
+    }
+    const payload = await res.json();
+    if (typeof window !== "undefined" && payload.session_token) {
+      window.localStorage.setItem("inneros_auth_token_v1", payload.session_token);
+      window.localStorage.setItem("inneros_user_profile_v1", JSON.stringify(payload.user));
+    }
+    return payload;
+  },
+
+  async login(data: { email: string; password: string }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Invalid email or password");
+    }
+    const payload = await res.json();
+    if (typeof window !== "undefined" && payload.session_token) {
+      window.localStorage.setItem("inneros_auth_token_v1", payload.session_token);
+      window.localStorage.setItem("inneros_user_profile_v1", JSON.stringify(payload.user));
+    }
+    return payload;
+  },
+
+  async logout(): Promise<void> {
+    await fetch(`${API_BASE}/api/v1/auth/logout`, {
+      method: "POST",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    }).catch(() => {});
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem("inneros_auth_token_v1");
+      window.localStorage.removeItem("inneros_user_profile_v1");
+    }
+  },
+
+  async getMe(): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/auth/me`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch current user profile");
+    return res.json();
+  },
+
+  // ---------------------------------------------------------------------------
+  // Wellbeing: Journal, Personal Growth Goals, Daily Check-Ins & Migration
+  // ---------------------------------------------------------------------------
+  async getJournalEntries(tag?: string): Promise<any[]> {
+    const url = new URL(`${API_BASE}/api/v1/journal`);
+    if (tag) url.searchParams.set("tag", tag);
+    const res = await fetch(url.toString(), {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to load journal entries");
+    return res.json();
+  },
+
+  async createJournalEntry(data: {
+    id?: string;
+    title: string;
+    content: string;
+    prompt?: string;
+    tags?: string[];
+    mood_valence?: string;
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/journal`, {
+      method: "POST",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error("Failed to save journal entry");
+    return res.json();
+  },
+
+  async deleteJournalEntry(entryId: string): Promise<boolean> {
+    const res = await fetch(`${API_BASE}/api/v1/journal/${entryId}`, {
+      method: "DELETE",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    return res.status === 204;
+  },
+
+  async getGrowthGoals(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/growth`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to load growth goals");
+    return res.json();
+  },
+
+  async createGrowthGoal(data: {
+    id?: string;
+    title: string;
+    category: string;
+    why_it_matters: string;
+    steps: Array<{ id: string; label: string; completed: boolean }>;
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/growth`, {
+      method: "POST",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error("Failed to create growth goal");
+    return res.json();
+  },
+
+  async toggleGrowthStep(goalId: string, stepId: string, completed?: boolean): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/growth/${goalId}/steps/${stepId}`, {
+      method: "PUT",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+      body: JSON.stringify({ completed }),
+    });
+    if (!res.ok) throw new Error("Failed to update step");
+    return res.json();
+  },
+
+  async deleteGrowthGoal(goalId: string): Promise<boolean> {
+    const res = await fetch(`${API_BASE}/api/v1/growth/${goalId}`, {
+      method: "DELETE",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    return res.status === 204;
+  },
+
+  async getCheckIns(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/check-ins`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to load check-ins");
+    return res.json();
+  },
+
+  async createCheckIn(data: {
+    energy_level: number;
+    stress_level: number;
+    emotions: string[];
+    needs: string[];
+    note: string;
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/check-ins`, {
+      method: "POST",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error("Failed to save check-in");
+    return res.json();
+  },
+
+  async migrateLocalBrowserData(payload: {
+    journal_entries: any[];
+    growth_goals: any[];
+    check_ins: any[];
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/wellbeing/migrate-local`, {
+      method: "POST",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error("Failed to migrate local browser data");
+    return res.json();
+  },
+
+  async submitContactForm(data: {
+    name: string;
+    email: string;
+    inquiry_type: string;
+    organization?: string;
+    message: string;
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/contact`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Failed to submit contact form");
+    }
+    return res.json();
+  },
+
+  // ---------------------------------------------------------------------------
+  // Admin & Operations Console
+  // ---------------------------------------------------------------------------
+  async getAdminOverview(): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/overview`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to load admin overview");
+    return res.json();
+  },
+
+  async getFeatureFlags(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/feature-flags`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to load feature flags");
+    return res.json();
+  },
+
+  async updateFeatureFlag(flagKey: string, enabled: boolean): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/feature-flags/${flagKey}`, {
+      method: "PUT",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+      body: JSON.stringify({ enabled }),
+    });
+    if (!res.ok) throw new Error("Failed to update feature flag");
+    return res.json();
+  },
+
+  async getSafetyIncidents(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/safety-incidents`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to load anonymized safety incidents");
+    return res.json();
+  },
+
+  async getAdminAuditLogs(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/audit-logs`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to load audit logs");
+    return res.json();
+  },
 };

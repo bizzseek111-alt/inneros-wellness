@@ -17,7 +17,7 @@ from app.domains.knowledge.schemas import (
     ReviewActionRequest,
 )
 from app.domains.knowledge.service import knowledge_service
-from app.core.security import get_current_user, UserContext
+from app.core.security import get_current_user, require_role, UserContext
 
 router = APIRouter(prefix="/knowledge", tags=["Psychology Knowledge Engine"])
 
@@ -120,7 +120,7 @@ async def retrieve_context_for_companion(
 async def submit_review_decision(
     record_id: str,
     req: ReviewActionRequest,
-    user: UserContext = Depends(get_current_user),
+    user: UserContext = Depends(require_role(["admin", "content_reviewer"])),
 ):
     """Reviewer workflow: updates review status, records credentialed review sign-off, and sets re-certification date."""
     updated = knowledge_service.execute_review(record_id, req)

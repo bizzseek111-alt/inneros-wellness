@@ -210,6 +210,14 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                 </select>
               </div>
 
+              {/* Sign In Link */}
+              <Link
+                href="/login"
+                className="hidden lg:inline-flex items-center px-3 py-2 rounded-xl text-[#263330] hover:bg-[#F3EFE8] text-[13.5px] font-medium whitespace-nowrap transition-colors shrink-0"
+              >
+                Sign In
+              </Link>
+
               {/* Open Companion App Button */}
               <Link
                 href="/dashboard"
@@ -223,7 +231,7 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
 
               {/* Start Your Journey Primary CTA */}
               <Link
-                href="/onboarding"
+                href="/signup"
                 onClick={() =>
                   trackMarketingEvent("cta_start_journey_click", {
                     location: "header",

@@ -7,16 +7,18 @@
 :root,
 .light {
   /* LIGHT THEME (DEFAULT WARM HUMAN SANCTUARY) */
-  --bg-canvas: #FAF8F4;
+  --bg-canvas: #FFFBF7;
+  --bg-canvas-warm: #FAF8F4;
   --bg-surface: #F3EFE8;
   --bg-card: #FFFFFF;
   --bg-card-hover: #FCFBF9;
   --bg-subtle: #EAE5DC;
   --bg-input: #FFFFFF;
 
-  --surface-sage: #E8F1EB;
-  --surface-peach: #F7E7E2;
-  --surface-lavender: #EDE8F5;
+  --surface-sage: #E5F1E8;
+  --surface-peach: #F9E5DC;
+  --surface-lavender: #EEE7FA;
+  --surface-sky: #E4F1FA;
 
   --text-primary: #263330;
   --text-secondary: #52625E;

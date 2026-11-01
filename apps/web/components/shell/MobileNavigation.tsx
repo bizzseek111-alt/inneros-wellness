@@ -17,13 +17,13 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
   onOpenHotlines,
 }) => {
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-midnight-950/90 backdrop-blur-xl border-t border-white/[0.08] px-4 py-2">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-[#E4E0D8] px-4 py-2">
       <div className="flex items-center justify-around">
         <Link
-          href="/"
+          href="/dashboard"
           className={cn(
-            "flex flex-col items-center py-1 px-3 text-[10px] font-medium transition-colors",
-            activeTab === "companion" ? "text-teal-400 font-semibold" : "text-zinc-400"
+            "flex flex-col items-center py-1 px-3 text-xs font-medium transition-colors",
+            activeTab === "companion" ? "text-[#285B55] font-semibold" : "text-[#52625E]"
           )}
         >
           <MessageSquare className="w-4 h-4 mb-1" />
@@ -33,8 +33,8 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
         <Link
           href="/explore"
           className={cn(
-            "flex flex-col items-center py-1 px-3 text-[10px] font-medium transition-colors",
-            activeTab === "explore" ? "text-teal-400 font-semibold" : "text-zinc-400"
+            "flex flex-col items-center py-1 px-3 text-xs font-medium transition-colors",
+            activeTab === "explore" ? "text-[#285B55] font-semibold" : "text-[#52625E]"
           )}
         >
           <Compass className="w-4 h-4 mb-1" />
@@ -44,8 +44,8 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
         <Link
           href="/design-system"
           className={cn(
-            "flex flex-col items-center py-1 px-3 text-[10px] font-medium transition-colors",
-            activeTab === "design-system" ? "text-teal-400 font-semibold" : "text-zinc-400"
+            "flex flex-col items-center py-1 px-3 text-xs font-medium transition-colors",
+            activeTab === "design-system" ? "text-[#285B55] font-semibold" : "text-[#52625E]"
           )}
         >
           <Layers className="w-4 h-4 mb-1" />
@@ -54,15 +54,15 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
 
         <button
           onClick={onOpenMemory}
-          className="flex flex-col items-center py-1 px-3 text-[10px] font-medium text-zinc-400 hover:text-zinc-200 transition-colors"
+          className="flex flex-col items-center py-1 px-3 text-xs font-medium text-[#52625E] hover:text-[#263330] transition-colors"
         >
-          <Database className="w-4 h-4 mb-1 text-lavender-400" />
+          <Database className="w-4 h-4 mb-1 text-[#553E82]" />
           <span>Memory</span>
         </button>
 
         <button
           onClick={onOpenHotlines}
-          className="flex flex-col items-center py-1 px-3 text-[10px] font-medium text-rose-400 hover:text-rose-300 transition-colors"
+          className="flex flex-col items-center py-1 px-3 text-xs font-medium text-[#9B1C31] hover:opacity-80 transition-colors"
         >
           <Shield className="w-4 h-4 mb-1" />
           <span>988</span>

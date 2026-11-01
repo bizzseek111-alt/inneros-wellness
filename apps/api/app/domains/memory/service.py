@@ -39,8 +39,14 @@ from app.domains.memory.schemas import (
     DataExportBundle,
 )
 from app.core.observability import logger
+from app.db.database import (
+    delete_domain_item,
+    delete_domain_namespace_for_user,
+    load_domain_items,
+    save_domain_item,
+)
 
-# In-memory stores partitioned by user_id for strict tenant isolation
+# In-memory stores partitioned by user_id for strict tenant isolation (backed by SQLite/PostgreSQL write-through)
 _MEMORY_RECORDS_STORE: Dict[str, Dict[str, MemoryRecord]] = {}
 _LIFE_GRAPH_NODES_STORE: Dict[str, Dict[str, LifeGraphNode]] = {}
 _LIFE_GRAPH_EDGES_STORE: Dict[str, Dict[str, LifeGraphEdge]] = {}
@@ -393,6 +399,31 @@ def _init_synthetic_user_memory(user_id: str):
         details={"seed_type": "synthetic_persona_elena_vance"},
     )
 
+    # Hydrate any persisted DB state for this user
+    for row in load_domain_items("memory_consent", user_id=user_id):
+        try:
+            _CONSENT_STORE[user_id] = UserMemoryConsent.model_validate(row["payload"])
+        except Exception:
+            pass
+    for row in load_domain_items("memory_records", user_id=user_id):
+        try:
+            rec = MemoryRecord.model_validate(row["payload"])
+            _MEMORY_RECORDS_STORE[user_id][rec.id] = rec
+        except Exception:
+            pass
+    for row in load_domain_items("life_graph_nodes", user_id=user_id):
+        try:
+            node = LifeGraphNode.model_validate(row["payload"])
+            _LIFE_GRAPH_NODES_STORE[user_id][node.id] = node
+        except Exception:
+            pass
+    for row in load_domain_items("life_graph_edges", user_id=user_id):
+        try:
+            edge = LifeGraphEdge.model_validate(row["payload"])
+            _LIFE_GRAPH_EDGES_STORE[user_id][edge.id] = edge
+        except Exception:
+            pass
+
 
 class MemoryService:
     """Enterprise-grade, privacy-first personal memory and life graph service."""
@@ -415,6 +446,7 @@ class MemoryService:
 
         new_settings.updated_at = _get_utc_now()
         _CONSENT_STORE[user_id] = new_settings
+        save_domain_item("memory_consent", user_id, "consent", new_settings)
         logger.info(f"Memory consent updated for user {user_id}")
         return new_settings
 
@@ -555,6 +587,7 @@ class MemoryService:
         )
 
         _MEMORY_RECORDS_STORE[user_id][memory_id] = record
+        save_domain_item("memory_records", user_id, memory_id, record)
 
         # Log audit action
         action = MemoryAuditAction.SUGGESTED if record.status == MemoryStatus.SUGGESTED else MemoryAuditAction.CREATED
@@ -599,6 +632,7 @@ class MemoryService:
 
         record.updated_at = _get_utc_now()
         _MEMORY_RECORDS_STORE[user_id][memory_id] = record
+        save_domain_item("memory_records", user_id, memory_id, record)
 
         _log_audit_event(
             user_id=user_id,
@@ -632,12 +666,14 @@ class MemoryService:
         record.expires_at = None  # Remove tentative auto-expiration
 
         _MEMORY_RECORDS_STORE[user_id][memory_id] = record
+        save_domain_item("memory_records", user_id, memory_id, record)
 
         # Also update any linked Life Graph node
         for node in _LIFE_GRAPH_NODES_STORE.get(user_id, {}).values():
             if node.linked_memory_id == memory_id:
                 node.record_type = MemoryRecordType.STORED_FACT
                 node.is_tentative = False
+                save_domain_item("life_graph_nodes", user_id, node.id, node)
 
         _log_audit_event(
             user_id=user_id,
@@ -658,6 +694,7 @@ class MemoryService:
         record.status = MemoryStatus.REJECTED
         record.updated_at = _get_utc_now()
         _MEMORY_RECORDS_STORE[user_id][memory_id] = record
+        save_domain_item("memory_records", user_id, memory_id, record)
 
         # Remove any linked Life Graph node and incident edges
         nodes_to_delete = [
@@ -692,6 +729,7 @@ class MemoryService:
 
         # 2. Delete memory record
         del user_records[memory_id]
+        delete_domain_item("memory_records", user_id, memory_id)
 
         # 3. Immutable audit log
         _log_audit_event(
@@ -761,6 +799,7 @@ class MemoryService:
             created_at=_get_utc_now(),
         )
         _LIFE_GRAPH_NODES_STORE[user_id][node_id] = node
+        save_domain_item("life_graph_nodes", user_id, node_id, node)
 
         _log_audit_event(
             user_id=user_id,
@@ -786,9 +825,11 @@ class MemoryService:
         ]
         for eid in edges_to_remove:
             del user_edges[eid]
+            delete_domain_item("life_graph_edges", user_id, eid)
 
         # Delete node
         del user_nodes[node_id]
+        delete_domain_item("life_graph_nodes", user_id, node_id)
 
         _log_audit_event(
             user_id=user_id,
@@ -820,6 +861,7 @@ class MemoryService:
             created_at=_get_utc_now(),
         )
         _LIFE_GRAPH_EDGES_STORE[user_id][edge_id] = edge
+        save_domain_item("life_graph_edges", user_id, edge_id, edge)
         return edge
 
     def delete_life_graph_edge(self, user_id: str, edge_id: str) -> bool:
@@ -827,6 +869,7 @@ class MemoryService:
         user_edges = _LIFE_GRAPH_EDGES_STORE.get(user_id, {})
         if edge_id in user_edges:
             del user_edges[edge_id]
+            delete_domain_item("life_graph_edges", user_id, edge_id)
             return True
         return False
 
@@ -845,6 +888,15 @@ class MemoryService:
         _MEMORY_RECORDS_STORE[user_id] = {}
         _LIFE_GRAPH_NODES_STORE[user_id] = {}
         _LIFE_GRAPH_EDGES_STORE[user_id] = {}
+        delete_domain_namespace_for_user("memory_records", user_id)
+        delete_domain_namespace_for_user("life_graph_nodes", user_id)
+        delete_domain_namespace_for_user("life_graph_edges", user_id)
+
+        try:
+            from app.domains.wellbeing.service import wellbeing_service
+            wellbeing_service.purge_user_wellbeing_data(user_id)
+        except Exception:
+            pass
 
         # Log atomic purge tombstone
         _log_audit_event(
@@ -877,6 +929,17 @@ class MemoryService:
         consent = self.get_consent(user_id)
         audit_trail = list(_AUDIT_LOGS_STORE.get(user_id, []))
 
+        journal_count = 0
+        growth_count = 0
+        checkin_count = 0
+        try:
+            from app.domains.wellbeing.service import wellbeing_service
+            journal_count = len(wellbeing_service.list_journal_entries(user_id))
+            growth_count = len(wellbeing_service.list_growth_goals(user_id))
+            checkin_count = len(wellbeing_service.list_check_ins(user_id))
+        except Exception:
+            pass
+
         _log_audit_event(
             user_id=user_id,
             action=MemoryAuditAction.EXPORTED,
@@ -901,6 +964,9 @@ class MemoryService:
                 "audit_entries": len(audit_trail),
                 "confirmed_facts": sum(1 for m in memories if m.record_type == MemoryRecordType.STORED_FACT),
                 "tentative_interpretations": sum(1 for m in memories if m.record_type == MemoryRecordType.TENTATIVE_AI_INTERPRETATION),
+                "journal_entries": journal_count,
+                "growth_goals": growth_count,
+                "check_in_records": checkin_count,
             },
         )
 

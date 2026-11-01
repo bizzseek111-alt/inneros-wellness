@@ -16,6 +16,9 @@ from app.core.middleware import (
 from app.core.observability import logger
 
 # Import domain routers
+from app.db.database import init_db
+from app.domains.auth.router import router as auth_router
+from app.domains.wellbeing.router import router as wellbeing_router
 from app.domains.safety.router import router as safety_router
 from app.domains.companion.router import router as companion_router
 from app.domains.memory.router import router as memory_router
@@ -28,10 +31,11 @@ from app.domains.admin.router import router as admin_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: Initialize logging, verify encryption keys, and log synthetic mode
+    # Startup: Initialize relational database, logging, verify encryption keys, and log synthetic mode
     logger.info("Initializing InnerOS Core Backend Engine...")
+    init_db()
     logger.info(f"Environment: {settings.ENVIRONMENT} | Mode: Non-Clinical Sanctuary")
-    logger.info("Modular AI Gateway initialized with synthetic fallback resilience.")
+    logger.info("Modular AI Gateway & Relational Database initialized.")
     yield
     # Shutdown
     logger.info("Shutting down InnerOS Core Backend Engine.")
@@ -86,7 +90,8 @@ async def readiness_probe():
             "safety_guardrails": "active_and_enforced",
             "ai_gateway": f"ready ({settings.AI_PRIMARY_PROVIDER})",
             "voice_pipeline": f"ready ({settings.VOICE_STT_PROVIDER})",
-            "memory_encryption": "In-Memory Tenant-Scoped Store (OAuth Tokens AES-256-GCM + HKDF Encrypted)",
+            "database_persistence": "SQLAlchemy 2.0 Relational Store (SQLite / PostgreSQL Ready)",
+            "memory_encryption": "Tenant-Scoped Relational Store (OAuth Tokens AES-256-GCM + HKDF Encrypted)",
             "synthetic_fixtures": "loaded",
             "regulatory_status": "Non-Clinical Wellness Companion (Not a Medical Device; Not FDA Cleared)",
         },
@@ -94,6 +99,8 @@ async def readiness_probe():
 
 
 # Mount Bounded Domain Routers under /api/v1
+app.include_router(auth_router, prefix="/api/v1")
+app.include_router(wellbeing_router, prefix="/api/v1")
 app.include_router(safety_router, prefix="/api/v1")
 app.include_router(companion_router, prefix="/api/v1")
 app.include_router(memory_router, prefix="/api/v1")
