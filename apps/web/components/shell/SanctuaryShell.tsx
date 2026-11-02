@@ -113,13 +113,13 @@ export const SanctuaryShell: React.FC<SanctuaryShellProps> = ({ children }) => {
     },
   ];
 
-  // Secondary Quick-Access Pills
+  // Secondary Quick-Access Pills (Dribbble AI Mental Wellness Palette)
   const secondaryNav = [
-    { href: "/check-in", label: "Daily Check-In", icon: Heart, badgeBg: "bg-[#D9F296]" },
-    { href: "/knowledge", label: "Psychology Library", icon: Compass, badgeBg: "bg-[#CBD8F6]" },
-    { href: "/integrations", label: "Connected Archives", icon: Link2, badgeBg: "bg-[#CDE5D3]" },
-    { href: "/admin", label: "Admin Console", icon: Sparkles, badgeBg: "bg-[#F6D4DC]" },
-    { href: "/safety", label: "24/7 Support", icon: LifeBuoy, badgeBg: "bg-[#EAE4F7]" },
+    { href: "/check-in", label: "Daily Check-In", icon: Heart, badgeBg: "bg-[#2B4CDE]" },
+    { href: "/knowledge", label: "Psychology Library", icon: Compass, badgeBg: "bg-[#38BDF8]" },
+    { href: "/integrations", label: "Connected Archives", icon: Link2, badgeBg: "bg-[#10B981]" },
+    { href: "/admin", label: "Admin Console", icon: Sparkles, badgeBg: "bg-[#8B5CF6]" },
+    { href: "/safety", label: "24/7 Support", icon: LifeBuoy, badgeBg: "bg-[#F43F5E]" },
   ];
 
   const mobileBottomTabs = [
@@ -144,41 +144,41 @@ export const SanctuaryShell: React.FC<SanctuaryShellProps> = ({ children }) => {
   return (
     <div
       className={cn(
-        "min-h-screen w-full overflow-x-hidden flex flex-col bg-[#EDF1EF] text-[#1A1E1C] transition-colors duration-300 selection:bg-[#D9F296] selection:text-[#1A1E1C]",
-        theme === "dark" && "dark bg-[#0E1510] text-[#F2F6F3]"
+        "min-h-screen w-full overflow-x-hidden flex flex-col bg-[#F8FAFC] text-[#0F172A] transition-colors duration-300 selection:bg-[#EEF4FF] selection:text-[#2B4CDE]",
+        theme === "dark" && "dark bg-[#0F172A] text-[#F8FAFC]"
       )}
       dir={direction}
     >
       {/* Skip-to-content accessibility link */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 z-50 px-5 py-3 bg-[#1A1E1C] text-[#D9F296] rounded-full text-sm font-semibold shadow-elevated"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 z-50 px-5 py-3 bg-[#2B4CDE] text-white rounded-full text-sm font-semibold shadow-elevated"
       >
         Skip to main content
       </a>
 
       {/* =====================================================================
-          PEOPLEFLOW TOP FLOATING PILL HEADER (Matches Attached Reference Image)
+          AI MENTAL WELLNESS PLATFORM TOP PILL HEADER (Dribbble 27821075)
           ===================================================================== */}
-      <header className="sticky top-0 z-30 w-full px-4 sm:px-8 pt-4 pb-2 bg-[#EDF1EF]/85 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 w-full px-4 sm:px-8 pt-4 pb-2 bg-[#F8FAFC]/90 backdrop-blur-xl border-b border-[#DCE7FE]/60">
         <div className="max-w-[1380px] mx-auto flex items-center justify-between gap-4">
           {/* Left: Geometric Flower Logo + InnerOS Wordmark */}
           <Link
             href="/dashboard"
             className="flex items-center space-x-2.5 group focus-visible:rounded-full shrink-0"
           >
-            <div className="w-10 h-10 rounded-full bg-white border border-white shadow-xs flex items-center justify-center text-[#1A1E1C] group-hover:bg-[#D9F296] transition-colors">
+            <div className="w-10 h-10 rounded-2xl bg-[#2B4CDE] text-white shadow-[0_4px_16px_rgba(43,76,222,0.28)] flex items-center justify-center group-hover:scale-105 transition-transform">
               <Flower2 className="w-5 h-5" />
             </div>
-            <span className="text-[19px] font-semibold tracking-tight text-[#1A1E1C]">
+            <span className="text-[19px] font-bold tracking-tight text-[#0F172A]">
               InnerOS
             </span>
           </Link>
 
-          {/* Center: Floating White Pill Bar with Solid Charcoal Active Pill */}
+          {/* Center: Floating White Pill Bar with Royal Blue Active Pill */}
           <nav
             aria-label="Main Navigation"
-            className="hidden xl:flex items-center space-x-1 bg-white/95 border border-white rounded-full p-1.5 shadow-[0_8px_26px_rgba(26,30,28,0.045)]"
+            className="hidden xl:flex items-center space-x-1 bg-white/95 border border-[#DCE7FE] rounded-full p-1.5 shadow-[0_8px_30px_rgba(43,76,222,0.06)]"
           >
             {topPillNav.map((item) => {
               const Icon = item.icon;
@@ -191,11 +191,11 @@ export const SanctuaryShell: React.FC<SanctuaryShellProps> = ({ children }) => {
                   className={cn(
                     "inline-flex items-center space-x-2 px-4 py-2 rounded-full text-[13.5px] font-medium transition-all whitespace-nowrap",
                     active
-                      ? "bg-[#1A1E1C] text-white font-semibold shadow-xs"
-                      : "text-[#4A5752] hover:text-[#1A1E1C] hover:bg-[#F4F6F5]"
+                      ? "bg-[#2B4CDE] text-white font-semibold shadow-xs"
+                      : "text-[#475569] hover:text-[#2B4CDE] hover:bg-[#EEF4FF]"
                   )}
                 >
-                  {active && <Icon className="w-3.5 h-3.5 text-[#D9F296] shrink-0" />}
+                  {active && <Icon className="w-3.5 h-3.5 text-white shrink-0" />}
                   <span>{item.label}</span>
                 </Link>
               );
@@ -277,13 +277,13 @@ export const SanctuaryShell: React.FC<SanctuaryShellProps> = ({ children }) => {
               </button>
             </div>
 
-            {/* Circular Avatar Pill (Matches PeopleFlow Blue-Ringed Avatar) */}
+            {/* Circular Avatar Pill (Therapeutic Blue Gradient) */}
             <Link
               href="/login"
               title={`Signed in as ${userName} — Switch Persona`}
-              className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#CBD8F6] via-[#D9F296] to-[#CDE5D3] p-0.5 shadow-xs hover:scale-105 transition-transform shrink-0"
+              className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#2B4CDE] via-[#38BDF8] to-[#6366F1] p-0.5 shadow-xs hover:scale-105 transition-transform shrink-0"
             >
-              <div className="w-full h-full rounded-full bg-[#1A1E1C] text-white flex items-center justify-center text-xs font-bold">
+              <div className="w-full h-full rounded-full bg-[#0F172A] text-white flex items-center justify-center text-xs font-bold">
                 {userName.slice(0, 2).toUpperCase()}
               </div>
             </Link>
@@ -303,20 +303,20 @@ export const SanctuaryShell: React.FC<SanctuaryShellProps> = ({ children }) => {
                   className={cn(
                     "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-[12.5px] font-medium transition-all whitespace-nowrap border",
                     active
-                      ? "bg-[#1A1E1C] text-white border-[#1A1E1C]"
-                      : "bg-white/80 hover:bg-white text-[#4A5752] hover:text-[#1A1E1C] border-white"
+                      ? "bg-[#2B4CDE] text-white border-[#2B4CDE] shadow-xs"
+                      : "bg-white/90 hover:bg-white text-[#475569] hover:text-[#2B4CDE] border-[#DCE7FE]/60"
                   )}
                 >
                   <span className={cn("w-2 h-2 rounded-full", item.badgeBg)} />
-                  <Icon className="w-3.5 h-3.5 opacity-75" />
+                  <Icon className="w-3.5 h-3.5 opacity-80" />
                   <span>{item.label}</span>
                 </Link>
               );
             })}
           </div>
 
-          <div className="hidden lg:flex items-center space-x-3 text-[12px] text-[#687670] shrink-0">
-            <Link href="/" className="hover:text-[#1A1E1C] font-medium underline underline-offset-4">
+          <div className="hidden lg:flex items-center space-x-3 text-[12px] text-[#64748B] shrink-0">
+            <Link href="/" className="hover:text-[#2B4CDE] font-medium underline underline-offset-4">
               Public Website &rarr;
             </Link>
           </div>
@@ -333,7 +333,7 @@ export const SanctuaryShell: React.FC<SanctuaryShellProps> = ({ children }) => {
       {/* Mobile Bottom Navigation Bar */}
       <nav
         aria-label="Mobile Navigation"
-        className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-[#DCE3DF] px-2 py-1.5 shadow-elevated"
+        className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-[#DCE7FE] px-2 py-1.5 shadow-elevated"
       >
         <div className="grid grid-cols-5 gap-1 max-w-md mx-auto">
           {mobileBottomTabs.map((item) => {
@@ -346,12 +346,12 @@ export const SanctuaryShell: React.FC<SanctuaryShellProps> = ({ children }) => {
                 className={cn(
                   "flex flex-col items-center justify-center py-2 px-1 min-h-[52px] rounded-2xl text-xs font-medium transition-colors",
                   active
-                    ? "text-white bg-[#1A1E1C] font-semibold"
-                    : "text-[#4A5752] hover:text-[#1A1E1C]"
+                    ? "text-white bg-[#2B4CDE] font-semibold"
+                    : "text-[#475569] hover:text-[#2B4CDE]"
                 )}
               >
                 <Icon
-                  className={cn("w-5 h-5 mb-1", active ? "text-[#D9F296]" : "text-[#4A5752]")}
+                  className={cn("w-5 h-5 mb-1", active ? "text-white" : "text-[#475569]")}
                 />
                 <span className="truncate max-w-full">{item.label}</span>
               </Link>

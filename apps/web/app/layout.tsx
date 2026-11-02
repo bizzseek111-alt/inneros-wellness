@@ -36,9 +36,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  /* Design system tokens: Modern AI Mental Wellness Palette (#F8FAFC, #2B4CDE, #0F172A) honoring legacy base (#FAF8F4, #285B55, #263330) */
   return (
     <html lang="en" className="light">
-      <body className="antialiased bg-[#FAF8F4] text-[#263330] selection:bg-[#E8F1EB] selection:text-[#285B55]">
+      <body className="antialiased bg-[#F8FAFC] text-[#0F172A] selection:bg-[#EEF4FF] selection:text-[#2B4CDE]">
         <div className="fixed inset-0 pointer-events-none sanctuary-glow z-0" />
         <div className="relative z-10 min-h-screen flex flex-col">
           {children}

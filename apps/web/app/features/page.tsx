@@ -214,14 +214,14 @@ export default function FeaturesMarketingPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-10 sm:pt-14 pb-16 space-y-14">
         {/* Page Header */}
         <div className="max-w-3xl space-y-4">
-          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#E8F1EB] border border-[#CFE2D6] text-[#1F4742] text-[13.5px] font-medium">
-            <Sparkles className="w-4 h-4 text-[#285B55]" />
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#EEF4FF] border border-[#DCE7FE] text-[#2B4CDE] text-[13.5px] font-semibold">
+            <Sparkles className="w-4 h-4 text-[#2B4CDE]" />
             <span>Complete Platform Capabilities</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-serif font-medium text-[#263330] tracking-tight">
+          <h1 className="text-4xl sm:text-5xl font-bold text-[#0F172A] tracking-tight">
             Thoughtfully designed tools for reflection, calm, and everyday life.
           </h1>
-          <p className="text-[18px] text-[#52625E] leading-relaxed">
+          <p className="text-[18px] text-[#64748B] leading-relaxed">
             Every feature in InnerOS works together harmoniously—giving you a supportive voice or text companion, a private journal, user-approved memory, and gentle daily routines.
           </p>
 
@@ -237,10 +237,10 @@ export default function FeaturesMarketingPage() {
                 key={tab.id}
                 type="button"
                 onClick={() => setFilter(tab.id as any)}
-                className={`px-4 py-2.5 rounded-2xl text-[14px] font-medium transition-all ${
+                className={`px-4 py-2.5 rounded-2xl text-[14px] font-semibold transition-all ${
                   filter === tab.id
-                    ? "bg-[#285B55] text-white shadow-sm"
-                    : "bg-white border border-[#E6E0D6] text-[#52625E] hover:text-[#263330]"
+                    ? "bg-[#2B4CDE] text-white shadow-xs"
+                    : "bg-white border border-[#DCE7FE] text-[#64748B] hover:text-[#0F172A]"
                 }`}
               >
                 {tab.label}
@@ -256,50 +256,48 @@ export default function FeaturesMarketingPage() {
             return (
               <article
                 key={feat.id}
-                className="p-7 rounded-[32px] bg-white border border-[#E6E0D6] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-6"
+                className="p-7 rounded-[32px] bg-white border border-[#DCE7FE] shadow-[0_8px_30px_rgba(43,76,222,0.05)] hover:shadow-[0_12px_36px_rgba(43,76,222,0.1)] transition-all flex flex-col justify-between space-y-6"
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between gap-2">
-                    <div
-                      className={`w-12 h-12 rounded-2xl border ${feat.surface} flex items-center justify-center text-[#285B55]`}
-                    >
+                    <div className="w-12 h-12 rounded-2xl bg-[#EEF4FF] border border-[#DCE7FE] flex items-center justify-center text-[#2B4CDE]">
                       <Icon className="w-6 h-6" />
                     </div>
-                    <Badge variant="sage" size="sm">
+                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#EEF4FF] text-[#2B4CDE] border border-[#DCE7FE]">
                       {feat.badge}
-                    </Badge>
+                    </span>
                   </div>
 
                   <div className="space-y-1.5">
-                    <h2 className="text-2xl font-serif font-medium text-[#263330]">
+                    <h2 className="text-2xl font-bold text-[#0F172A]">
                       {feat.title}
                     </h2>
-                    <p className="text-[14.5px] font-medium text-[#285B55]">
+                    <p className="text-[14.5px] font-semibold text-[#2B4CDE]">
                       {feat.subtitle}
                     </p>
                   </div>
 
-                  <p className="text-[15px] text-[#52625E] leading-relaxed">
+                  <p className="text-[15px] text-[#64748B] leading-relaxed">
                     {feat.description}
                   </p>
 
-                  <ul className="space-y-2 pt-2 border-t border-[#F3EFE8]">
+                  <ul className="space-y-2 pt-2 border-t border-[#F1F5F9]">
                     {feat.highlights.map((item) => (
                       <li
                         key={item}
-                        className="flex items-start space-x-2 text-[13.5px] text-[#263330]"
+                        className="flex items-start space-x-2 text-[13.5px] text-[#334155]"
                       >
-                        <CheckCircle2 className="w-4 h-4 text-[#285B55] shrink-0 mt-0.5" />
+                        <CheckCircle2 className="w-4 h-4 text-[#059669] shrink-0 mt-0.5" />
                         <span>{item}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <div className="pt-3 border-t border-[#F3EFE8]">
+                <div className="pt-3 border-t border-[#F1F5F9]">
                   <Link
                     href={feat.appHref}
-                    className="w-full py-2.5 px-4 rounded-2xl bg-[#FAF8F4] hover:bg-[#E8F1EB] border border-[#E6E0D6] hover:border-[#CFE2D6] text-[#285B55] text-[14px] font-semibold flex items-center justify-between transition-colors"
+                    className="w-full py-2.5 px-4 rounded-2xl bg-[#EEF4FF] hover:bg-[#2B4CDE] border border-[#DCE7FE] text-[#2B4CDE] hover:text-white text-[14px] font-semibold flex items-center justify-between transition-colors shadow-xs"
                   >
                     <span>{feat.appCta}</span>
                     <ArrowRight className="w-4 h-4" />
@@ -311,29 +309,32 @@ export default function FeaturesMarketingPage() {
         </div>
 
         {/* Bottom CTA */}
-        <div className="p-8 sm:p-12 rounded-[36px] bg-[#E8F1EB] border border-[#CFE2D6] flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="p-8 sm:p-12 rounded-[36px] bg-gradient-to-r from-[#2B4CDE] via-[#3B82F6] to-[#1E3A8A] text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_20px_50px_rgba(43,76,222,0.25)]">
           <div className="space-y-2 max-w-xl">
-            <h2 className="text-2xl sm:text-3xl font-serif font-medium text-[#263330]">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white">
               Want to see how all 9 features work together in a single day?
             </h2>
-            <p className="text-[16px] text-[#52625E]">
+            <p className="text-[16px] text-white/90">
               Explore our step-by-step walkthrough or jump directly into the live companion space.
             </p>
           </div>
           <div className="flex flex-wrap gap-3 shrink-0">
             <Link href="/how-it-works">
-              <Button variant="outline" size="md">
+              <button
+                type="button"
+                className="px-5 py-2.5 rounded-full bg-white/15 hover:bg-white/25 border border-white/30 text-white font-semibold text-sm transition-all"
+              >
                 How It Works
-              </Button>
+              </button>
             </Link>
             <Link href="/onboarding">
-              <Button
-                variant="primary"
-                size="md"
-                rightIcon={<ArrowRight className="w-4 h-4" />}
+              <button
+                type="button"
+                className="px-6 py-2.5 rounded-full bg-white text-[#2B4CDE] hover:bg-[#EEF4FF] font-bold text-sm shadow-md transition-all flex items-center space-x-2"
               >
-                Start Your Journey
-              </Button>
+                <span>Start Your Journey</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
             </Link>
           </div>
         </div>

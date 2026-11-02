@@ -109,41 +109,29 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
       }}
     >
       <div
-        className={`min-h-screen w-full overflow-x-hidden flex flex-col ${
-          isHomePage
-            ? "bg-[#0D1510] text-[#F2F6F3]"
-            : "bg-[#EDF1EF] text-[#1A1E1C]"
-        } selection:bg-[#D9F296] selection:text-[#1A1E1C]`}
+        className="min-h-screen w-full overflow-x-hidden flex flex-col bg-[#F8FAFC] text-[#0F172A] selection:bg-[#EEF4FF] selection:text-[#2B4CDE]"
         dir={localeConfig.dir}
       >
         {/* Skip to main content for keyboard & screen-reader users */}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 z-50 px-5 py-3 bg-[#D9F296] text-[#1A1E1C] rounded-full text-[14px] font-semibold shadow-lg"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 z-50 px-5 py-3 bg-[#2B4CDE] text-white rounded-full text-[14px] font-semibold shadow-lg"
         >
           Skip to main content
         </a>
 
         {/* Subtle Non-Clinical & 24/7 Support Strip */}
-        <div
-          className={`px-4 sm:px-8 py-2 text-[12.5px] border-b transition-colors ${
-            isHomePage
-              ? "bg-[#090F0B] border-white/10 text-white/75"
-              : "bg-[#E2E8E5] border-[#D3DCD7] text-[#4A5752]"
-          }`}
-        >
+        <div className="px-4 sm:px-8 py-2 text-[12.5px] border-b bg-[#EEF4FF] border-[#DCE7FE] text-[#334155] transition-colors">
           <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center space-x-2">
-              <Sparkles className="w-3.5 h-3.5 text-[#9EE838] shrink-0" />
+              <Sparkles className="w-3.5 h-3.5 text-[#2B4CDE] shrink-0" />
               <span>{localeConfig.nonClinicalNotice}</span>
             </div>
             <div className="flex items-center space-x-4">
               <button
                 type="button"
                 onClick={() => setCrisisModalOpen(true)}
-                className={`hover:underline font-medium inline-flex items-center space-x-1 ${
-                  isHomePage ? "text-[#F6D4DC]" : "text-[#9B2C3E]"
-                }`}
+                className="hover:underline font-semibold inline-flex items-center space-x-1 text-[#E11D48]"
               >
                 <LifeBuoy className="w-3.5 h-3.5" />
                 <span>24/7 Crisis Helplines</span>
@@ -153,9 +141,7 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                 onClick={() =>
                   trackMarketingEvent("cta_open_app_click", { location: "topbar" })
                 }
-                className={`font-semibold hover:underline inline-flex items-center space-x-1 ${
-                  isHomePage ? "text-[#D9F296]" : "text-[#1A1E1C]"
-                }`}
+                className="font-semibold hover:underline inline-flex items-center space-x-1 text-[#2B4CDE]"
               >
                 <span>{localeConfig.ctaOpenApp}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -164,46 +150,26 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
           </div>
         </div>
 
-        {/* Floating Pill Header (Liquid Glass Aesthetic) */}
-        <header
-          className={`w-full px-4 sm:px-8 py-3.5 z-40 transition-all ${
-            isHomePage
-              ? "absolute top-8 left-0 right-0 bg-transparent"
-              : "sticky top-0 bg-white/90 backdrop-blur-md"
-          }`}
-        >
+        {/* Floating Pill Header (AI Mental Wellness Dribbble Aesthetic) */}
+        <header className="sticky top-0 z-40 w-full px-4 sm:px-8 py-3.5 bg-[#F8FAFC]/85 backdrop-blur-xl border-b border-[#DCE7FE]/40 transition-all">
           <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
             {/* Brand Identity (Top Left) */}
             <Link
               href="/"
               className="flex items-center space-x-2.5 shrink-0 group focus-visible:outline-none rounded-full"
             >
-              <div
-                className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
-                  isHomePage
-                    ? "liquid-glass text-white group-hover:bg-[#D9F296] group-hover:text-[#1A1E1C]"
-                    : "bg-[#1A1E1C] text-[#D9F296] shadow-sm"
-                }`}
-              >
+              <div className="w-10 h-10 rounded-2xl bg-[#2B4CDE] text-white flex items-center justify-center shadow-[0_4px_16px_rgba(43,76,222,0.28)] group-hover:scale-105 transition-transform">
                 <Flower2 className="w-5 h-5" />
               </div>
-              <span
-                className={`text-xl font-semibold tracking-tight whitespace-nowrap ${
-                  isHomePage ? "text-white" : "text-[#1A1E1C]"
-                }`}
-              >
+              <span className="text-xl font-bold tracking-tight text-[#0F172A]">
                 InnerOS
               </span>
             </Link>
 
-            {/* Center Floating Glass Pill Navigation (Liquid Glass Aesthetic) */}
+            {/* Center Floating Glass Pill Navigation */}
             <nav
               aria-label="Primary Marketing Navigation"
-              className={`hidden xl:flex items-center space-x-1 px-2.5 py-1.5 rounded-full transition-all ${
-                isHomePage
-                  ? "liquid-glass shadow-[0_12px_36px_rgba(0,0,0,0.4)]"
-                  : "bg-white/90 border border-white shadow-[0_8px_28px_rgba(26,30,28,0.06)] backdrop-blur-xl"
-              }`}
+              className="hidden xl:flex items-center space-x-1 px-3 py-1.5 rounded-full bg-white/95 border border-[#DCE7FE] shadow-[0_8px_30px_rgba(43,76,222,0.06)] backdrop-blur-xl"
             >
               {MARKETING_NAV_LINKS.map((link) => {
                 const active = isNavActive(link.href);
@@ -212,14 +178,10 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                     key={link.href}
                     href={link.href}
                     aria-current={active ? "page" : undefined}
-                    className={`px-3.5 py-1.5 rounded-full text-[13.5px] font-medium whitespace-nowrap transition-all ${
+                    className={`px-4 py-2 rounded-full text-[13.5px] font-medium whitespace-nowrap transition-all ${
                       active
-                        ? isHomePage
-                          ? "bg-white text-[#1A1E1C] font-semibold shadow-xs"
-                          : "bg-[#1A1E1C] text-white font-semibold shadow-xs"
-                        : isHomePage
-                          ? "text-white/80 hover:text-white hover:bg-white/10"
-                          : "text-[#4A5752] hover:text-[#1A1E1C] hover:bg-[#EDF1EF]"
+                        ? "bg-[#2B4CDE] text-white font-semibold shadow-xs"
+                        : "text-[#475569] hover:text-[#2B4CDE] hover:bg-[#EEF4FF]"
                     }`}
                   >
                     {link.label}
@@ -253,7 +215,7 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                     <option
                       key={loc.code}
                       value={loc.code}
-                      className="text-[#1A1E1C] bg-white"
+                      className="text-[#0F172A] bg-white"
                     >
                       {loc.nativeName} ({loc.code.toUpperCase()})
                     </option>
@@ -264,16 +226,12 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
               {/* Login Link */}
               <Link
                 href="/login"
-                className={`hidden sm:inline-flex items-center px-3.5 py-2 rounded-full text-[13.5px] font-medium whitespace-nowrap transition-colors ${
-                  isHomePage
-                    ? "text-white/90 hover:text-white hover:bg-white/10"
-                    : "text-[#1A1E1C] hover:bg-white/80"
-                }`}
+                className="hidden sm:inline-flex items-center px-4 py-2 rounded-full text-[13.5px] font-semibold whitespace-nowrap text-[#334155] hover:text-[#2B4CDE] hover:bg-[#EEF4FF] transition-colors"
               >
                 Login
               </Link>
 
-              {/* Get Started Pill CTA (Matches Pyko top-right white pill) */}
+              {/* Get Started Pill CTA (Royal Blue Pill from Dribbble shot) */}
               <Link
                 href="/signup"
                 onClick={() =>
@@ -281,11 +239,7 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                     location: "header",
                   })
                 }
-                className={`inline-flex items-center space-x-1.5 px-5 py-2.5 rounded-full text-[13.5px] font-semibold whitespace-nowrap transition-all shadow-sm ${
-                  isHomePage
-                    ? "bg-white text-[#1A1E1C] hover:bg-[#D9F296]"
-                    : "bg-[#1A1E1C] text-white hover:bg-[#285B55]"
-                }`}
+                className="inline-flex items-center space-x-1.5 px-5 py-2.5 rounded-full text-[13.5px] font-semibold whitespace-nowrap bg-[#2B4CDE] text-white hover:bg-[#1E3A8A] transition-all shadow-[0_4px_14px_rgba(43,76,222,0.25)] hover:shadow-[0_6px_20px_rgba(43,76,222,0.35)]"
               >
                 <span>Get started</span>
               </Link>
@@ -298,11 +252,7 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                 aria-label={
                   mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"
                 }
-                className={`xl:hidden p-2.5 rounded-full border shrink-0 ${
-                  isHomePage
-                    ? "bg-white/10 border-white/20 text-white"
-                    : "bg-white border-[#DCE3DF] text-[#1A1E1C]"
-                }`}
+                className="xl:hidden p-2.5 rounded-full border border-[#DCE7FE] bg-white text-[#0F172A] shadow-xs"
               >
                 {mobileMenuOpen ? (
                   <X className="w-5 h-5" />
@@ -315,7 +265,7 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
 
           {/* Mobile Navigation Drawer */}
           {mobileMenuOpen && (
-            <div className="xl:hidden mt-3 p-5 rounded-3xl bg-[#162019]/95 backdrop-blur-2xl border border-white/15 text-white space-y-3 shadow-2xl">
+            <div className="xl:hidden mt-3 p-5 rounded-3xl bg-white/95 backdrop-blur-2xl border border-[#DCE7FE] text-[#0F172A] space-y-3 shadow-2xl">
               <nav
                 aria-label="Mobile Marketing Navigation"
                 className="grid sm:grid-cols-2 gap-2"
@@ -328,8 +278,8 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                       href={link.href}
                       className={`px-4 py-3 rounded-2xl text-[14.5px] font-medium flex items-center justify-between ${
                         active
-                          ? "bg-[#D9F296] text-[#1A1E1C] font-semibold"
-                          : "bg-white/5 border border-white/10 text-white/90 hover:bg-white/10"
+                          ? "bg-[#2B4CDE] text-white font-semibold"
+                          : "bg-[#F8FAFC] border border-[#E2E8F0] text-[#334155] hover:bg-[#EEF4FF] hover:text-[#2B4CDE]"
                       }`}
                     >
                       <span>{link.label}</span>
@@ -342,13 +292,13 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
               <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
                 <Link
                   href="/signup"
-                  className="flex-1 py-3 px-5 rounded-full bg-white text-[#1A1E1C] text-center text-[14.5px] font-semibold"
+                  className="flex-1 py-3 px-5 rounded-full bg-[#2B4CDE] text-white text-center text-[14.5px] font-semibold hover:bg-[#1E3A8A] transition-all shadow-md"
                 >
                   Get started
                 </Link>
                 <Link
                   href="/dashboard"
-                  className="flex-1 py-3 px-5 rounded-full bg-[#D9F296] text-[#1A1E1C] text-center text-[14.5px] font-semibold"
+                  className="flex-1 py-3 px-5 rounded-full bg-[#EEF4FF] text-[#2B4CDE] border border-[#DCE7FE] text-center text-[14.5px] font-semibold hover:bg-[#DCE7FE] transition-all"
                 >
                   {localeConfig.ctaOpenApp}
                 </Link>
@@ -362,54 +312,49 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
           {children}
         </main>
 
-        {/* Botanical Monolith Glassmorphic Footer (Inspired by Pinterest Pyko 00:53-00:57) */}
-        <footer className="relative bg-[#0B120D] text-white pt-20 pb-12 overflow-hidden border-t border-white/10">
-          {/* Atmospheric Moss Backdrop Glow */}
-          <div
-            className="absolute inset-0 opacity-35 bg-cover bg-bottom pointer-events-none"
-            style={{ backgroundImage: "url('/images/hero-moss-arch.jpg')" }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#090F0B] via-[#0B120D]/85 to-[#0B120D]" />
+        {/* Modern AI Mental Wellness Footer (Dribbble 27821075 Aesthetic) */}
+        <footer className="relative bg-[#0F172A] text-white pt-20 pb-12 overflow-hidden border-t border-[#1E293B]">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(43,76,222,0.18),rgba(15,23,42,0))]" />
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 space-y-10">
             {/* Large Frosted Glass Footer Container */}
-            <div className="rounded-[36px] pyko-glass p-8 sm:p-12 lg:p-14 space-y-12">
+            <div className="rounded-[36px] bg-slate-900/80 border border-slate-800/80 backdrop-blur-xl p-8 sm:p-12 lg:p-14 space-y-12 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10">
                 {/* Column 1: Brand & Editorial Headline */}
                 <div className="lg:col-span-5 space-y-6">
                   <div className="flex items-center space-x-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-[#D9F296] text-[#1A1E1C] flex items-center justify-center font-bold">
+                    <div className="w-10 h-10 rounded-2xl bg-[#2B4CDE] text-white flex items-center justify-center font-bold shadow-[0_4px_16px_rgba(43,76,222,0.35)]">
                       <Flower2 className="w-5 h-5" />
                     </div>
-                    <span className="text-xl font-semibold tracking-tight text-white">
+                    <span className="text-xl font-bold tracking-tight text-white">
                       InnerOS
                     </span>
                   </div>
 
-                  <h2 className="text-3xl sm:text-4xl font-medium tracking-tight text-white leading-[1.12]">
-                    The future of <br />
-                    <span className="font-serif italic font-normal text-[#D9F296]">
-                      emotional clarity.
+                  <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white leading-[1.14]">
+                    Empowering minds through <br />
+                    <span className="text-[#38BDF8]">
+                      AI-driven mental wellness.
                     </span>
                   </h2>
 
-                  <p className="text-[14.5px] text-white/75 leading-relaxed max-w-md">
-                    Real-time self-awareness, adaptive voice and text reflection, personal Life Graph memory, and evidence-backed psychology in one calm sanctuary.
+                  <p className="text-[14.5px] text-slate-300 leading-relaxed max-w-md">
+                    Real-time self-awareness, adaptive voice and text reflection, personalized Life Graph insights, and evidence-backed psychology in one calming sanctuary.
                   </p>
 
                   <div className="flex flex-wrap items-center gap-3 pt-1">
                     <Link
                       href="/contact"
-                      className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-full bg-white text-[#1A1E1C] hover:bg-[#D9F296] text-[13.5px] font-semibold transition-all"
+                      className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-full bg-[#2B4CDE] text-white hover:bg-[#1E3A8A] text-[13.5px] font-semibold transition-all shadow-[0_4px_14px_rgba(43,76,222,0.25)]"
                     >
                       <span>Contact Us</span>
-                      <span className="w-5 h-5 rounded-full bg-[#1A1E1C] text-white flex items-center justify-center">
+                      <span className="w-5 h-5 rounded-full bg-white/20 text-white flex items-center justify-center">
                         <ArrowUpRight className="w-3.5 h-3.5" />
                       </span>
                     </Link>
                     <Link
                       href="/dashboard"
-                      className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[13.5px] font-medium transition-all"
+                      className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-full bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-white text-[13.5px] font-medium transition-all"
                     >
                       <span>Open Sanctuary</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -419,37 +364,37 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
 
                 {/* Column 2: Explore */}
                 <div className="lg:col-span-2 space-y-3.5">
-                  <h3 className="text-[12.5px] font-semibold uppercase tracking-widest text-white/50">
+                  <h3 className="text-[12.5px] font-semibold uppercase tracking-widest text-slate-400">
                     Explore
                   </h3>
-                  <ul className="space-y-2.5 text-[14px] text-white/85">
+                  <ul className="space-y-2.5 text-[14px] text-slate-300">
                     <li>
-                      <Link href="/" className="hover:text-[#D9F296] transition-colors">
+                      <Link href="/" className="hover:text-[#38BDF8] transition-colors">
                         Home Page
                       </Link>
                     </li>
                     <li>
-                      <Link href="/about" className="hover:text-[#D9F296] transition-colors">
+                      <Link href="/about" className="hover:text-[#38BDF8] transition-colors">
                         About Us
                       </Link>
                     </li>
                     <li>
-                      <Link href="/features" className="hover:text-[#D9F296] transition-colors">
+                      <Link href="/features" className="hover:text-[#38BDF8] transition-colors">
                         Features
                       </Link>
                     </li>
                     <li>
-                      <Link href="/how-it-works" className="hover:text-[#D9F296] transition-colors">
+                      <Link href="/how-it-works" className="hover:text-[#38BDF8] transition-colors">
                         How It Works
                       </Link>
                     </li>
                     <li>
-                      <Link href="/pricing" className="hover:text-[#D9F296] transition-colors">
+                      <Link href="/pricing" className="hover:text-[#38BDF8] transition-colors">
                         Pricing
                       </Link>
                     </li>
                     <li>
-                      <Link href="/faq" className="hover:text-[#D9F296] transition-colors">
+                      <Link href="/faq" className="hover:text-[#38BDF8] transition-colors">
                         FAQ
                       </Link>
                     </li>
@@ -458,37 +403,37 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
 
                 {/* Column 3: Sanctuary Suite */}
                 <div className="lg:col-span-2 space-y-3.5">
-                  <h3 className="text-[12.5px] font-semibold uppercase tracking-widest text-white/50">
+                  <h3 className="text-[12.5px] font-semibold uppercase tracking-widest text-slate-400">
                     Sanctuary Suite
                   </h3>
-                  <ul className="space-y-2.5 text-[14px] text-white/85">
+                  <ul className="space-y-2.5 text-[14px] text-slate-300">
                     <li>
-                      <Link href="/dashboard" className="hover:text-[#D9F296] transition-colors">
+                      <Link href="/dashboard" className="hover:text-[#38BDF8] transition-colors">
                         Dashboard
                       </Link>
                     </li>
                     <li>
-                      <Link href="/companion/voice" className="hover:text-[#D9F296] transition-colors">
+                      <Link href="/companion/voice" className="hover:text-[#38BDF8] transition-colors">
                         Voice Companion
                       </Link>
                     </li>
                     <li>
-                      <Link href="/companion/chat" className="hover:text-[#D9F296] transition-colors">
+                      <Link href="/companion/chat" className="hover:text-[#38BDF8] transition-colors">
                         Text Companion
                       </Link>
                     </li>
                     <li>
-                      <Link href="/memory" className="hover:text-[#D9F296] transition-colors">
+                      <Link href="/memory" className="hover:text-[#38BDF8] transition-colors">
                         Life Graph &amp; Memory
                       </Link>
                     </li>
                     <li>
-                      <Link href="/journal" className="hover:text-[#D9F296] transition-colors">
+                      <Link href="/journal" className="hover:text-[#38BDF8] transition-colors">
                         Journal &amp; Growth
                       </Link>
                     </li>
                     <li>
-                      <Link href="/admin" className="hover:text-[#D9F296] transition-colors">
+                      <Link href="/admin" className="hover:text-[#38BDF8] transition-colors">
                         Admin Console
                       </Link>
                     </li>
@@ -497,10 +442,10 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
 
                 {/* Column 4: Stay in Touch & Privacy Controls */}
                 <div className="lg:col-span-3 space-y-4">
-                  <h3 className="text-[12.5px] font-semibold uppercase tracking-widest text-white/50">
+                  <h3 className="text-[12.5px] font-semibold uppercase tracking-widest text-slate-400">
                     Stay in Touch
                   </h3>
-                  <p className="text-[13.5px] text-white/75">
+                  <p className="text-[13.5px] text-slate-300">
                     Receive calm product dispatches and psychoeducation research updates.
                   </p>
                   <form
@@ -521,12 +466,12 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                         footerSubscribed ? "Thank you for subscribing" : "Your email"
                       }
                       aria-label="Your email"
-                      className="w-full pl-4 pr-12 py-3 rounded-full bg-white text-[#1A1E1C] placeholder:text-[#687670] text-[13.5px] font-medium focus:outline-none"
+                      className="w-full pl-4 pr-12 py-3 rounded-full bg-slate-800 text-white placeholder:text-slate-400 border border-slate-700 text-[13.5px] font-medium focus:outline-none focus:border-[#2B4CDE]"
                     />
                     <button
                       type="submit"
                       aria-label="Subscribe"
-                      className="absolute right-1.5 w-9 h-9 rounded-full bg-[#1A1E1C] text-white hover:bg-[#285B55] flex items-center justify-center transition-colors"
+                      className="absolute right-1.5 w-9 h-9 rounded-full bg-[#2B4CDE] text-white hover:bg-[#1E3A8A] flex items-center justify-center transition-colors"
                     >
                       <ArrowUpRight className="w-4 h-4" />
                     </button>
@@ -536,7 +481,7 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                     <button
                       type="button"
                       onClick={handleToggleTelemetry}
-                      className="w-full px-3.5 py-2.5 rounded-2xl bg-white/10 border border-white/15 text-left text-[12px] text-white/80 hover:border-[#D9F296] transition-colors flex items-center justify-between"
+                      className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-800/70 border border-slate-700 text-left text-[12px] text-slate-300 hover:border-[#2B4CDE] transition-colors flex items-center justify-between"
                     >
                       <span>
                         Anonymous local telemetry:{" "}
@@ -545,10 +490,10 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                         </strong>
                       </span>
                       {telemetryEnabled && (
-                        <Check className="w-3.5 h-3.5 text-[#D9F296] shrink-0" />
+                        <Check className="w-3.5 h-3.5 text-[#38BDF8] shrink-0" />
                       )}
                     </button>
-                    <div className="flex items-center gap-3 text-[12px] text-white/65 pt-1">
+                    <div className="flex items-center gap-3 text-[12px] text-slate-400 pt-1">
                       <Link href="/privacy-trust" className="hover:text-white underline">
                         Privacy Center
                       </Link>
@@ -566,16 +511,16 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
               </div>
 
               {/* Non-Clinical & 24/7 Crisis Reassurance Bar */}
-              <div className="pt-6 border-t border-white/15 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="pt-6 border-t border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-start sm:items-center space-x-3">
-                  <HeartHandshake className="w-5 h-5 text-[#D9F296] shrink-0 mt-0.5 sm:mt-0" />
-                  <p className="text-[13px] text-white/80 leading-relaxed">
+                  <HeartHandshake className="w-5 h-5 text-[#38BDF8] shrink-0 mt-0.5 sm:mt-0" />
+                  <p className="text-[13px] text-slate-300 leading-relaxed">
                     <strong>Non-Clinical Companion &amp; 24/7 Crisis Support:</strong> InnerOS is not a medical device or substitute for licensed psychotherapy. Free 24/7 crisis lines: <strong>988</strong> (US/Canada), <strong>116 123</strong> (UK), <strong>112</strong> / <strong>0800 88 001</strong> (EU/Bulgaria).
                   </p>
                 </div>
                 <Link
                   href="/safety"
-                  className="px-4 py-2 rounded-full bg-white/12 hover:bg-white/20 border border-white/20 text-white text-[12.5px] font-medium shrink-0 self-start md:self-auto"
+                  className="px-4 py-2 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-[12.5px] font-medium shrink-0 self-start md:self-auto"
                 >
                   View All Helplines
                 </Link>
@@ -583,8 +528,8 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
             </div>
 
             {/* Bottom Copyright */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[12.5px] text-white/55 px-2">
-              <p>&copy; {new Date().getFullYear()} InnerOS. Botanical Glassmorphism &amp; Human-Centered Wellbeing Architecture.</p>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[12.5px] text-slate-400 px-2">
+              <p>&copy; {new Date().getFullYear()} InnerOS. AI Mental Wellness Platform &amp; Calming Sanctuary Architecture.</p>
               <p>
                 Supporting English, Español, Français, Deutsch, Български, العربية, اردو &amp; हिन्दी.
               </p>

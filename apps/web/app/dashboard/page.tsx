@@ -63,22 +63,22 @@ export default function DashboardPage() {
     {
       id: "calm",
       label: "Calm & Settled",
-      pill: "bg-[#D9F296] border-[#CBEB78]",
+      pill: "bg-[#EEF4FF] border-[#DCE7FE] text-[#2B4CDE]",
     },
     {
       id: "reflective",
       label: "Thoughtful & Reflective",
-      pill: "bg-[#CBD8F6] border-[#B8CBF2]",
+      pill: "bg-[#F5F3FF] border-[#DDD6FE] text-[#7C3AED]",
     },
     {
       id: "tired",
       label: "Restful / Low Energy",
-      pill: "bg-[#CDE5D3] border-[#BCE0C5]",
+      pill: "bg-[#FFFBEB] border-[#FDE68A] text-[#D97706]",
     },
     {
       id: "overwhelmed",
       label: "Carrying a Lot",
-      pill: "bg-[#F6D4DC] border-[#F2C2CE]",
+      pill: "bg-[#FFF1F2] border-[#FECDD3] text-[#E11D48]",
     },
   ];
 
@@ -105,10 +105,10 @@ export default function DashboardPage() {
             =================================================================== */}
         <section className="flex flex-col md:flex-row md:items-end justify-between gap-4 pt-1">
           <div className="space-y-1">
-            <h1 className="text-3xl sm:text-[38px] font-medium text-[#1A1E1C] tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-[38px] font-bold text-[#0F172A] tracking-tight leading-tight">
               Wellbeing Sanctuary
             </h1>
-            <p className="text-[14.5px] text-[#687670]">
+            <p className="text-[14.5px] text-[#64748B]">
               Welcome back, {state.user.preferredName}. Manage your reflections, voice presence, and mindful routines in one place.
             </p>
           </div>
@@ -117,16 +117,16 @@ export default function DashboardPage() {
           <div className="flex flex-wrap items-center gap-2.5">
             <Link
               href="/companion/voice"
-              className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-full bg-[#1A1E1C] hover:bg-[#285B55] text-white text-[13px] font-semibold transition-all shadow-xs"
+              className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-full bg-[#2B4CDE] hover:bg-[#1E3A8A] text-white text-[13px] font-semibold transition-all shadow-xs"
             >
-              <Mic className="w-4 h-4 text-[#D9F296]" />
+              <Mic className="w-4 h-4 text-white" />
               <span>Voice Companion</span>
             </Link>
             <Link
               href="/companion/chat"
-              className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-full bg-white hover:bg-[#D9F296] text-[#1A1E1C] border border-white text-[13px] font-semibold transition-all shadow-xs"
+              className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-full bg-[#EEF4FF] hover:bg-[#DCE7FE] text-[#2B4CDE] border border-[#DCE7FE] text-[13px] font-semibold transition-all shadow-xs"
             >
-              <MessageCircle className="w-4 h-4 text-[#285B55]" />
+              <MessageCircle className="w-4 h-4 text-[#2B4CDE]" />
               <span>Text Chat</span>
             </Link>
             <Link

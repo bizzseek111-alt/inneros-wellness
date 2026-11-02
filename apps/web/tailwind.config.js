@@ -74,11 +74,34 @@ module.exports = {
           500: "#3A7CA5",
           700: "#235372",
         },
+        // Dribbble AI Mental Wellness Platform Tokens (Imran Hossen)
+        wellness: {
+          blue: "#2B4CDE",
+          blueDark: "#1E3A8A",
+          blueLight: "#EEF4FF",
+          blueBorder: "#DCE7FE",
+          mint: "#ECFDF5",
+          mintText: "#059669",
+          mintBorder: "#A7F3D0",
+          lavender: "#F5F3FF",
+          lavenderText: "#7C3AED",
+          lavenderBorder: "#DDD6FE",
+          rose: "#FFF1F2",
+          roseText: "#E11D48",
+          roseBorder: "#FECDD3",
+          amber: "#FFFBEB",
+          amberText: "#D97706",
+          amberBorder: "#FDE68A",
+          canvas: "#F8FAFC",
+          canvasIce: "#F0F5FF",
+          slate: "#0F172A",
+          slateMuted: "#64748B",
+        },
         accent: {
-          DEFAULT: "#285B55", // Primary accent
-          hover: "#1F4742",
-          light: "#E5F1E8",
-          subtle: "#D5E6DC",
+          DEFAULT: "#2B4CDE", // Royal therapeutic blue
+          hover: "#1E3A8A",
+          light: "#EEF4FF",
+          subtle: "#DCE7FE",
         },
         ink: {
           DEFAULT: "#263330", // Primary text (11.2:1 contrast on #FAF8F4)

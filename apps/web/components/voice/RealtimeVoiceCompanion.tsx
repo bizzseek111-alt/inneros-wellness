@@ -614,17 +614,17 @@ export const RealtimeVoiceCompanion: React.FC = () => {
       </div>
 
       {/* 1. PeopleFlow Bento Header Bar */}
-      <div className="w-full p-5 rounded-[28px] peopleflow-card border border-white/80 shadow-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="w-full p-5 rounded-[28px] bg-white border border-[#DCE7FE] shadow-[0_8px_30px_rgba(43,76,222,0.05)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center space-x-2.5">
-            <h1 className="text-xl font-serif font-semibold text-[#1A1E1C]">
+            <h1 className="text-xl font-bold text-[#0F172A]">
               Voice Companion
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#D9F296] text-[#1A1E1C]">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#EEF4FF] text-[#2B4CDE] border border-[#DCE7FE]">
               Empathetic Voice
             </span>
           </div>
-          <p className="text-sm text-[#4A5752]">
+          <p className="text-sm text-[#64748B]">
             Speak naturally like with a close friend &bull; Detects emotions and replies in your language
           </p>
         </div>
@@ -633,27 +633,27 @@ export const RealtimeVoiceCompanion: React.FC = () => {
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setIsVoiceModalOpen(true)}
-            className="px-3.5 py-2 min-h-[40px] rounded-full bg-[#FFFFFF] hover:bg-[#F9FBFA] border border-[#1A1E1C]/10 text-xs font-medium text-[#1A1E1C] transition-all flex items-center space-x-2 shadow-xs"
+            className="px-3.5 py-2 min-h-[40px] rounded-full bg-white hover:bg-[#F8FAFC] border border-[#DCE7FE] text-xs font-medium text-[#0F172A] transition-all flex items-center space-x-2 shadow-xs"
           >
-            <Sliders className="w-3.5 h-3.5 text-[#285B55]" />
+            <Sliders className="w-3.5 h-3.5 text-[#2B4CDE]" />
             <span>Voice: {selectedVoice.name}</span>
-            <ChevronDown className="w-3.5 h-3.5 text-[#687670]" />
+            <ChevronDown className="w-3.5 h-3.5 text-[#64748B]" />
           </button>
 
           <button
             onClick={() => setIsLanguageModalOpen(true)}
-            className="px-3.5 py-2 min-h-[40px] rounded-full bg-[#FFFFFF] hover:bg-[#F9FBFA] border border-[#1A1E1C]/10 text-xs font-medium text-[#1A1E1C] transition-all flex items-center space-x-2 shadow-xs"
+            className="px-3.5 py-2 min-h-[40px] rounded-full bg-white hover:bg-[#F8FAFC] border border-[#DCE7FE] text-xs font-medium text-[#0F172A] transition-all flex items-center space-x-2 shadow-xs"
           >
-            <Globe className="w-3.5 h-3.5 text-[#465B8C]" />
+            <Globe className="w-3.5 h-3.5 text-[#2B4CDE]" />
             <span>{selectedLanguage.name}</span>
-            <ChevronDown className="w-3.5 h-3.5 text-[#687670]" />
+            <ChevronDown className="w-3.5 h-3.5 text-[#64748B]" />
           </button>
 
           <Link
             href="/companion/chat"
-            className="px-3.5 py-2 min-h-[40px] rounded-full bg-[#CBD8F6]/40 hover:bg-[#CBD8F6]/70 text-[#1A1E1C] border border-[#CBD8F6] text-xs font-medium flex items-center space-x-1.5 transition-colors shadow-xs"
+            className="px-3.5 py-2 min-h-[40px] rounded-full bg-[#EEF4FF] hover:bg-[#DCE7FE] text-[#2B4CDE] border border-[#DCE7FE] text-xs font-medium flex items-center space-x-1.5 transition-colors shadow-xs"
           >
-            <MessageSquare className="w-3.5 h-3.5 text-[#465B8C]" />
+            <MessageSquare className="w-3.5 h-3.5 text-[#2B4CDE]" />
             <span>Text Chat</span>
           </Link>
         </div>
@@ -664,22 +664,22 @@ export const RealtimeVoiceCompanion: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="w-full p-6 rounded-[28px] bg-[#FDF2F2] border border-[#F2C9CE] shadow-card space-y-4"
+          className="w-full p-6 rounded-[28px] bg-[#FFF1F2] border border-[#FECDD3] shadow-card space-y-4"
         >
-          <div className="flex items-center space-x-2.5 text-[#9B1C31]">
+          <div className="flex items-center space-x-2.5 text-[#E11D48]">
             <AlertTriangle className="w-5 h-5 shrink-0" />
-            <h3 className="text-base font-serif font-semibold">
+            <h3 className="text-base font-semibold">
               Immediate Human Support Resources
             </h3>
           </div>
-          <p className="text-base text-[#1A1E1C] leading-relaxed">
+          <p className="text-base text-[#0F172A] leading-relaxed">
             {crisisAlert.transcript_companion}
           </p>
           <div className="grid sm:grid-cols-2 gap-3 pt-1">
             {crisisAlert.safety_resources.map((res, i) => (
-              <div key={i} className="p-4 rounded-2xl bg-white border border-[#F2C9CE]">
-                <span className="font-semibold text-[#9B1C31] block text-sm">{res.name}</span>
-                <span className="text-[#1A1E1C] text-sm mt-0.5 block">{res.contact}</span>
+              <div key={i} className="p-4 rounded-2xl bg-white border border-[#FECDD3]">
+                <span className="font-semibold text-[#E11D48] block text-sm">{res.name}</span>
+                <span className="text-[#0F172A] text-sm mt-0.5 block">{res.contact}</span>
               </div>
             ))}
           </div>
@@ -692,27 +692,27 @@ export const RealtimeVoiceCompanion: React.FC = () => {
       )}
 
       {/* 3. Main Bento Sanctuary Voice Canvas */}
-      <div className="w-full py-10 sm:py-14 px-6 rounded-[32px] peopleflow-card border border-white/80 shadow-surface flex flex-col items-center justify-center relative overflow-hidden bg-white/95">
+      <div className="w-full py-10 sm:py-14 px-6 rounded-[32px] bg-white border border-[#DCE7FE] shadow-[0_12px_36px_rgba(43,76,222,0.06)] flex flex-col items-center justify-center relative overflow-hidden">
         {/* Soft Ambient Background Glow */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#EDF1EF]/40 via-transparent to-[#D9F296]/10 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#F0F5FF]/60 via-transparent to-[#EEF4FF]/30 pointer-events-none" />
 
         {/* Dynamic State, Emotion & Matched Language Badges */}
         <div className="mb-6 flex flex-wrap items-center justify-center gap-2">
-          <div className="flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#1A1E1C]/5 border border-[#1A1E1C]/10 text-xs text-[#1A1E1C] shadow-2xs">
+          <div className="flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#F8FAFC] border border-[#DCE7FE] text-xs text-[#0F172A] shadow-xs">
             <span
               className={`w-2 h-2 rounded-full ${
                 visualState === "listening"
-                  ? "bg-[#9EE838] animate-ping"
+                  ? "bg-[#2B4CDE] animate-ping"
                   : visualState === "speaking"
-                  ? "bg-[#CBD8F6] animate-pulse"
+                  ? "bg-[#38BDF8] animate-pulse"
                   : visualState === "thinking"
-                  ? "bg-[#5D488A] animate-spin"
-                  : "bg-[#83918B]"
+                  ? "bg-[#8B5CF6] animate-spin"
+                  : "bg-[#94A3B8]"
               }`}
             />
             <span className="font-semibold capitalize">{visualState}</span>
-            <span className="text-[#687670]">&bull;</span>
-            <span className="text-[#4A5752]">
+            <span className="text-[#94A3B8]">&bull;</span>
+            <span className="text-[#475569]">
               {visualState === "listening"
                 ? "Listening to you"
                 : visualState === "speaking"
@@ -724,17 +724,17 @@ export const RealtimeVoiceCompanion: React.FC = () => {
           </div>
 
           {currentEmotion && (
-            <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-[#CBD8F6]/40 border border-[#CBD8F6] text-xs text-[#1A1E1C] shadow-2xs animate-fade-in">
-              <span className="text-[#465B8C] font-medium">Emotion:</span>
-              <span className="font-semibold">{currentEmotion}</span>
+            <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-[#EEF4FF] border border-[#DCE7FE] text-xs text-[#2B4CDE] shadow-xs animate-fade-in font-medium">
+              <span>Emotion:</span>
+              <span className="font-bold">{currentEmotion}</span>
             </div>
           )}
 
           {detectedLanguageCode && (
-            <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-[#D9F296]/50 border border-[#D9F296] text-xs text-[#1A1E1C] shadow-2xs">
-              <Globe className="w-3.5 h-3.5 text-[#285B55]" />
-              <span className="font-medium text-[#4A5752]">Replying in:</span>
-              <span className="font-semibold uppercase">{detectedLanguageCode}</span>
+            <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-[#ECFDF5] border border-[#A7F3D0] text-xs text-[#059669] shadow-xs">
+              <Globe className="w-3.5 h-3.5 text-[#059669]" />
+              <span className="font-medium text-[#047857]">Replying in:</span>
+              <span className="font-bold uppercase">{detectedLanguageCode}</span>
             </div>
           )}
         </div>
@@ -762,11 +762,11 @@ export const RealtimeVoiceCompanion: React.FC = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="mt-6 max-w-lg px-5 py-3 rounded-full bg-[#D9F296]/30 border border-[#D9F296] text-sm text-[#1A1E1C] flex items-center space-x-2 shadow-xs"
+              className="mt-6 max-w-lg px-5 py-3 rounded-full bg-[#EEF4FF] border border-[#DCE7FE] text-sm text-[#0F172A] flex items-center space-x-2 shadow-xs"
             >
-              <Mic className="w-4 h-4 text-[#285B55] shrink-0 animate-pulse" />
+              <Mic className="w-4 h-4 text-[#2B4CDE] shrink-0 animate-pulse" />
               <span className="truncate">
-                <strong className="font-semibold text-[#1A1E1C]">You:</strong> &ldquo;{liveTranscript}&rdquo;
+                <strong className="font-semibold text-[#0F172A]">You:</strong> &ldquo;{liveTranscript}&rdquo;
               </span>
             </motion.div>
           )}
@@ -774,12 +774,12 @@ export const RealtimeVoiceCompanion: React.FC = () => {
 
         {/* Microphone Permission Prompt */}
         {micPermission === "prompt" && (
-          <div className="mt-6 p-4 rounded-2xl bg-[#CDE5D3]/40 border border-[#CDE5D3] flex flex-wrap items-center justify-center gap-3 text-sm text-[#1A1E1C]">
-            <Mic className="w-4 h-4 text-[#285B55]" />
+          <div className="mt-6 p-4 rounded-2xl bg-[#EEF4FF] border border-[#DCE7FE] flex flex-wrap items-center justify-center gap-3 text-sm text-[#0F172A]">
+            <Mic className="w-4 h-4 text-[#2B4CDE]" />
             <span>Enable microphone to talk freely with your AI companion.</span>
             <button
               onClick={handleRequestMicrophone}
-              className="px-4 py-2 rounded-full bg-[#1A1E1C] text-white font-medium text-xs hover:bg-[#285B55] transition-all shadow-sm"
+              className="px-4 py-2 rounded-full bg-[#2B4CDE] text-white font-medium text-xs hover:bg-[#1E3A8A] transition-all shadow-sm"
             >
               Start Talking
             </button>
@@ -787,7 +787,7 @@ export const RealtimeVoiceCompanion: React.FC = () => {
         )}
 
         {micPermission === "denied" && (
-          <div className="mt-6 p-4 rounded-2xl bg-[#F6D4DC]/50 border border-[#F6D4DC] flex items-center space-x-2.5 text-sm text-[#9B1C31]">
+          <div className="mt-6 p-4 rounded-2xl bg-[#FFF1F2] border border-[#FECDD3] flex items-center space-x-2.5 text-sm text-[#E11D48]">
             <AlertTriangle className="w-4 h-4 shrink-0" />
             <span>Microphone access was denied. You can still write messages below.</span>
           </div>
@@ -800,20 +800,20 @@ export const RealtimeVoiceCompanion: React.FC = () => {
             onClick={micPermission === "prompt" ? handleRequestMicrophone : handleToggleMute}
             className={`px-6 py-3.5 min-h-[48px] rounded-full font-medium text-sm transition-all flex items-center space-x-2.5 shadow-sm ${
               isMuted
-                ? "bg-[#FDF2F2] border border-[#F2C9CE] text-[#9B1C31] hover:bg-[#FCE8E8]"
-                : "bg-[#1A1E1C] text-white hover:bg-[#285B55]"
+                ? "bg-[#FFF1F2] border border-[#FECDD3] text-[#E11D48] hover:bg-[#FFE4E6]"
+                : "bg-[#2B4CDE] text-white hover:bg-[#1E3A8A] shadow-md shadow-[#2B4CDE]/20"
             }`}
             title={isMuted ? "Unmute microphone (Space)" : "Mute microphone (Space)"}
             aria-label={isMuted ? "Unmute microphone" : "Mute microphone"}
           >
             {isMuted ? (
               <>
-                <MicOff className="w-4 h-4 text-[#9B1C31]" />
+                <MicOff className="w-4 h-4 text-[#E11D48]" />
                 <span>Microphone Muted</span>
               </>
             ) : (
               <>
-                <Mic className="w-4 h-4 text-[#9EE838] animate-pulse" />
+                <Mic className="w-4 h-4 text-white animate-pulse" />
                 <span>Listening Active</span>
               </>
             )}
@@ -878,10 +878,10 @@ export const RealtimeVoiceCompanion: React.FC = () => {
               <button
                 key={idx}
                 onClick={() => handleSendTurn(prompt.text)}
-                className="px-3.5 py-1.5 rounded-full bg-[#EDF1EF] hover:bg-[#D9F296]/70 border border-[#1A1E1C]/8 text-xs text-[#1A1E1C] transition-all shadow-2xs text-left"
+                className="px-3.5 py-1.5 rounded-full bg-[#F0F5FF] hover:bg-[#EEF4FF] border border-[#DCE7FE] text-xs text-[#0F172A] transition-all shadow-xs text-left"
                 title={prompt.text}
               >
-                <span className="font-semibold">{prompt.label}:</span> &ldquo;{prompt.text.slice(0, 36)}...&rdquo;
+                <span className="font-semibold text-[#2B4CDE]">{prompt.label}:</span> &ldquo;{prompt.text.slice(0, 36)}...&rdquo;
               </button>
             ))}
           </div>
@@ -893,11 +893,11 @@ export const RealtimeVoiceCompanion: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full p-5 rounded-[28px] peopleflow-card border border-white/80 shadow-subtle space-y-3"
+          className="w-full p-5 rounded-[28px] bg-white border border-[#DCE7FE] shadow-[0_8px_30px_rgba(43,76,222,0.05)] space-y-3"
         >
-          <div className="flex items-center justify-between text-sm text-[#4A5752]">
-            <span className="font-medium text-[#1A1E1C] flex items-center space-x-2">
-              <MessageSquare className="w-4 h-4 text-[#285B55]" />
+          <div className="flex items-center justify-between text-sm text-[#64748B]">
+            <span className="font-medium text-[#0F172A] flex items-center space-x-2">
+              <MessageSquare className="w-4 h-4 text-[#2B4CDE]" />
               <span>Write to your voice companion</span>
             </span>
             <span className="text-xs">Companion will speak response aloud in your language</span>
@@ -909,11 +909,11 @@ export const RealtimeVoiceCompanion: React.FC = () => {
               value={typedInput}
               onChange={(e) => setTypedInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSendTurn()}
-              className="flex-1 bg-[#FFFFFF] border border-[#1A1E1C]/15 rounded-full px-5 py-3 min-h-[48px] text-base text-[#1A1E1C] focus:outline-none focus:border-[#285B55] shadow-xs"
+              className="flex-1 bg-white border border-[#DCE7FE] rounded-full px-5 py-3 min-h-[48px] text-base text-[#0F172A] focus:outline-none focus:border-[#2B4CDE] shadow-xs"
             />
             <button
               onClick={() => handleSendTurn()}
-              className="px-6 py-3 rounded-full bg-[#1A1E1C] hover:bg-[#285B55] text-white font-medium text-sm transition-all shadow-sm"
+              className="px-6 py-3 rounded-full bg-[#2B4CDE] hover:bg-[#1E3A8A] text-white font-medium text-sm transition-all shadow-sm"
             >
               Send
             </button>
@@ -922,19 +922,19 @@ export const RealtimeVoiceCompanion: React.FC = () => {
       )}
 
       {/* 6. Readable Conversation Transcripts */}
-      <div className="w-full p-6 rounded-[28px] peopleflow-card border border-white/80 shadow-subtle space-y-4">
-        <div className="flex items-center justify-between border-b border-[#1A1E1C]/5 pb-3">
+      <div className="w-full p-6 rounded-[28px] bg-white border border-[#DCE7FE] shadow-[0_8px_30px_rgba(43,76,222,0.05)] space-y-4">
+        <div className="flex items-center justify-between border-b border-[#F1F5F9] pb-3">
           <div className="flex items-center space-x-2">
-            <h3 className="text-base font-serif font-semibold text-[#1A1E1C]">
+            <h3 className="text-base font-bold text-[#0F172A]">
               Conversation Transcript
             </h3>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#EDF1EF] text-[#4A5752]">
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#EEF4FF] text-[#2B4CDE] font-semibold border border-[#DCE7FE]">
               {transcripts.length} turns
             </span>
           </div>
           <button
             onClick={() => setShowTranscript(!showTranscript)}
-            className="text-xs font-medium text-[#285B55] hover:underline"
+            className="text-xs font-semibold text-[#2B4CDE] hover:underline"
           >
             {showTranscript ? "Hide transcript" : "Show transcript"}
           </button>
@@ -947,31 +947,31 @@ export const RealtimeVoiceCompanion: React.FC = () => {
                 key={t.id}
                 className={`p-4 rounded-2xl text-base space-y-1.5 transition-all ${
                   t.sender === "user"
-                    ? "bg-[#CDE5D3]/40 border border-[#CDE5D3] text-[#1A1E1C] ml-4 sm:ml-12"
+                    ? "bg-[#EEF4FF] border border-[#DCE7FE] text-[#0F172A] ml-4 sm:ml-12"
                     : t.isCrisisEscalation
-                    ? "bg-[#FDF2F2] border border-[#F2C9CE] text-[#1A1E1C]"
-                    : "bg-[#FFFFFF] border border-[#1A1E1C]/8 text-[#1A1E1C] mr-4 sm:mr-12 shadow-xs"
+                    ? "bg-[#FFF1F2] border border-[#FECDD3] text-[#0F172A]"
+                    : "bg-white border border-[#E2E8F0] text-[#0F172A] mr-4 sm:mr-12 shadow-xs"
                 }`}
               >
-                <div className="flex items-center justify-between text-xs text-[#687670]">
+                <div className="flex items-center justify-between text-xs text-[#64748B]">
                   <div className="flex items-center space-x-2">
-                    <span className="font-semibold text-[#1A1E1C]">
+                    <span className="font-semibold text-[#0F172A]">
                       {t.sender === "user" ? "Elena (You)" : "InnerOS Companion"}
                     </span>
                     {t.emotion && (
-                      <span className="px-2 py-0.5 rounded-full bg-[#CBD8F6]/40 text-[#465B8C] font-medium text-[11px]">
+                      <span className="px-2 py-0.5 rounded-full bg-[#EEF4FF] text-[#2B4CDE] font-semibold text-[11px] border border-[#DCE7FE]">
                         {t.emotion}
                       </span>
                     )}
                     {t.language && (
-                      <span className="px-2 py-0.5 rounded-full bg-[#D9F296]/50 text-[#285B55] font-semibold text-[11px] uppercase">
+                      <span className="px-2 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] font-bold text-[11px] uppercase border border-[#A7F3D0]">
                         {t.language}
                       </span>
                     )}
                   </div>
                   <span>{t.timestamp}</span>
                 </div>
-                <p className="leading-relaxed text-sm sm:text-base">{t.text}</p>
+                <p className="leading-relaxed text-sm sm:text-base text-[#0F172A]">{t.text}</p>
               </div>
             ))}
           </div>
@@ -980,15 +980,15 @@ export const RealtimeVoiceCompanion: React.FC = () => {
 
       {/* 7. Voice Profile Selector Modal */}
       {isVoiceModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-xs">
-          <div className="w-full max-w-lg p-6 rounded-[28px] bg-white border border-white/80 shadow-elevated space-y-4 max-h-[85vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-[#1A1E1C]/8 pb-3">
-              <h3 className="text-lg font-serif font-semibold text-[#1A1E1C]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+          <div className="w-full max-w-lg p-6 rounded-[28px] bg-white border border-[#DCE7FE] shadow-[0_20px_60px_rgba(43,76,222,0.15)] space-y-4 max-h-[85vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#F1F5F9] pb-3">
+              <h3 className="text-lg font-bold text-[#0F172A]">
                 Choose Companion Voice
               </h3>
               <button
                 onClick={() => setIsVoiceModalOpen(false)}
-                className="p-2 rounded-full bg-[#EDF1EF] text-[#4A5752] hover:bg-[#DFE6E2]"
+                className="p-2 rounded-full bg-[#F0F5FF] text-[#64748B] hover:bg-[#EEF4FF] hover:text-[#0F172A]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1006,23 +1006,23 @@ export const RealtimeVoiceCompanion: React.FC = () => {
                     }}
                     className={`p-4 rounded-2xl border cursor-pointer transition-all space-y-1.5 ${
                       isSelected
-                        ? "bg-[#CDE5D3]/40 border-[#285B55] shadow-xs"
-                        : "bg-white border-[#1A1E1C]/10 hover:border-[#285B55]/50"
+                        ? "bg-[#EEF4FF] border-[#2B4CDE] shadow-xs"
+                        : "bg-white border-[#E2E8F0] hover:border-[#2B4CDE]/50"
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-base text-[#1A1E1C]">{p.name}</span>
+                      <span className="font-semibold text-base text-[#0F172A]">{p.name}</span>
                       <div className="flex items-center space-x-2">
-                        <span className="text-xs text-[#687670]">{p.language}</span>
-                        {isSelected && <Check className="w-4 h-4 text-[#285B55]" />}
+                        <span className="text-xs text-[#64748B]">{p.language}</span>
+                        {isSelected && <Check className="w-4 h-4 text-[#2B4CDE]" />}
                       </div>
                     </div>
-                    <p className="text-sm text-[#4A5752] leading-relaxed">{p.description}</p>
+                    <p className="text-sm text-[#64748B] leading-relaxed">{p.description}</p>
                     <div className="flex flex-wrap gap-1.5 pt-1">
                       {p.tone_characteristics.map((tc) => (
                         <span
                           key={tc}
-                          className="text-xs px-2.5 py-0.5 rounded-full bg-[#EDF1EF] text-[#4A5752]"
+                          className="text-xs px-2.5 py-0.5 rounded-full bg-[#F0F5FF] text-[#2B4CDE] font-medium"
                         >
                           {tc}
                         </span>
@@ -1038,20 +1038,20 @@ export const RealtimeVoiceCompanion: React.FC = () => {
 
       {/* 8. Language Selector Modal */}
       {isLanguageModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-xs">
-          <div className="w-full max-w-xl p-6 rounded-[28px] bg-white border border-white/80 shadow-elevated space-y-4 max-h-[85vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-[#1A1E1C]/8 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+          <div className="w-full max-w-xl p-6 rounded-[28px] bg-white border border-[#DCE7FE] shadow-[0_20px_60px_rgba(43,76,222,0.15)] space-y-4 max-h-[85vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#F1F5F9] pb-3">
               <div>
-                <h3 className="text-lg font-serif font-semibold text-[#1A1E1C]">
+                <h3 className="text-lg font-bold text-[#0F172A]">
                   Select Language
                 </h3>
-                <p className="text-sm text-[#687670]">
+                <p className="text-sm text-[#64748B]">
                   Choose your preferred language for continuous voice &amp; speech synthesis
                 </p>
               </div>
               <button
                 onClick={() => setIsLanguageModalOpen(false)}
-                className="p-2 rounded-full bg-[#EDF1EF] text-[#4A5752] hover:bg-[#DFE6E2]"
+                className="p-2 rounded-full bg-[#F0F5FF] text-[#64748B] hover:bg-[#EEF4FF] hover:text-[#0F172A]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1062,7 +1062,7 @@ export const RealtimeVoiceCompanion: React.FC = () => {
               placeholder="Search language..."
               value={languageSearch}
               onChange={(e) => setLanguageSearch(e.target.value)}
-              className="w-full text-base bg-[#FFFFFF] border border-[#1A1E1C]/15 rounded-full px-5 py-2.5 text-[#1A1E1C] focus:outline-none focus:border-[#285B55]"
+              className="w-full text-base bg-white border border-[#DCE7FE] rounded-full px-5 py-2.5 text-[#0F172A] focus:outline-none focus:border-[#2B4CDE] shadow-xs"
             />
 
             <div className="grid gap-2.5 max-h-96 overflow-y-auto pr-1">
@@ -1083,19 +1083,19 @@ export const RealtimeVoiceCompanion: React.FC = () => {
                       }}
                       className={`p-3.5 rounded-2xl border cursor-pointer transition-all flex items-center justify-between ${
                         isSelected
-                          ? "bg-[#CDE5D3]/40 border-[#285B55]"
-                          : "bg-white border-[#1A1E1C]/10 hover:border-[#285B55]/50"
+                          ? "bg-[#EEF4FF] border-[#2B4CDE] shadow-xs"
+                          : "bg-white border-[#E2E8F0] hover:border-[#2B4CDE]/50"
                       }`}
                     >
                       <div>
-                        <span className="font-semibold text-base text-[#1A1E1C]">
+                        <span className="font-semibold text-base text-[#0F172A]">
                           {lang.name} ({lang.native_name})
                         </span>
-                        <span className="text-xs text-[#687670] ml-2 block sm:inline">
+                        <span className="text-xs text-[#64748B] ml-2 block sm:inline">
                           Tier: {lang.tier.replace(/_/g, " ")}
                         </span>
                       </div>
-                      {isSelected && <Check className="w-4 h-4 text-[#285B55]" />}
+                      {isSelected && <Check className="w-4 h-4 text-[#2B4CDE]" />}
                     </div>
                   );
                 })}

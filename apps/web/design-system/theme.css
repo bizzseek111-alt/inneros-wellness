@@ -9,59 +9,71 @@
 
 :root,
 .light {
-  /* PEOPLEFLOW ALABASTER-SAGE BENTO PALETTE (DEFAULT) */
-  --bg-canvas: #EDF1EF;
-  --bg-canvas-warm: #FAF8F4;
-  --bg-surface: #E4EAE7;
+  /* DRIBBLE AI MENTAL WELLNESS PLATFORM PALETTE (Imran Hossen Design System) */
+  --bg-canvas: #F8FAFC;
+  --bg-canvas-subtle: #F0F5FF;
+  --bg-canvas-warm: #F8FAFC;
+  --bg-surface: #EEF4FF;
   --bg-card: #FFFFFF;
-  --bg-card-hover: #F9FBFA;
-  --bg-subtle: #DFE6E2;
+  --bg-card-hover: #F8FAFC;
+  --bg-subtle: #E2E8F0;
   --bg-input: #FFFFFF;
 
-  /* SKIN & ACCENT COLORS FROM ATTACHED REFERENCE */
-  --surface-lime: #D9F296;
-  --surface-lime-strong: #9EE838;
-  --surface-periwinkle: #CBD8F6;
-  --surface-sage: #CDE5D3;
-  --surface-blush: #F6D4DC;
-  --surface-peach: #F7E5DC;
-  --surface-lavender: #EAE4F7;
-  --surface-sky: #DCE7FA;
+  /* THERAPEUTIC BLUE & MULTI-PASTEL STATUS PILLS */
+  --accent-primary: #2B4CDE;
+  --accent-primary-hover: #1E3A8A;
+  --accent-secondary: #4F46E5;
+  --accent-indigo: #2B4CDE;
+  --accent-indigo-light: #EEF4FF;
+  --accent-indigo-glow: rgba(43, 76, 222, 0.12);
 
-  --text-primary: #1A1E1C;
-  --text-secondary: #4A5752;
-  --text-muted: #687670;
-  --text-dim: #83918B;
+  --surface-blue-soft: #EEF4FF;
+  --surface-blue-border: #DCE7FE;
+  --surface-mint: #ECFDF5;
+  --surface-mint-text: #059669;
+  --surface-lavender: #F5F3FF;
+  --surface-lavender-text: #7C3AED;
+  --surface-blush: #FFF1F2;
+  --surface-blush-text: #E11D48;
+  --surface-amber: #FFFBEB;
+  --surface-amber-text: #D97706;
 
-  --border-subtle: rgba(26, 30, 28, 0.07);
-  --border-medium: rgba(26, 30, 28, 0.13);
-  --border-accent: rgba(40, 91, 85, 0.28);
-  --border-teal: rgba(40, 91, 85, 0.22);
+  /* BACKWARD COMPATIBLE SYSTEM TOKENS */
+  --surface-lime: #EEF4FF;
+  --surface-lime-strong: #2B4CDE;
+  --surface-periwinkle: #E0EAFF;
+  --surface-sage: #ECFDF5;
+  --surface-peach: #FFF1F2;
+  --surface-sky: #E0F2FE;
 
-  --accent-ink: #1A1E1C;
-  --accent-primary: #285B55;
-  --accent-primary-hover: #1D4540;
-  --accent-teal: #285B55;
-  --accent-teal-light: #E3EFE8;
-  --accent-teal-glow: rgba(40, 91, 85, 0.10);
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --text-dim: #94A3B8;
 
-  --accent-lavender: #5D488A;
-  --accent-lavender-light: #ECE7F7;
-  --accent-lavender-glow: rgba(93, 72, 138, 0.10);
+  --border-subtle: rgba(15, 23, 42, 0.06);
+  --border-medium: rgba(15, 23, 42, 0.12);
+  --border-accent: rgba(43, 76, 222, 0.25);
+  --border-teal: rgba(43, 76, 222, 0.18);
 
-  --accent-indigo: #465B8C;
-  --accent-indigo-light: #E2EAF8;
-  --accent-indigo-glow: rgba(70, 91, 140, 0.10);
+  --accent-ink: #0F172A;
+  --accent-teal: #2B4CDE;
+  --accent-teal-light: #EEF4FF;
+  --accent-teal-glow: rgba(43, 76, 222, 0.10);
+
+  --accent-lavender-custom: #7C3AED;
+  --accent-lavender-light: #F5F3FF;
+  --accent-lavender-glow: rgba(124, 58, 237, 0.10);
 
   --accent-ivory: #FFFFFF;
-  --accent-ivory-warm: #F4F6F5;
+  --accent-ivory-warm: #F8FAFC;
 
-  --shadow-subtle: 0 2px 10px rgba(26, 30, 28, 0.035);
-  --shadow-surface: 0 8px 28px -6px rgba(26, 30, 28, 0.055);
-  --shadow-elevated: 0 20px 48px -8px rgba(26, 30, 28, 0.09);
-  --glow-ambient: radial-gradient(circle at 25% 0%, rgba(205, 229, 211, 0.55) 0%, rgba(203, 216, 246, 0.35) 45%, rgba(237, 241, 239, 0) 80%);
+  --shadow-subtle: 0 2px 10px rgba(15, 23, 42, 0.035);
+  --shadow-surface: 0 10px 32px -4px rgba(43, 76, 222, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+  --shadow-elevated: 0 24px 50px -10px rgba(43, 76, 222, 0.10), 0 4px 12px rgba(15, 23, 42, 0.05);
+  --glow-ambient: radial-gradient(circle at 30% 0%, rgba(224, 234, 255, 0.75) 0%, rgba(240, 245, 255, 0.5) 45%, rgba(248, 250, 252, 0) 80%);
 
-  --ring-focus: 0 0 0 3px rgba(40, 91, 85, 0.35);
+  --ring-focus: 0 0 0 3px rgba(43, 76, 222, 0.35);
 }
 
 /* OPTIONAL DARK MODE (BOTANICAL MOSS SANCTUARY) */
@@ -161,27 +173,59 @@ body {
   );
 }
 
-/* PeopleFlow Bento & Pyko Glassmorphic Cards */
-.peopleflow-card {
-  background: rgba(255, 255, 255, 0.94);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  border-radius: 28px;
-  box-shadow: 0 8px 30px -6px rgba(26, 30, 28, 0.045), 0 1px 2px rgba(26, 30, 28, 0.03);
-  backdrop-filter: blur(16px);
+/* Dribbble AI Mental Wellness & PeopleFlow Bento Cards */
+.peopleflow-card,
+.wellness-card {
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(220, 231, 254, 0.65);
+  border-radius: 32px;
+  box-shadow: 0 12px 36px -6px rgba(43, 76, 222, 0.05), 0 2px 6px rgba(15, 23, 42, 0.02);
+  backdrop-filter: blur(18px);
+}
+
+.wellness-card-elevated {
+  background: #FFFFFF;
+  border: 1px solid rgba(220, 231, 254, 0.85);
+  border-radius: 32px;
+  box-shadow: 0 20px 48px -10px rgba(43, 76, 222, 0.08), 0 4px 12px rgba(15, 23, 42, 0.03);
+}
+
+.wellness-pill-blue {
+  background: #EEF4FF;
+  color: #2B4CDE;
+  border: 1px solid #DCE7FE;
+}
+
+.wellness-pill-mint {
+  background: #ECFDF5;
+  color: #059669;
+  border: 1px solid #A7F3D0;
+}
+
+.wellness-pill-lavender {
+  background: #F5F3FF;
+  color: #7C3AED;
+  border: 1px solid #DDD6FE;
+}
+
+.wellness-pill-amber {
+  background: #FFFBEB;
+  color: #D97706;
+  border: 1px solid #FDE68A;
 }
 
 .pyko-glass {
-  background: rgba(255, 255, 255, 0.10);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 24px 60px -12px rgba(15, 23, 42, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
 }
 
 .pyko-glass-light {
-  background: rgba(255, 255, 255, 0.78);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 18px 42px -10px rgba(20, 32, 24, 0.12);
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(220, 231, 254, 0.7);
+  box-shadow: 0 18px 42px -10px rgba(43, 76, 222, 0.08);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
