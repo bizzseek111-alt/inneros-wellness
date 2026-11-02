@@ -197,6 +197,7 @@ async def execute_voice_turn(
         transcript_user=user_text,
         transcript_companion=companion_reply,
         audio_base64=synth_res.audio_base64,
+        audio_format=synth_res.format,
         duration_estimate_sec=synth_res.duration_estimate_sec,
         confidence_score=confidence,
     )

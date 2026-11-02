@@ -318,21 +318,21 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
       aria-label="Conversation with your InnerOS AI companion"
     >
       {/* Top Companion Header & Controls */}
-      <div className="flex flex-wrap items-center justify-between p-4 sm:p-5 rounded-3xl bg-white border border-[#E6E1D8] shadow-soft gap-3">
+      <div className="flex flex-wrap items-center justify-between p-4 sm:p-5 rounded-[28px] peopleflow-card border border-white/80 shadow-subtle gap-3">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#E8F1EB] border border-[#CBE0D3] flex items-center justify-center text-[#285B55]">
-            <Sparkles className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-2xl bg-[#D9F296]/40 border border-[#D9F296] flex items-center justify-center text-[#1A1E1C]">
+            <Sparkles className="w-5 h-5 text-[#285B55]" />
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <h1 className="text-lg font-serif font-semibold text-[#263330]">
+              <h1 className="text-lg font-serif font-semibold text-[#1A1E1C]">
                 Companion Conversation
               </h1>
-              <Badge variant="teal" size="sm">
-                AI Companion
-              </Badge>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#D9F296] text-[#1A1E1C]">
+                Active Sanctuary
+              </span>
             </div>
-            <p className="text-xs text-[#52625E]">
+            <p className="text-xs text-[#4A5752]">
               Supportive space for reflection &bull; Not a medical service
             </p>
           </div>
@@ -342,9 +342,9 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
           {/* Switch to Voice Mode */}
           <Link
             href="/companion/voice"
-            className="px-3.5 py-2 min-h-[40px] rounded-xl bg-[#E8F1EB] hover:bg-[#D5E6DC] text-[#1F4742] border border-[#CBE0D3] text-xs font-medium flex items-center space-x-1.5 transition-colors"
+            className="px-3.5 py-2 min-h-[40px] rounded-full bg-[#CBD8F6]/40 hover:bg-[#CBD8F6]/70 text-[#1A1E1C] border border-[#CBD8F6] text-xs font-medium flex items-center space-x-1.5 transition-colors shadow-xs"
           >
-            <Mic className="w-4 h-4 text-[#285B55]" />
+            <Mic className="w-4 h-4 text-[#465B8C]" />
             <span>Switch to Voice</span>
           </Link>
 
@@ -352,7 +352,7 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
           <select
             value={currentLanguage}
             onChange={(e) => setCurrentLanguage(e.target.value)}
-            className="text-xs min-h-[40px] bg-white border border-[#DDD7CC] text-[#263330] rounded-xl px-3 py-2 focus:outline-none focus:border-[#285B55]"
+            className="text-xs min-h-[40px] bg-white border border-[#1A1E1C]/10 text-[#1A1E1C] rounded-full px-3.5 py-2 focus:outline-none focus:border-[#285B55] shadow-xs"
             aria-label="Select conversation language"
           >
             {LANGUAGES.map((l) => (
@@ -365,10 +365,10 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
           {/* Tone & Style Drawer Toggle */}
           <button
             onClick={() => setShowConfig(!showConfig)}
-            className={`px-3 py-2 min-h-[40px] rounded-xl border text-xs font-medium transition-colors flex items-center space-x-1.5 ${
+            className={`px-3.5 py-2 min-h-[40px] rounded-full border text-xs font-medium transition-all flex items-center space-x-1.5 shadow-xs ${
               showConfig
-                ? "bg-[#EDE8F5] border-[#D0C4E8] text-[#423166]"
-                : "bg-white border-[#DDD7CC] text-[#52625E] hover:text-[#263330]"
+                ? "bg-[#EAE4F7] border-[#EAE4F7] text-[#1A1E1C]"
+                : "bg-white border-[#1A1E1C]/10 text-[#4A5752] hover:text-[#1A1E1C]"
             }`}
             title="Adjust companion warmth and style"
             aria-expanded={showConfig}
@@ -380,7 +380,7 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
           {/* Fresh Conversation */}
           <button
             onClick={handleClearSession}
-            className="p-2.5 min-h-[40px] min-w-[40px] rounded-xl bg-white border border-[#DDD7CC] text-[#52625E] hover:text-[#9B1C31] hover:bg-[#FDF2F2] transition-colors flex items-center justify-center"
+            className="p-2.5 min-h-[40px] min-w-[40px] rounded-full bg-white border border-[#1A1E1C]/10 text-[#687670] hover:text-[#9B1C31] hover:bg-[#FDF2F2] transition-colors flex items-center justify-center shadow-xs"
             title="Start a fresh conversation"
             aria-label="Clear conversation history"
           >
@@ -396,7 +396,7 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden bg-white border border-[#E6E1D8] rounded-3xl p-5 shadow-soft space-y-4"
+            className="overflow-hidden bg-white/95 rounded-[28px] p-5 shadow-subtle border border-white/80 space-y-4 peopleflow-card"
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
@@ -446,7 +446,7 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
       {/* 5 Conversation Modes Selector */}
       <div className="space-y-2">
         <div
-          className="flex overflow-x-auto gap-2.5 pb-1 no-scrollbar"
+          className="flex overflow-x-auto gap-2 pb-1 no-scrollbar"
           role="tablist"
           aria-label="How would you like me to support you?"
         >
@@ -459,13 +459,13 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
                 onClick={() => setCurrentMode(m.id)}
                 role="tab"
                 aria-selected={isActive}
-                className={`flex items-center space-x-2 px-4 py-2.5 min-h-[44px] rounded-2xl text-sm font-medium shrink-0 transition-all border ${
+                className={`flex items-center space-x-2 px-4 py-2 min-h-[40px] rounded-full text-xs sm:text-sm font-medium shrink-0 transition-all border shadow-xs ${
                   isActive
-                    ? "bg-[#285B55] border-[#285B55] text-white shadow-sm"
-                    : "bg-white border-[#E6E1D8] text-[#263330] hover:bg-[#E8F1EB]/60"
+                    ? "bg-[#1A1E1C] border-[#1A1E1C] text-white"
+                    : "bg-white border-[#1A1E1C]/10 text-[#1A1E1C] hover:bg-[#F9FBFA]"
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-[#285B55]"}`} />
+                <Icon className={`w-3.5 h-3.5 ${isActive ? "text-[#9EE838]" : "text-[#285B55]"}`} />
                 <span>{m.label}</span>
               </button>
             );
@@ -473,19 +473,19 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
         </div>
 
         {/* Mode Intent Guidance */}
-        <div className="text-sm px-4 py-2.5 rounded-2xl bg-[#E8F1EB]/60 border border-[#CBE0D3] text-[#1F4742] flex flex-wrap items-center justify-between gap-2">
+        <div className="text-xs sm:text-sm px-4 py-2.5 rounded-2xl bg-[#CDE5D3]/40 border border-[#CDE5D3] text-[#1A1E1C] flex flex-wrap items-center justify-between gap-2">
           <span>{activeModeData.description}</span>
           {!activeModeData.allowsAdvice && (
-            <span className="text-xs font-medium bg-white px-2.5 py-0.5 rounded-full border border-[#CBE0D3] text-[#285B55]">
-              Listening only — no unsolicited advice
+            <span className="text-xs font-semibold bg-[#FFFFFF] px-2.5 py-0.5 rounded-full border border-[#CDE5D3] text-[#1A1E1C]">
+              Listening only &bull; No unsolicited advice
             </span>
           )}
         </div>
       </div>
 
-      {/* Spacious Conversation Feed */}
+      {/* Spacious PeopleFlow Conversation Feed */}
       <div
-        className="flex-1 overflow-y-auto space-y-5 p-4 sm:p-6 rounded-3xl bg-white/70 border border-[#E6E1D8] min-h-[380px] max-h-[520px]"
+        className="flex-1 overflow-y-auto space-y-4 p-4 sm:p-6 rounded-[32px] peopleflow-card border border-white/80 bg-white/95 min-h-[380px] max-h-[520px] shadow-subtle"
         role="log"
         aria-live="polite"
       >
@@ -502,20 +502,20 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
               <div
                 className={`max-w-[85%] sm:max-w-[78%] rounded-3xl px-5 py-4 text-base leading-relaxed ${
                   isUser
-                    ? "bg-[#285B55] text-white rounded-br-md shadow-xs"
+                    ? "bg-[#1A1E1C] text-white rounded-br-sm shadow-xs"
                     : m.isCrisis
-                    ? "bg-[#FDF2F2] border border-[#F2C9CE] text-[#263330] rounded-bl-md"
-                    : "bg-white border border-[#E6E1D8] text-[#263330] rounded-bl-md shadow-soft"
+                    ? "bg-[#FDF2F2] border border-[#F2C9CE] text-[#1A1E1C] rounded-bl-sm"
+                    : "bg-white border border-[#1A1E1C]/8 text-[#1A1E1C] rounded-bl-sm shadow-xs"
                 }`}
               >
                 {m.content}
               </div>
 
               {/* Subtle, friendly message footer */}
-              <div className="flex items-center space-x-2.5 mt-1.5 px-2 text-xs text-[#52625E]">
-                <span>{isUser ? "You" : "InnerOS"} &bull; {m.timestamp}</span>
+              <div className="flex items-center space-x-2.5 mt-1.5 px-2 text-xs text-[#687670]">
+                <span>{isUser ? "Elena (You)" : "InnerOS Companion"} &bull; {m.timestamp}</span>
                 {!isUser && m.adviceOmitted && (
-                  <span className="text-[#285B55]">
+                  <span className="text-[#285B55] font-medium">
                     &bull; Just listening
                   </span>
                 )}
@@ -538,7 +538,7 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
             animate={{ opacity: 1 }}
             className="flex flex-col items-start"
           >
-            <div className="max-w-[85%] rounded-3xl px-5 py-4 text-base leading-relaxed bg-white border border-[#CBE0D3] text-[#263330] rounded-bl-md shadow-soft">
+            <div className="max-w-[85%] rounded-3xl px-5 py-4 text-base leading-relaxed bg-white border border-[#CDE5D3] text-[#1A1E1C] rounded-bl-sm shadow-xs">
               {streamingContent}
               <span className="inline-block w-2 h-4 bg-[#285B55] ml-1.5 animate-pulse rounded-xs" />
             </div>
@@ -552,7 +552,7 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Gentle Conversation Starters */}
+      {/* Gentle Conversation Starter Chips */}
       <div className="flex flex-wrap gap-2">
         {[
           "I don't want advice right now, I just need to vent.",
@@ -564,15 +564,15 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
             key={prompt}
             onClick={() => handleSend(prompt)}
             disabled={isStreaming}
-            className="text-xs sm:text-sm px-3.5 py-2 rounded-full bg-white hover:bg-[#E8F1EB] border border-[#E6E1D8] text-[#52625E] hover:text-[#1F4742] transition-colors shadow-2xs"
+            className="text-xs sm:text-sm px-3.5 py-1.5 rounded-full bg-white hover:bg-[#D9F296]/60 border border-[#1A1E1C]/10 text-[#1A1E1C] transition-all shadow-xs"
           >
             {prompt}
           </button>
         ))}
       </div>
 
-      {/* Warm, Spacious Input Composer */}
-      <div className="relative flex items-center bg-white border border-[#DDD7CC] focus-within:border-[#285B55] focus-within:ring-2 focus-within:ring-[#285B55]/15 rounded-3xl p-2.5 shadow-card transition-all">
+      {/* Warm, Rounded Input Composer */}
+      <div className="relative flex items-center bg-white border border-[#1A1E1C]/15 focus-within:border-[#285B55] focus-within:ring-2 focus-within:ring-[#285B55]/15 rounded-full p-2 pl-5 shadow-surface transition-all">
         <textarea
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
@@ -584,7 +584,7 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
           }}
           placeholder={`Write what is on your mind (${activeModeData.label})...`}
           rows={1}
-          className="w-full bg-transparent resize-none text-base text-[#263330] placeholder:text-[#7F8E8A] px-4 py-2 focus:outline-none max-h-36"
+          className="w-full bg-transparent resize-none text-base text-[#1A1E1C] placeholder:text-[#83918B] py-1.5 focus:outline-none max-h-32"
           aria-label="Write a message to your companion"
         />
 
@@ -592,22 +592,22 @@ export const CompanionInterface: React.FC<CompanionInterfaceProps> = ({
           <button
             onClick={() => handleSend()}
             disabled={!inputValue.trim() || isStreaming}
-            className="p-3 min-h-[46px] min-w-[46px] rounded-2xl bg-[#285B55] hover:bg-[#1F4742] disabled:opacity-35 text-white transition-all shadow-sm flex items-center justify-center"
+            className="p-3 min-h-[44px] min-w-[44px] rounded-full bg-[#1A1E1C] hover:bg-[#285B55] disabled:opacity-30 text-white transition-all shadow-sm flex items-center justify-center"
             title="Send message"
             aria-label="Send message"
           >
             {isStreaming ? (
-              <RefreshCw className="w-5 h-5 animate-spin" />
+              <RefreshCw className="w-4 h-4 animate-spin" />
             ) : (
-              <Send className="w-5 h-5" />
+              <Send className="w-4 h-4" />
             )}
           </button>
         </div>
       </div>
 
       {/* Reassuring Footer */}
-      <div className="text-center text-xs text-[#52625E] flex items-center justify-center space-x-2 pt-1">
-        <Shield className="w-4 h-4 text-[#285B55]" />
+      <div className="text-center text-xs text-[#687670] flex items-center justify-center space-x-2 pt-1">
+        <Shield className="w-3.5 h-3.5 text-[#285B55]" />
         <span>
           InnerOS is an AI companion, not a medical professional. If you are in crisis, please call 988 or 112.
         </span>
