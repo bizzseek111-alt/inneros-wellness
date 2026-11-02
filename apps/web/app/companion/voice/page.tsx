@@ -7,7 +7,9 @@ import { RealtimeVoiceCompanion } from "@/components/voice/RealtimeVoiceCompanio
 export default function VoiceCompanionPage() {
   return (
     <SanctuaryShell>
-      <RealtimeVoiceCompanion />
+      <div className="w-full pt-1 sm:pt-3">
+        <RealtimeVoiceCompanion />
+      </div>
     </SanctuaryShell>
   );
 }

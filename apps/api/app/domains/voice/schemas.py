@@ -63,6 +63,8 @@ class VoiceTurnResponse(BaseModel):
     confidence_score: float = 1.0
     non_diagnostic_notice: str = "InnerOS never diagnoses mental health conditions or infers hidden emotion from vocal features."
     interruption_acknowledged: bool = False
+    detected_emotion: Optional[str] = None
+    detected_language: Optional[str] = None
 
 
 class VoiceInterruptionRequest(BaseModel):

@@ -237,6 +237,8 @@ export interface VoiceTurnResponse {
   confidence_score: number;
   non_diagnostic_notice: string;
   interruption_acknowledged: boolean;
+  detected_emotion?: string;
+  detected_language?: string;
 }
 
 export interface VoiceEvaluationResponse {

@@ -144,15 +144,14 @@ export const VoiceCompanionOrb: React.FC<VoiceCompanionOrbProps> = ({
   const dynamicAudioScale = 1 + Math.min(0.18, audioLevel * 0.3);
 
   return (
-    <div
-      onClick={onClick}
-      role="button"
-      tabIndex={0}
-      aria-label={`${current.label}: ${current.subtext}`}
-      className={`flex flex-col items-center justify-center p-6 select-none cursor-pointer group focus-visible:ring-2 focus-visible:ring-[#285B55] rounded-3xl ${className}`}
-    >
-      {/* Central Soft Gradient Orb */}
-      <div className="relative w-56 h-56 sm:w-64 sm:h-64 flex items-center justify-center">
+    <div className={`flex flex-col items-center justify-center select-none ${className}`}>
+      {/* Central Soft Gradient Orb Interactive Button */}
+      <button
+        type="button"
+        onClick={onClick}
+        aria-label={`${current.label}: ${current.subtext}`}
+        className="relative w-56 h-56 sm:w-64 sm:h-64 flex items-center justify-center rounded-full outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 border-none cursor-pointer group transition-transform active:scale-[0.98]"
+      >
         {isReducedMotion ? (
           <div
             style={{
@@ -223,12 +222,12 @@ export const VoiceCompanionOrb: React.FC<VoiceCompanionOrbProps> = ({
             </motion.div>
           </>
         )}
-      </div>
+      </button>
 
       {/* Clear, Friendly State Caption */}
       <div className="mt-5 text-center space-y-1">
-        <h2 className="text-xl font-serif font-medium text-[#263330]">{current.label}</h2>
-        <p className="text-sm sm:text-base text-[#52625E]">{current.subtext}</p>
+        <h2 className="text-xl font-serif font-medium text-[#1A1E1C]">{current.label}</h2>
+        <p className="text-sm sm:text-base text-[#4A5752]">{current.subtext}</p>
       </div>
     </div>
   );

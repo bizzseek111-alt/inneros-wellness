@@ -45,6 +45,8 @@ interface TranscriptMessage {
   timestamp: string;
   isPartial?: boolean;
   isCrisisEscalation?: boolean;
+  emotion?: string;
+  language?: string;
 }
 
 const LANGUAGE_SPEECH_MAP: Record<string, string> = {
@@ -70,6 +72,8 @@ export const RealtimeVoiceCompanion: React.FC = () => {
   const [audioLevel, setAudioLevel] = useState(0);
   const [liveTranscript, setLiveTranscript] = useState("");
   const [isRecognitionActive, setIsRecognitionActive] = useState(false);
+  const [currentEmotion, setCurrentEmotion] = useState<string | null>(null);
+  const [detectedLanguageCode, setDetectedLanguageCode] = useState<string | null>(null);
 
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioStreamRef = useRef<MediaStream | null>(null);
@@ -224,23 +228,33 @@ export const RealtimeVoiceCompanion: React.FC = () => {
           return;
         }
 
-        // 3. Companion Response
+        // 3. Companion Response & Emotional Understanding
+        if (turnResponse.detected_emotion) {
+          setCurrentEmotion(turnResponse.detected_emotion);
+        }
+        if (turnResponse.detected_language) {
+          setDetectedLanguageCode(turnResponse.detected_language);
+        }
+
         const compMsg: TranscriptMessage = {
           id: `comp_${Date.now()}`,
           sender: "companion",
           text: turnResponse.transcript_companion,
           timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          emotion: turnResponse.detected_emotion,
+          language: turnResponse.detected_language,
         };
         setTranscripts((prev) => [...prev, compMsg]);
         setVisualState("speaking");
         setScreenReaderAnnouncement(`Companion says: ${turnResponse.transcript_companion}`);
 
-        // 4. Play Spoken Speech Aloud
+        // 4. Play Spoken Speech Aloud with Symmetrical Language Matching
         const companionText = turnResponse.transcript_companion;
-        const targetLang = LANGUAGE_SPEECH_MAP[selectedLanguage.code] || "en-US";
+        const matchedLangCode = turnResponse.detected_language || selectedLanguage.code;
+        const targetLang = LANGUAGE_SPEECH_MAP[matchedLangCode] || "en-US";
         let speechPlayed = false;
 
-        // A. Primary TTS: Web Speech Synthesis for high-fidelity natural speech
+        // A. Primary TTS: Web Speech Synthesis for high-fidelity natural friend speech
         if (typeof window !== "undefined" && "speechSynthesis" in window) {
           try {
             window.speechSynthesis.cancel();
@@ -248,6 +262,17 @@ export const RealtimeVoiceCompanion: React.FC = () => {
             utterance.lang = targetLang;
             utterance.rate = selectedVoice.speed_multiplier || 0.95;
             utterance.pitch = 1.0;
+
+            // Pick closest native voice for the matched language
+            const voices = window.speechSynthesis.getVoices();
+            const matchedVoice = voices.find(
+              (v) =>
+                v.lang.toLowerCase().startsWith(matchedLangCode.toLowerCase()) ||
+                v.lang.toLowerCase().replace("_", "-").startsWith(matchedLangCode.toLowerCase())
+            );
+            if (matchedVoice) {
+              utterance.voice = matchedVoice;
+            }
 
             utterance.onstart = () => {
               setVisualState("speaking");
@@ -581,7 +606,7 @@ export const RealtimeVoiceCompanion: React.FC = () => {
   return (
     <div
       dir={isRTL ? "rtl" : "ltr"}
-      className="max-w-4xl mx-auto space-y-6 flex flex-col items-center relative w-full"
+      className="max-w-4xl mx-auto pt-3 sm:pt-6 pb-16 space-y-6 flex flex-col items-center relative w-full"
     >
       {/* Screen-Reader Live Region */}
       <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
@@ -596,11 +621,11 @@ export const RealtimeVoiceCompanion: React.FC = () => {
               Voice Companion
             </h1>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#D9F296] text-[#1A1E1C]">
-              Live Audio
+              Empathetic Voice
             </span>
           </div>
           <p className="text-sm text-[#4A5752]">
-            Speak naturally aloud &bull; Continuous voice recognition &amp; audio reflection
+            Speak naturally like with a close friend &bull; Detects emotions and replies in your language
           </p>
         </div>
 
@@ -671,33 +696,50 @@ export const RealtimeVoiceCompanion: React.FC = () => {
         {/* Soft Ambient Background Glow */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#EDF1EF]/40 via-transparent to-[#D9F296]/10 pointer-events-none" />
 
-        {/* Dynamic State Pill */}
-        <div className="mb-6 flex items-center space-x-2 px-3 py-1.5 rounded-full bg-[#1A1E1C]/5 border border-[#1A1E1C]/10 text-xs text-[#1A1E1C]">
-          <span
-            className={`w-2 h-2 rounded-full ${
-              visualState === "listening"
-                ? "bg-[#9EE838] animate-ping"
+        {/* Dynamic State, Emotion & Matched Language Badges */}
+        <div className="mb-6 flex flex-wrap items-center justify-center gap-2">
+          <div className="flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#1A1E1C]/5 border border-[#1A1E1C]/10 text-xs text-[#1A1E1C] shadow-2xs">
+            <span
+              className={`w-2 h-2 rounded-full ${
+                visualState === "listening"
+                  ? "bg-[#9EE838] animate-ping"
+                  : visualState === "speaking"
+                  ? "bg-[#CBD8F6] animate-pulse"
+                  : visualState === "thinking"
+                  ? "bg-[#5D488A] animate-spin"
+                  : "bg-[#83918B]"
+              }`}
+            />
+            <span className="font-semibold capitalize">{visualState}</span>
+            <span className="text-[#687670]">&bull;</span>
+            <span className="text-[#4A5752]">
+              {visualState === "listening"
+                ? "Listening to you"
                 : visualState === "speaking"
-                ? "bg-[#CBD8F6] animate-pulse"
+                ? "Companion speaking"
                 : visualState === "thinking"
-                ? "bg-[#5D488A] animate-spin"
-                : "bg-[#83918B]"
-            }`}
-          />
-          <span className="font-medium capitalize">{visualState}</span>
-          <span className="text-[#687670]">&bull;</span>
-          <span className="text-[#4A5752]">
-            {visualState === "listening"
-              ? "Microphone listening"
-              : visualState === "speaking"
-              ? "Companion speaking aloud"
-              : visualState === "thinking"
-              ? "Processing reflection"
-              : "Ready"}
-          </span>
+                ? "Listening like a friend..."
+                : "Ready to talk"}
+            </span>
+          </div>
+
+          {currentEmotion && (
+            <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-[#CBD8F6]/40 border border-[#CBD8F6] text-xs text-[#1A1E1C] shadow-2xs animate-fade-in">
+              <span className="text-[#465B8C] font-medium">Emotion:</span>
+              <span className="font-semibold">{currentEmotion}</span>
+            </div>
+          )}
+
+          {detectedLanguageCode && (
+            <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-[#D9F296]/50 border border-[#D9F296] text-xs text-[#1A1E1C] shadow-2xs">
+              <Globe className="w-3.5 h-3.5 text-[#285B55]" />
+              <span className="font-medium text-[#4A5752]">Replying in:</span>
+              <span className="font-semibold uppercase">{detectedLanguageCode}</span>
+            </div>
+          )}
         </div>
 
-        {/* 3D Soft Gradient Companion Orb */}
+        {/* 3D Soft Gradient Companion Orb (Borderless floating sphere) */}
         <VoiceCompanionOrb
           state={visualState}
           audioLevel={audioLevel}
@@ -823,22 +865,26 @@ export const RealtimeVoiceCompanion: React.FC = () => {
           </button>
         </div>
 
-        {/* Quick Suggestion Chips */}
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-2 max-w-xl">
-          <span className="text-xs text-[#687670]">Try saying or tapping:</span>
-          {[
-            "I have been carrying a lot on my mind today",
-            "Can we take a slow breathing pause together?",
-            "Help me untangle what to focus on first",
-          ].map((prompt, idx) => (
-            <button
-              key={idx}
-              onClick={() => handleSendTurn(prompt)}
-              className="px-3 py-1.5 rounded-full bg-[#EDF1EF] hover:bg-[#D9F296]/60 border border-[#1A1E1C]/5 text-xs text-[#1A1E1C] transition-all text-left"
-            >
-              &ldquo;{prompt}&rdquo;
-            </button>
-          ))}
+        {/* Quick Conversational Prompt Chips */}
+        <div className="mt-8 flex flex-col items-center justify-center gap-2.5 max-w-2xl text-center">
+          <span className="text-xs text-[#687670] font-medium">Speak naturally in any language or tap a friend thought:</span>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {[
+              { text: "I had the most exhausting day at work and my boss yelled at me", label: "🇬🇧 English", emotion: "Exhaustion" },
+              { text: "Main aaj bohot thak gaya hoon yaar, office mein bohot pressure tha", label: "🇵🇰 Urdu", emotion: "Thakan" },
+              { text: "Hola amigo, hoy me siento triste y abrumado con todo lo que pasó", label: "🇪🇸 Español", emotion: "Tristeza" },
+              { text: "Help me untangle what to focus on first", label: "💡 Clarity", emotion: "Overwhelm" },
+            ].map((prompt, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleSendTurn(prompt.text)}
+                className="px-3.5 py-1.5 rounded-full bg-[#EDF1EF] hover:bg-[#D9F296]/70 border border-[#1A1E1C]/8 text-xs text-[#1A1E1C] transition-all shadow-2xs text-left"
+                title={prompt.text}
+              >
+                <span className="font-semibold">{prompt.label}:</span> &ldquo;{prompt.text.slice(0, 36)}...&rdquo;
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -854,12 +900,12 @@ export const RealtimeVoiceCompanion: React.FC = () => {
               <MessageSquare className="w-4 h-4 text-[#285B55]" />
               <span>Write to your voice companion</span>
             </span>
-            <span className="text-xs">Companion will speak response aloud</span>
+            <span className="text-xs">Companion will speak response aloud in your language</span>
           </div>
           <div className="flex items-center space-x-3">
             <input
               type="text"
-              placeholder="Write what is on your mind..."
+              placeholder="Write what is on your mind in any language..."
               value={typedInput}
               onChange={(e) => setTypedInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSendTurn()}
@@ -899,7 +945,7 @@ export const RealtimeVoiceCompanion: React.FC = () => {
             {transcripts.map((t) => (
               <div
                 key={t.id}
-                className={`p-4 rounded-2xl text-base space-y-1 transition-all ${
+                className={`p-4 rounded-2xl text-base space-y-1.5 transition-all ${
                   t.sender === "user"
                     ? "bg-[#CDE5D3]/40 border border-[#CDE5D3] text-[#1A1E1C] ml-4 sm:ml-12"
                     : t.isCrisisEscalation
@@ -908,9 +954,21 @@ export const RealtimeVoiceCompanion: React.FC = () => {
                 }`}
               >
                 <div className="flex items-center justify-between text-xs text-[#687670]">
-                  <span className="font-semibold text-[#1A1E1C]">
-                    {t.sender === "user" ? "Elena (You)" : "InnerOS Companion"}
-                  </span>
+                  <div className="flex items-center space-x-2">
+                    <span className="font-semibold text-[#1A1E1C]">
+                      {t.sender === "user" ? "Elena (You)" : "InnerOS Companion"}
+                    </span>
+                    {t.emotion && (
+                      <span className="px-2 py-0.5 rounded-full bg-[#CBD8F6]/40 text-[#465B8C] font-medium text-[11px]">
+                        {t.emotion}
+                      </span>
+                    )}
+                    {t.language && (
+                      <span className="px-2 py-0.5 rounded-full bg-[#D9F296]/50 text-[#285B55] font-semibold text-[11px] uppercase">
+                        {t.language}
+                      </span>
+                    )}
+                  </div>
                   <span>{t.timestamp}</span>
                 </div>
                 <p className="leading-relaxed text-sm sm:text-base">{t.text}</p>
