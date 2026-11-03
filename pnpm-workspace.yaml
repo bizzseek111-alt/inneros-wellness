@@ -2,4 +2,6 @@ packages:
   - "apps/*"
   - "packages/*"
 allowBuilds:
+  esbuild: set this to true or false
+  koffi: set this to true or false
   unrs-resolver: true

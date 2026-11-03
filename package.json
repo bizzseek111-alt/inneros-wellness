@@ -19,6 +19,7 @@
     "seed": "python3 scripts/seed_synthetic_data.py"
   },
   "devDependencies": {
-    "prettier": "^3.3.3"
+    "prettier": "^3.3.3",
+    "vercel": "^65.9.0"
   }
 }
