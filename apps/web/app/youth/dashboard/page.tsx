@@ -22,6 +22,7 @@ import {
 import { YouthShell } from "@/components/youth/YouthShell";
 import { LumiMascot } from "@/components/youth/LumiMascot";
 import { VisualScheduleCard } from "@/components/youth/VisualScheduleCard";
+import { FriendsGallerySection } from "@/components/youth/friends/FriendsGallerySection";
 import { useYouth } from "@/components/youth/YouthContext";
 
 export default function ChildDashboardPage() {
@@ -105,6 +106,9 @@ export default function ChildDashboardPage() {
                 </span>
               </Link>
             </div>
+
+            {/* AI Friends Voice Gallery for Co-Play */}
+            <FriendsGallerySection />
           </div>
         )}
 
@@ -129,6 +133,9 @@ export default function ChildDashboardPage() {
               <LumiMascot size="md" state="idle" interactive />
             </div>
 
+            {/* AI Friends Voice Gallery */}
+            <FriendsGallerySection />
+
             {/* 5 Big Action Buttons Requested in Specification */}
             <div className="space-y-3">
               <span className="text-xs font-extrabold uppercase tracking-wider text-[#718096]">
@@ -137,14 +144,14 @@ export default function ChildDashboardPage() {
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
                 {/* 1. TALK */}
                 <Link
-                  href="/youth/voice"
+                  href="/youth/friends"
                   className="p-5 rounded-[26px] bg-white border-2 border-[#B9E2FE] hover:bg-[#F0F8FF] transition-all hover:scale-102 flex flex-col items-center text-center space-y-2 shadow-xs group"
                 >
                   <div className="w-12 h-12 rounded-2xl bg-[#E0F1FE] text-[#0E87E3] flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Mic className="w-6 h-6" />
                   </div>
                   <span className="font-extrabold text-base text-[#0F172A]">Talk</span>
-                  <span className="text-[11px] text-[#718096]">Speak with Lumi</span>
+                  <span className="text-[11px] text-[#718096]">AI Friends Room</span>
                 </Link>
 
                 {/* 2. LEARN */}

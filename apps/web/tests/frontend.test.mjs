@@ -78,16 +78,40 @@ const EXPECTED_ROUTE_PAGES = [
   "app/parent/page.tsx",
   "app/student/page.tsx",
   "app/teacher/page.tsx",
+  "app/youth/friends/page.tsx",
   "app/offline/page.tsx",
 ];
 
-test("All 69 adult, marketing, kids, teens, portals, and offline route page files exist and export default components", () => {
+test("All 70 adult, marketing, kids, teens, AI friends, portals, and offline route page files exist and export default components", () => {
   for (const relPath of EXPECTED_ROUTE_PAGES) {
     const fullPath = path.join(WEB_ROOT, relPath);
     assert.ok(fs.existsSync(fullPath), `Missing route file: ${relPath}`);
     const content = fs.readFileSync(fullPath, "utf8");
     assert.match(content, /export\s+default\s+function/, `Route ${relPath} must export a default function component`);
   }
+});
+
+test("AI Friends voice experience supports Kai, Mia, Lumi, Zayn with serverless turn-taking and multilingual support", () => {
+  const friendsDataPath = path.join(WEB_ROOT, "lib/friends-data.ts");
+  assert.ok(fs.existsSync(friendsDataPath), "friends-data.ts must exist");
+  const dataContent = fs.readFileSync(friendsDataPath, "utf8");
+  assert.match(dataContent, /kai:/);
+  assert.match(dataContent, /mia:/);
+  assert.match(dataContent, /lumi:/);
+  assert.match(dataContent, /zayn:/);
+
+  const turnRoutePath = path.join(WEB_ROOT, "app/api/youth/friends/turn/route.ts");
+  assert.ok(fs.existsSync(turnRoutePath), "turn/route.ts must exist");
+  const turnContent = fs.readFileSync(turnRoutePath, "utf8");
+  assert.match(turnContent, /Umang Mental Health Helpline/);
+  assert.match(turnContent, /don't understand this question/);
+  assert.match(turnContent, /مجھے یہ سوال سمجھ نہیں آ رہا/);
+  assert.match(turnContent, /Mainu homework samajh nahi aa reha/);
+
+  const kaiCompPath = path.join(WEB_ROOT, "components/youth/friends/KaiCharacter.tsx");
+  assert.ok(fs.existsSync(kaiCompPath), "KaiCharacter.tsx must exist");
+  const galleryPath = path.join(WEB_ROOT, "components/youth/friends/FriendsGallerySection.tsx");
+  assert.ok(fs.existsSync(galleryPath), "FriendsGallerySection.tsx must exist");
 });
 
 test("Next.js Edge middleware exists and configures security headers & route tiers including youth and teachers", () => {

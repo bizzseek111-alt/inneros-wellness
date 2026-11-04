@@ -280,8 +280,31 @@ export default function YouthVoiceRoomPage() {
         setMicState("idle");
       }
     } catch {
-      setCompanionReply("I heard you, friend! Let's take a calm pause together.");
-      setMicState("idle");
+      try {
+        const localTurn = await fetch("/api/youth/friends/turn", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            character_id: "lumi",
+            message: text,
+            language: locale,
+            age_tier: ageTier === "little" ? "little" : ageTier === "teen" ? "teen" : "junior",
+          }),
+        }).then((r) => r.json());
+
+        setCompanionReply(localTurn.reply);
+        if (voiceDeliveryMode !== "text_only") {
+          setMicState("speaking");
+          speakViaWebSpeech(localTurn.reply);
+        } else {
+          setMicState("idle");
+        }
+      } catch {
+        const fallbackText = "I heard you, friend! Let's take a calm, gentle breath together.";
+        setCompanionReply(fallbackText);
+        speakViaWebSpeech(fallbackText);
+        setMicState("idle");
+      }
     }
   };
 
@@ -357,6 +380,27 @@ export default function YouthVoiceRoomPage() {
       subtitle="Speak freely in English, Urdu, or Pakistani Punjabi. Lumi is here to listen."
     >
       <div className="max-w-2xl mx-auto space-y-6 flex flex-col items-center text-center">
+        {/* AI Friends Room Invitation Banner */}
+        <Link
+          href="/youth/friends"
+          className="w-full p-4 rounded-3xl bg-gradient-to-r from-amber-50 via-orange-50 to-pink-50 border-2 border-amber-200 hover:border-amber-400 transition-all flex items-center justify-between text-start shadow-xs group"
+        >
+          <div className="flex items-center space-x-3">
+            <span className="text-2xl group-hover:scale-110 transition-transform">🦊</span>
+            <div>
+              <p className="text-xs font-black text-amber-900 uppercase tracking-wide">
+                New: AI Friends Room
+              </p>
+              <p className="text-xs font-bold text-slate-700">
+                Talk with Kai (Homework Guide), Mia (Stories & Feelings), or Zayn (Explorer)
+              </p>
+            </div>
+          </div>
+          <span className="px-3 py-1.5 rounded-xl bg-amber-500 text-white text-xs font-black shadow-xs shrink-0">
+            Open Friends Room
+          </span>
+        </Link>
+
         {/* Child Safety Emergency Notice if Triggered */}
         {crisisAlert && (
           <div className="w-full p-6 rounded-[28px] bg-rose-50 border-2 border-rose-300 text-rose-950 text-start space-y-3 shadow-md animate-fade-in">
