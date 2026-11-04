@@ -359,22 +359,27 @@ Weebly's conversational pedagogy is built upon peer-reviewed educational framewo
   },
 ];
 
-function DocumentsContent() {
+function SearchParamsHandler({
+  onSelectDoc,
+}: {
+  onSelectDoc: (doc: DocumentMeta) => void;
+}) {
   const searchParams = useSearchParams();
-  const initialSlug = searchParams.get("doc") || "product-overview";
-
-  const [selectedDoc, setSelectedDoc] = useState<DocumentMeta>(
-    DOCUMENTS.find((d) => d.slug === initialSlug) || DOCUMENTS[0]
-  );
-  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const slug = searchParams.get("doc");
     if (slug) {
       const match = DOCUMENTS.find((d) => d.slug === slug);
-      if (match) setSelectedDoc(match);
+      if (match) onSelectDoc(match);
     }
-  }, [searchParams]);
+  }, [searchParams, onSelectDoc]);
+
+  return null;
+}
+
+export default function DocumentsPage() {
+  const [selectedDoc, setSelectedDoc] = useState<DocumentMeta>(DOCUMENTS[0]);
+  const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(selectedDoc.content);
@@ -399,8 +404,12 @@ function DocumentsContent() {
   };
 
   return (
-    <div className="bg-[#F8FAFC] min-h-screen text-slate-800 pb-24">
-      {/* Print Stylesheet Hook */}
+    <MarketingShell>
+      <Suspense fallback={null}>
+        <SearchParamsHandler onSelectDoc={setSelectedDoc} />
+      </Suspense>
+      <div className="bg-[#F8FAFC] min-h-screen text-slate-800 pb-24">
+        {/* Print Stylesheet Hook */}
       <style jsx global>{`
         @media print {
           body {
@@ -578,15 +587,6 @@ function DocumentsContent() {
         </div>
       </div>
     </div>
-  );
-}
-
-export default function DocumentsPage() {
-  return (
-    <MarketingShell>
-      <Suspense fallback={<div className="p-12 text-center text-slate-500">Loading documentation suite...</div>}>
-        <DocumentsContent />
-      </Suspense>
     </MarketingShell>
   );
 }
