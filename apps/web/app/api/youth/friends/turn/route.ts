@@ -345,7 +345,7 @@ function evaluateToolRouting(
     return {
       action: {
         tool: "start_creative_drawing",
-        route: "/youth/play?world=creative-studio&activity=draw-dinosaur",
+        route: "/youth/creative-studio",
         label: "Open Dinosaur Canvas",
         icon: "🎨",
       },

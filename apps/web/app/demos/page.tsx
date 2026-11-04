@@ -100,7 +100,7 @@ const DEMOS: DemoItem[] = [
         title: "Creative Studio & Dino Drawing",
         description:
           "Children switch to the Creative Studio to draw a friendly Stegosaurus with interactive colors, stroke sizes, and undo tools.",
-        targetFeature: "Creative Studio (/youth/play?world=creative-studio)",
+        targetFeature: "Creative Studio (/youth/creative-studio)",
         badge: "Step 4 of 5",
       },
       {

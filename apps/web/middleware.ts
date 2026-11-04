@@ -24,14 +24,21 @@ const PUBLIC_MARKETING_ROUTES = new Set([
   "/terms",
   "/child-safety",
   "/accessibility",
+  "/demos",
+  "/platform",
+  "/technology",
+  "/trust",
+  "/schools/pilot",
+  "/documents",
+  "/creative-studio",
 ]);
 
 
 const AUTH_ROUTES = new Set(["/login", "/signup", "/onboarding"]);
 
 /**
- * InnerOS Next.js Edge Middleware
- * - Classifies route tier (public_marketing, auth, admin_console, sanctuary_app)
+ * InnerOS / Weebly Next.js Edge Middleware
+ * - Classifies route tier (public_marketing, auth, admin_console, kids_sanctuary, youth_sanctuary, caregiver_portal, teacher_portal, school_portal, professional_portal, sanctuary_app)
  * - Enforces session cookie presence on protected routes when NEXT_PUBLIC_ENFORCE_STRICT_AUTH === "true"
  * - Applies defense-in-depth HTTP security headers across all web responses
  */
@@ -44,6 +51,8 @@ export function middleware(request: NextRequest) {
   const isYouthRoute = pathname.startsWith("/youth");
   const isCaregiverRoute = pathname.startsWith("/caregiver") || pathname.startsWith("/parent");
   const isTeacherRoute = pathname.startsWith("/teacher");
+  const isSchoolRoute = pathname.startsWith("/school/") || pathname === "/school";
+  const isProfessionalRoute = pathname.startsWith("/professional");
   const isAuthRoute = AUTH_ROUTES.has(pathname);
   const isPublicRoute = PUBLIC_MARKETING_ROUTES.has(pathname);
 
@@ -59,11 +68,15 @@ export function middleware(request: NextRequest) {
             ? "caregiver_portal"
             : isTeacherRoute
               ? "teacher_portal"
-              : isAuthRoute
-                ? "auth"
-                : isPublicRoute
-                  ? "public_marketing"
-                  : "sanctuary_app";
+              : isSchoolRoute
+                ? "school_portal"
+                : isProfessionalRoute
+                  ? "professional_portal"
+                  : isAuthRoute
+                    ? "auth"
+                    : isPublicRoute
+                      ? "public_marketing"
+                      : "sanctuary_app";
 
   const enforceStrictAuth = process.env.NEXT_PUBLIC_ENFORCE_STRICT_AUTH === "true";
   const hasSessionCookie = Boolean(request.cookies.get("inneros_session")?.value);

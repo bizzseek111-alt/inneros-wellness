@@ -53,7 +53,13 @@ class VoiceSynthesizer {
     const prefixMatch = voices.find((v) => v.lang.toLowerCase().startsWith(langPrefix));
     if (prefixMatch) return prefixMatch;
 
-    // 3. For English, look for friendly or young-sounding voice
+    // 3. For Pakistani Punjabi, fallback to Urdu phonetics if native pa voice is not installed in OS
+    if (langPrefix === "pa") {
+      const urduFallback = voices.find((v) => v.lang.toLowerCase().startsWith("ur"));
+      if (urduFallback) return urduFallback;
+    }
+
+    // 4. For English, look for friendly or young-sounding voice
     if (langPrefix === "en") {
       const preferred = voices.find(
         (v) =>

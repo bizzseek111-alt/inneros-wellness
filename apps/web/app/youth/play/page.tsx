@@ -222,6 +222,27 @@ function MoveAndPlaySection({ onBack }: { onBack: () => void }) {
       setCurrentStep(currentStep + 1);
     } else {
       setShowCelebration(true);
+      try {
+        fetch("/api/educational/activity-events", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            student_pseudonymous_id: "std_weebly_child",
+            student_name: "Child (Weebly Sanctuary)",
+            activity_id: "act_football_fundamentals",
+            activity_title: "Move & Play: Football Fundamentals Drills",
+            category: "physical_health_and_movement",
+            learning_objective: "Gross motor coordination, balance, and sportsmanship high-five",
+            completion_status: "completed",
+            hints_used_count: 0,
+            language_used: locale === "ur" ? "ur" : locale === "pa" ? "pa" : "en",
+            duration_seconds: 120,
+            curriculum_version: "v3.0.0",
+          }),
+        }).catch(() => {});
+      } catch {
+        // Non-blocking
+      }
     }
   };
 

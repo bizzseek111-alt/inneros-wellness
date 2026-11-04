@@ -196,6 +196,27 @@ export const CreativeStudioCanvas: React.FC<CreativeStudioCanvasProps> = ({
     } else {
       setIsFinished(true);
       if (onComplete) onComplete();
+      try {
+        fetch("/api/educational/activity-events", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            student_pseudonymous_id: "std_weebly_child",
+            student_name: "Child (Weebly Sanctuary)",
+            activity_id: "act_draw_dinosaur",
+            activity_title: "Guided Dinosaur Drawing Canvas",
+            category: "creative_arts_and_expression",
+            learning_objective: "Fine motor control, shape visualization, and step-by-step drawing",
+            completion_status: "completed",
+            hints_used_count: 0,
+            language_used: locale === "ur" ? "ur" : locale === "pa" ? "pa" : "en",
+            duration_seconds: 180,
+            curriculum_version: "v3.0.0",
+          }),
+        }).catch(() => {});
+      } catch {
+        // Non-blocking
+      }
       voiceSynthesizer.speak(
         locale === "ur"
           ? "ماشاءاللہ! آپ کا ڈائنوسار شاندار لگ رہا ہے۔ آپ نے بہترین تخلیق کی ہے!"
