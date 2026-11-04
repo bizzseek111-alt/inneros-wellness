@@ -65,6 +65,7 @@ const EXPECTED_ROUTE_PAGES = [
   "app/admin/curriculum/page.tsx",
   "app/parents/page.tsx",
   "app/schools/page.tsx",
+  "app/school/portal/page.tsx",
   "app/adhd-support/page.tsx",
   "app/autism-support/page.tsx",
   "app/emotional-intelligence/page.tsx",

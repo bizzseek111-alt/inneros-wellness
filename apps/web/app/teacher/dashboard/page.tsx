@@ -287,10 +287,16 @@ export default function TeacherDashboardPage() {
 
           <div className="flex items-center space-x-3">
             <Link
+              href="/school/portal"
+              className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 transition-colors"
+            >
+              District School Portal
+            </Link>
+            <Link
               href="/schools"
               className="px-3.5 py-1.5 rounded-full text-xs font-medium text-[#475569] hover:text-[#0F172A] hover:bg-[#F1F5F9] transition-colors"
             >
-              School Curriculum Guide
+              School Guide
             </Link>
             <Link
               href="/youth/dashboard"

@@ -45,17 +45,11 @@ const MarketingLocaleContext = createContext<MarketingLocaleContextValue>({
 export const useMarketingLocale = () => useContext(MarketingLocaleContext);
 
 const MARKETING_NAV_LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/kids", label: "Kids" },
-  { href: "/teens", label: "Teens" },
+  { href: "/explore", label: "Explore" },
+  { href: "/how-it-works", label: "How It Works" },
   { href: "/parents", label: "Parents" },
   { href: "/schools", label: "Schools" },
-  { href: "/teacher/dashboard", label: "Teacher Hub" },
-  { href: "/youth/dashboard", label: "Student Zone" },
-  { href: "/adhd-support", label: "ADHD Support" },
-  { href: "/autism-support", label: "Autism Support" },
-  { href: "/how-it-works", label: "How It Works" },
-  { href: "/pricing", label: "Pricing" },
+  { href: "/login", label: "Sign In" },
 ];
 
 export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
@@ -144,18 +138,10 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                 Teacher Hub
               </Link>
               <Link
-                href="/youth/dashboard"
+                href="/school/portal"
                 className="font-medium hover:text-[#2B4CDE] hover:underline"
               >
-                Student Zone
-              </Link>
-              <span className="text-slate-300">|</span>
-              <Link
-                href="/dashboard"
-                title="Existing adult wellbeing sanctuary"
-                className="font-medium text-slate-500 hover:text-slate-700 hover:underline"
-              >
-                Adult Sanctuary (InnerOS)
+                School Portal
               </Link>
               <span className="text-slate-300">|</span>
               <button
@@ -189,7 +175,7 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
             {/* Center Floating Glass Pill Navigation */}
             <nav
               aria-label="Primary Marketing Navigation"
-              className="hidden xl:flex items-center space-x-1 px-3 py-1.5 rounded-full bg-white/95 border border-[#DCE7FE] shadow-[0_8px_30px_rgba(43,76,222,0.06)] backdrop-blur-xl"
+              className="hidden lg:flex items-center space-x-1 px-3 py-1.5 rounded-full bg-white/95 border border-[#DCE7FE] shadow-[0_8px_30px_rgba(43,76,222,0.06)] backdrop-blur-xl"
             >
               {MARKETING_NAV_LINKS.map((link) => {
                 const active = isNavActive(link.href);
@@ -210,7 +196,7 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
               })}
             </nav>
 
-            {/* Right Actions: Language Selector + Login + White Pill Get Started */}
+            {/* Right Actions: Language Selector + Login + Main CTA "Try Demo" */}
             <div className="flex items-center space-x-2.5 shrink-0">
               {/* Language Switcher */}
               <div className="relative flex items-center">
@@ -248,20 +234,21 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                 href="/login"
                 className="hidden sm:inline-flex items-center px-4 py-2 rounded-full text-[13.5px] font-semibold whitespace-nowrap text-[#334155] hover:text-[#2B4CDE] hover:bg-[#EEF4FF] transition-colors"
               >
-                Login
+                Sign In
               </Link>
 
-              {/* Get Started Pill CTA (Royal Blue Pill from Dribbble shot) */}
+              {/* MAIN CTA: Try Demo */}
               <Link
-                href="/signup"
+                href="/youth/dashboard"
                 onClick={() =>
-                  trackMarketingEvent("cta_start_journey_click", {
+                  trackMarketingEvent("cta_try_demo_click", {
                     location: "header",
                   })
                 }
-                className="inline-flex items-center space-x-1.5 px-5 py-2.5 rounded-full text-[13.5px] font-semibold whitespace-nowrap bg-[#2B4CDE] text-white hover:bg-[#1E3A8A] transition-all shadow-[0_4px_14px_rgba(43,76,222,0.25)] hover:shadow-[0_6px_20px_rgba(43,76,222,0.35)]"
+                className="inline-flex items-center space-x-1.5 px-5 py-2.5 rounded-full text-[13.5px] font-bold whitespace-nowrap bg-amber-500 text-white hover:bg-amber-600 transition-all shadow-[0_4px_14px_rgba(245,158,11,0.28)] hover:shadow-[0_6px_20px_rgba(245,158,11,0.38)] hover:scale-105 active:scale-95"
               >
-                <span>Get started</span>
+                <Sparkles className="w-4 h-4 text-white" />
+                <span>Try Demo</span>
               </Link>
 
               {/* Mobile Hamburger Toggle */}
@@ -272,7 +259,7 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                 aria-label={
                   mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"
                 }
-                className="xl:hidden p-2.5 rounded-full border border-[#DCE7FE] bg-white text-[#0F172A] shadow-xs"
+                className="lg:hidden p-2.5 rounded-full border border-[#DCE7FE] bg-white text-[#0F172A] shadow-xs"
               >
                 {mobileMenuOpen ? (
                   <X className="w-5 h-5" />
@@ -285,10 +272,10 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
 
           {/* Mobile Navigation Drawer */}
           {mobileMenuOpen && (
-            <div className="xl:hidden mt-3 p-5 rounded-3xl bg-white/95 backdrop-blur-2xl border border-[#DCE7FE] text-[#0F172A] space-y-3 shadow-2xl">
+            <div className="lg:hidden mt-3 p-5 rounded-3xl bg-white/95 backdrop-blur-2xl border border-[#DCE7FE] text-[#0F172A] space-y-3 shadow-2xl">
               <nav
                 aria-label="Mobile Marketing Navigation"
-                className="grid sm:grid-cols-2 gap-2"
+                className="grid gap-2"
               >
                 {MARKETING_NAV_LINKS.map((link) => {
                   const active = isNavActive(link.href);
@@ -309,18 +296,19 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                 })}
               </nav>
 
-              <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
+              <div className="pt-2 flex flex-col gap-2.5">
                 <Link
-                  href="/signup"
-                  className="flex-1 py-3 px-5 rounded-full bg-[#2B4CDE] text-white text-center text-[14.5px] font-semibold hover:bg-[#1E3A8A] transition-all shadow-md"
+                  href="/youth/dashboard"
+                  className="py-3 px-5 rounded-full bg-amber-500 text-white text-center text-[14.5px] font-bold hover:bg-amber-600 transition-all shadow-md flex items-center justify-center space-x-2"
                 >
-                  Get started
+                  <Sparkles className="w-4 h-4" />
+                  <span>Try Demo</span>
                 </Link>
                 <Link
-                  href="/dashboard"
-                  className="flex-1 py-3 px-5 rounded-full bg-[#EEF4FF] text-[#2B4CDE] border border-[#DCE7FE] text-center text-[14.5px] font-semibold hover:bg-[#DCE7FE] transition-all"
+                  href="/login"
+                  className="py-3 px-5 rounded-full bg-[#EEF4FF] text-[#2B4CDE] border border-[#DCE7FE] text-center text-[14.5px] font-semibold hover:bg-[#DCE7FE] transition-all"
                 >
-                  {localeConfig.ctaOpenApp}
+                  Sign In
                 </Link>
               </div>
             </div>

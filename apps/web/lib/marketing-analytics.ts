@@ -12,6 +12,7 @@
 export type MarketingEventName =
   | "marketing_page_view"
   | "cta_start_journey_click"
+  | "cta_try_demo_click"
   | "cta_explore_features_click"
   | "cta_open_app_click"
   | "interactive_demo_mode_switch"

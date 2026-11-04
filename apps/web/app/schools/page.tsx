@@ -65,10 +65,17 @@ export default function SchoolsPage() {
 
             <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
               <Link
+                href="/school/portal"
+                className="px-8 py-3.5 rounded-full bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 shadow-md transition-all inline-flex items-center space-x-2"
+              >
+                <span>Access School Portal</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
                 href="/teacher/dashboard"
                 className="px-8 py-3.5 rounded-full bg-[#15803D] text-white font-semibold text-sm hover:bg-[#166534] shadow-md transition-all inline-flex items-center space-x-2"
               >
-                <span>Access Teacher Portal</span>
+                <span>Teacher Hub</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <a

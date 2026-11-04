@@ -10,17 +10,23 @@ import {
   ArrowRight,
   BookOpen,
   Gamepad2,
-  GraduationCap,
-  Users,
   Compass,
   Heart,
-  Calendar,
+  Palette,
+  Activity,
+  Zap,
+  Brain,
+  Shield,
+  Smile,
+  CheckCircle2,
+  Lock,
 } from "lucide-react";
 import { ChildNavigationShell } from "./ChildNavigationShell";
 import { CharacterAvatar } from "./friends/CharacterAvatar";
-import { AI_FRIENDS, CharacterId } from "@/lib/friends-data";
+import { CharacterId } from "@/lib/friends-data";
 import { useYouth } from "./YouthContext";
 import { voiceSynthesizer } from "@/lib/voice-synthesizer";
+import { WEEBLY_THEME } from "@/design-system/weebly-tokens";
 
 interface FriendCardData {
   id: CharacterId;
@@ -104,7 +110,9 @@ const MAGIC_FRIENDS: FriendCardData[] = [
 export const WeeblyMagicHome: React.FC = () => {
   const router = useRouter();
   const { ageTier, setAgeTier, locale } = useYouth();
-  const [isCaregiverMode, setIsCaregiverMode] = useState(ageTier === "little");
+  const [activeBand, setActiveBand] = useState<"2-5" | "6-9" | "10-12" | "13-18">(
+    ageTier === "little" ? "2-5" : ageTier === "teen" ? "13-18" : "6-9"
+  );
 
   const handleSpeakCard = (friend: FriendCardData, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -126,45 +134,59 @@ export const WeeblyMagicHome: React.FC = () => {
   return (
     <ChildNavigationShell activeTab="home">
       <div className="space-y-10 animate-fade-in max-w-5xl mx-auto">
-        {/* Age Tier Indicator / Gentle Switcher */}
+        {/* Age Tier Switcher: 2-5, 6-9, 10-12, 13-18 */}
         <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-amber-100/80 border border-amber-200 text-xs font-black text-amber-900 shadow-2xs">
             <Sparkles className="w-3.5 h-3.5 text-amber-600" />
             <span>Weebly Magic World</span>
           </div>
 
-          <div className="flex items-center space-x-1.5 bg-slate-100 p-1 rounded-2xl text-xs font-bold text-slate-700">
+          <div className="flex items-center space-x-1 bg-slate-100 p-1 rounded-2xl text-xs font-bold text-slate-700">
             <button
               type="button"
               onClick={() => {
-                setIsCaregiverMode(true);
+                setActiveBand("2-5");
                 setAgeTier("little");
               }}
               className={`px-3 py-1 rounded-xl transition-all ${
-                isCaregiverMode
+                activeBand === "2-5"
                   ? "bg-white text-emerald-700 shadow-2xs font-black"
                   : "hover:text-slate-900"
               }`}
             >
-              Ages 2–5 (Caregiver)
+              Ages 2–5
             </button>
             <button
               type="button"
               onClick={() => {
-                setIsCaregiverMode(false);
+                setActiveBand("6-9");
                 setAgeTier("junior");
               }}
               className={`px-3 py-1 rounded-xl transition-all ${
-                !isCaregiverMode && ageTier === "junior"
+                activeBand === "6-9"
                   ? "bg-white text-amber-700 shadow-2xs font-black"
                   : "hover:text-slate-900"
               }`}
             >
-              Ages 6–12 (Magic Friends)
+              Ages 6–9
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setActiveBand("10-12");
+                setAgeTier("junior");
+              }}
+              className={`px-3 py-1 rounded-xl transition-all ${
+                activeBand === "10-12"
+                  ? "bg-white text-indigo-700 shadow-2xs font-black"
+                  : "hover:text-slate-900"
+              }`}
+            >
+              Ages 10–12
             </button>
             <Link
               href="/teens"
-              className="px-3 py-1 rounded-xl hover:text-slate-900 transition-all font-bold"
+              className="px-3 py-1 rounded-xl hover:text-purple-700 transition-all font-bold text-purple-600"
             >
               Ages 13–18 &rarr;
             </Link>
@@ -174,12 +196,12 @@ export const WeeblyMagicHome: React.FC = () => {
         {/* =========================================================================
             TIER 1: AGES 2–5 (CAREGIVER-MEDIATED PLAYROOM)
            ========================================================================= */}
-        {isCaregiverMode ? (
+        {activeBand === "2-5" && (
           <div className="space-y-8 animate-fade-in">
-            <div className="p-8 rounded-[40px] bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-100/60 border-2 border-emerald-200 text-center space-y-4">
+            <div className="p-8 sm:p-10 rounded-[40px] bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-100/60 border-2 border-emerald-200 text-center space-y-4">
               <span className="text-6xl block">🐰</span>
               <h1 className="text-3xl sm:text-4xl font-black text-slate-900">
-                Welcome to Little Explorers Playroom
+                Little Explorers Playroom
               </h1>
               <p className="text-base text-slate-600 max-w-xl mx-auto font-medium leading-relaxed">
                 A safe, caregiver-guided space with soft bedtime stories, bunny breathing, and gentle music. No unmediated AI conversations.
@@ -193,7 +215,7 @@ export const WeeblyMagicHome: React.FC = () => {
               >
                 <span className="text-5xl group-hover:scale-110 transition-transform">📖</span>
                 <h2 className="text-xl font-black text-slate-900">Bedtime Stories</h2>
-                <p className="text-xs text-slate-500">Soothing narrated animal tales</p>
+                <p className="text-xs text-slate-500 font-medium">Soothing narrated animal tales</p>
                 <span className="px-4 py-2 rounded-xl bg-pink-100 text-pink-900 text-xs font-black">
                   Listen with Child
                 </span>
@@ -205,7 +227,7 @@ export const WeeblyMagicHome: React.FC = () => {
               >
                 <span className="text-5xl group-hover:scale-110 transition-transform">🌸</span>
                 <h2 className="text-xl font-black text-slate-900">Bunny Breaths</h2>
-                <p className="text-xs text-slate-500">Soft belly breathing exercise</p>
+                <p className="text-xs text-slate-500 font-medium">Soft belly breathing exercise</p>
                 <span className="px-4 py-2 rounded-xl bg-emerald-100 text-emerald-900 text-xs font-black">
                   Breathe Together
                 </span>
@@ -217,22 +239,26 @@ export const WeeblyMagicHome: React.FC = () => {
               >
                 <span className="text-5xl group-hover:scale-110 transition-transform">📅</span>
                 <h2 className="text-xl font-black text-slate-900">Daily Routines</h2>
-                <p className="text-xs text-slate-500">Visual cards for wake, meals & bedtime</p>
+                <p className="text-xs text-slate-500 font-medium">Visual cards for wake, meals &amp; bedtime</p>
                 <span className="px-4 py-2 rounded-xl bg-sky-100 text-sky-900 text-xs font-black">
                   View Schedule
                 </span>
               </Link>
             </div>
           </div>
-        ) : (
-          /* =========================================================================
-              TIER 2: AGES 6–12 (KIDS MAGIC HOME)
-             ========================================================================= */
+        )}
+
+        {/* =========================================================================
+            TIER 2 & 3: AGES 6–9 and 10–12 (KIDS MAGIC HOME)
+           ========================================================================= */}
+        {(activeBand === "6-9" || activeBand === "10-12") && (
           <div className="space-y-10 animate-fade-in">
             {/* Header Hero */}
             <div className="text-center space-y-2 pt-1">
               <h1 className="text-3xl sm:text-5xl font-black text-[#0F172A] tracking-tight">
-                Who would you like to talk to?
+                {activeBand === "10-12"
+                  ? "What would you like to explore today?"
+                  : "Who would you like to talk to?"}
               </h1>
               <p className="text-sm sm:text-base text-slate-600 max-w-lg mx-auto font-medium">
                 Tap a friend to start talking, or press the big microphone button to say what you want to do!
@@ -334,57 +360,48 @@ export const WeeblyMagicHome: React.FC = () => {
               </p>
             </div>
 
-            {/* Below: Quick Access Activity Navigation (Play, Stories, Continue Learning) */}
-            <div className="pt-6 border-t border-slate-200/80 space-y-4">
+            {/* =========================================================================
+                THE SIX ILLUSTRATED LEARNING WORLDS
+               ========================================================================= */}
+            <div className="pt-8 border-t border-slate-200/80 space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-base font-black text-slate-800 flex items-center space-x-2">
-                  <Compass className="w-4 h-4 text-amber-500" />
-                  <span>Explore Learning Worlds</span>
-                </h3>
-                <Link
-                  href="/youth/play"
-                  className="text-xs font-black text-amber-600 hover:text-amber-700 flex items-center space-x-1"
-                >
-                  <span>See all worlds &rarr;</span>
-                </Link>
+                <div>
+                  <h3 className="text-xl font-black text-slate-900 flex items-center space-x-2">
+                    <Compass className="w-5 h-5 text-amber-500" />
+                    <span>Six Learning Worlds</span>
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Tap any world to jump straight into games, quests, or calming activities
+                  </p>
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {/* 1. PLAY */}
-                <Link
-                  href="/youth/play"
-                  className="p-5 rounded-[28px] bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 hover:border-amber-400 transition-all shadow-xs flex items-center space-x-4 group"
-                >
-                  <span className="text-4xl group-hover:scale-110 transition-transform">🎮</span>
-                  <div>
-                    <h4 className="text-base font-black text-slate-900">Play</h4>
-                    <p className="text-xs text-slate-600 font-medium">Mini-games & quizzes</p>
-                  </div>
-                </Link>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {WEEBLY_THEME.learningWorlds.map((world) => (
+                  <Link
+                    key={world.id}
+                    href={world.route}
+                    className={`p-5 rounded-[28px] bg-gradient-to-b ${world.bgGradient} border-2 border-white shadow-xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between space-y-3 group`}
+                  >
+                    <div className="space-y-1">
+                      <span className="text-4xl block group-hover:scale-110 transition-transform">
+                        {world.emoji}
+                      </span>
+                      <h4 className="text-base font-black text-slate-900">{world.name}</h4>
+                      <p className="text-xs text-slate-600 font-medium line-clamp-2">
+                        {world.tagline}
+                      </p>
+                    </div>
 
-                {/* 2. STORIES */}
-                <Link
-                  href="/youth/stories"
-                  className="p-5 rounded-[28px] bg-gradient-to-r from-pink-50 to-rose-50 border-2 border-pink-200 hover:border-pink-400 transition-all shadow-xs flex items-center space-x-4 group"
-                >
-                  <span className="text-4xl group-hover:scale-110 transition-transform">📖</span>
-                  <div>
-                    <h4 className="text-base font-black text-slate-900">Stories</h4>
-                    <p className="text-xs text-slate-600 font-medium">Bedtime tales with Mia</p>
-                  </div>
-                </Link>
-
-                {/* 3. CONTINUE LEARNING */}
-                <Link
-                  href="/youth/activities?category=mathematics"
-                  className="p-5 rounded-[28px] bg-gradient-to-r from-sky-50 to-indigo-50 border-2 border-sky-200 hover:border-sky-400 transition-all shadow-xs flex items-center space-x-4 group"
-                >
-                  <span className="text-4xl group-hover:scale-110 transition-transform">🚀</span>
-                  <div>
-                    <h4 className="text-base font-black text-slate-900">Continue Learning</h4>
-                    <p className="text-xs text-slate-600 font-medium">3,000 question bank</p>
-                  </div>
-                </Link>
+                    <span
+                      className="w-full py-2 rounded-xl text-white text-xs font-black flex items-center justify-center space-x-1 shadow-2xs group-hover:opacity-95"
+                      style={{ backgroundColor: world.themeColor }}
+                    >
+                      <span>Enter</span>
+                      <ArrowRight className="w-3 h-3 rtl:rotate-180" />
+                    </span>
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
