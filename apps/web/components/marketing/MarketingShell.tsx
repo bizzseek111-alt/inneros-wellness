@@ -45,7 +45,7 @@ const MarketingLocaleContext = createContext<MarketingLocaleContextValue>({
 export const useMarketingLocale = () => useContext(MarketingLocaleContext);
 
 const MARKETING_NAV_LINKS = [
-  { href: "/explore", label: "Explore" },
+  { href: "/demos", label: "Explore" },
   { href: "/how-it-works", label: "How It Works" },
   { href: "/parents", label: "Parents" },
   { href: "/schools", label: "Schools" },
@@ -239,7 +239,7 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
 
               {/* MAIN CTA: Try Demo */}
               <Link
-                href="/youth/dashboard"
+                href="/demos"
                 onClick={() =>
                   trackMarketingEvent("cta_try_demo_click", {
                     location: "header",
@@ -298,7 +298,7 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
 
               <div className="pt-2 flex flex-col gap-2.5">
                 <Link
-                  href="/youth/dashboard"
+                  href="/demos"
                   className="py-3 px-5 rounded-full bg-amber-500 text-white text-center text-[14.5px] font-bold hover:bg-amber-600 transition-all shadow-md flex items-center justify-center space-x-2"
                 >
                   <Sparkles className="w-4 h-4" />
@@ -370,74 +370,59 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                   </div>
                 </div>
 
-                {/* Column 2: Kids, Teens & Ecosystem */}
+                {/* Column 2: Platform & Institutional Governance */}
                 <div className="lg:col-span-2 space-y-3.5">
                   <h3 className="text-[12.5px] font-semibold uppercase tracking-widest text-slate-400">
-                    Kids &amp; Teens
+                    Platform &amp; Gov
                   </h3>
                   <ul className="space-y-2.5 text-[14px] text-slate-300">
                     <li>
-                      <Link href="/kids" className="hover:text-[#38BDF8] transition-colors">
-                        Weebly Kids (2–12)
+                      <Link href="/platform" className="hover:text-[#38BDF8] transition-colors">
+                        Platform Capabilities
                       </Link>
                     </li>
                     <li>
-                      <Link href="/teens" className="hover:text-[#38BDF8] transition-colors">
-                        Weebly Teens (13–18)
+                      <Link href="/technology" className="hover:text-[#38BDF8] transition-colors">
+                        Technology Architecture
                       </Link>
                     </li>
                     <li>
-                      <Link href="/parents" className="hover:text-[#38BDF8] transition-colors">
-                        Caregiver Guidance
+                      <Link href="/trust" className="hover:text-[#38BDF8] transition-colors">
+                        Trust &amp; Safeguarding
                       </Link>
                     </li>
                     <li>
-                      <Link href="/schools" className="hover:text-[#38BDF8] transition-colors">
-                        Schools &amp; Teachers
+                      <Link href="/schools/pilot" className="hover:text-[#38BDF8] transition-colors">
+                        Punjab School Pilot
                       </Link>
                     </li>
                     <li>
-                      <Link href="/caregiver/dashboard" className="hover:text-[#38BDF8] transition-colors">
-                        Parent Dashboard
+                      <Link href="/documents" className="hover:text-[#38BDF8] transition-colors">
+                        Official Documents
                       </Link>
                     </li>
                     <li>
-                      <Link href="/child-safety" className="hover:text-[#38BDF8] transition-colors">
-                        Child Safeguarding
+                      <Link href="/demos" className="hover:text-[#38BDF8] transition-colors">
+                        Interactive Demos
                       </Link>
                     </li>
                   </ul>
                 </div>
 
-                {/* Column 3: Developmental Learning */}
+                {/* Column 3: Ecosystem, Evidence & Contact */}
                 <div className="lg:col-span-2 space-y-3.5">
                   <h3 className="text-[12.5px] font-semibold uppercase tracking-widest text-slate-400">
-                    Development
+                    Ecosystem
                   </h3>
                   <ul className="space-y-2.5 text-[14px] text-slate-300">
                     <li>
-                      <Link href="/emotional-intelligence" className="hover:text-[#38BDF8] transition-colors">
-                        Emotional Intelligence
+                      <Link href="/parents" className="hover:text-[#38BDF8] transition-colors">
+                        Caregivers &amp; Parents
                       </Link>
                     </li>
                     <li>
-                      <Link href="/cognitive-development" className="hover:text-[#38BDF8] transition-colors">
-                        Cognitive Development
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/adhd-support" className="hover:text-[#38BDF8] transition-colors">
-                        ADHD Executive Hub
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/autism-support" className="hover:text-[#38BDF8] transition-colors">
-                        Autism &amp; Sensory
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/languages" className="hover:text-[#38BDF8] transition-colors">
-                        Multilingual AI
+                      <Link href="/schools" className="hover:text-[#38BDF8] transition-colors">
+                        Schools &amp; Faculty
                       </Link>
                     </li>
                     <li>
@@ -446,8 +431,18 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                       </Link>
                     </li>
                     <li>
+                      <Link href="/pricing" className="hover:text-[#38BDF8] transition-colors">
+                        Plans &amp; Pricing
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/contact" className="hover:text-[#38BDF8] transition-colors">
+                        Contact &amp; Support
+                      </Link>
+                    </li>
+                    <li>
                       <Link href="/accessibility" className="hover:text-[#38BDF8] transition-colors">
-                        WCAG 2.2 Accessibility
+                        WCAG 2.1 AA Standards
                       </Link>
                     </li>
                   </ul>

@@ -88,6 +88,12 @@ const EXPECTED_ROUTE_PAGES = [
   "app/inneros/dashboard/page.tsx",
   "app/inneros/safety/page.tsx",
   "app/professional/portal/page.tsx",
+  "app/demos/page.tsx",
+  "app/platform/page.tsx",
+  "app/technology/page.tsx",
+  "app/trust/page.tsx",
+  "app/schools/pilot/page.tsx",
+  "app/documents/page.tsx",
 ];
 
 test("All adult, marketing, kids, teens, AI friends, interactive demo, school onboarding, portals, and offline route page files exist and export default components", () => {
@@ -336,5 +342,119 @@ test("V8 Professional Support Portal: /professional/portal enforces clinical bou
   assert.match(profContent, /Caregiver Harm Notification Exception Protocol/, "Must include caregiver harm protocol");
   assert.match(profContent, /CPWB Punjab/, "Must reference regional Punjab child protection helpline");
 });
+
+test("V8 Demo Center: /demos provides all 6 independent role demos and interactive guided modal tour", () => {
+  const demosPath = path.join(WEB_ROOT, "app/demos/page.tsx");
+  const content = fs.readFileSync(demosPath, "utf8");
+  assert.match(content, /Explore Weebly/, "Must display page title");
+  assert.match(content, /Child Magic World/, "Must include Demo 1: Child Magic World");
+  assert.match(content, /Parent Center/, "Must include Demo 2: Parent Center");
+  assert.match(content, /Teacher Studio/, "Must include Demo 3: Teacher Studio");
+  assert.match(content, /School Management/, "Must include Demo 4: School Management");
+  assert.match(content, /Child Support (&amp;|&) Professional Review/, "Must include Demo 5: Professional Review");
+  assert.match(content, /Platform Admin (&amp;|&) Governance/, "Must include Demo 6: Platform Admin");
+  assert.match(content, /startTour/, "Must provide guided tour launcher");
+  assert.match(content, /nextStep/, "Must support next step in guided modal");
+  assert.match(content, /prevStep/, "Must support previous step in guided modal");
+  assert.match(content, /Exit Tour/, "Must provide persistent exit control");
+});
+
+test("V8 Functionality Guide: /platform documents all 20 subsystems with metadata and status filters", () => {
+  const platformPath = path.join(WEB_ROOT, "app/platform/page.tsx");
+  const content = fs.readFileSync(platformPath, "utf8");
+  assert.match(content, /Weebly\s*(—|&mdash;)\s*Complete Platform Capabilities/, "Must display platform title");
+  assert.match(content, /Platform Overview/, "Section 1");
+  assert.match(content, /Punjab Curriculum (&amp;|&) RAG Engine/, "Section 5");
+  assert.match(content, /Six Interactive Learning Worlds/, "Section 6");
+  assert.match(content, /Educator Studio/, "Section 10");
+  assert.match(content, /School Command Center/, "Section 11");
+  assert.match(content, /Safeguarding (&amp;|&) Privacy/, "Section 15");
+  assert.match(content, /LIVE AND VERIFIED/, "Must support LIVE status pill");
+  assert.match(content, /PROTOTYPE/, "Must support PROTOTYPE status pill");
+  assert.match(content, /PLANNED/, "Must support PLANNED status pill");
+  assert.match(content, /Intended Users/, "Must render intended user metadata");
+  assert.match(content, /Backend Dependency/, "Must render backend dependency metadata");
+  assert.match(content, /Documented Limitations/, "Must render limitation metadata");
+});
+
+test("V8 Technology: /technology presents visual architecture pillars and technical appendix", () => {
+  const techPath = path.join(WEB_ROOT, "app/technology/page.tsx");
+  const content = fs.readFileSync(techPath, "utf8");
+  assert.match(content, /Weebly Technical Architecture/, "Must render tech title");
+  assert.match(content, /Unified Conversational Orchestrator/, "Pillar 1: Orchestrator");
+  assert.match(content, /Punjab Curriculum RAG/, "Pillar 2: RAG");
+  assert.match(content, /Multi-Provider Voice Pipeline/, "Pillar 3: Voice");
+  assert.match(content, /Non-Silence Safeguarding Circuit/, "Pillar 5: Safety Circuit");
+  assert.match(content, /Anti-Injection Security Delimiter Protocol/, "Technical appendix must detail prompt injection defense");
+  assert.match(content, /Failover &amp; Disaster Recovery Specifications/, "Technical appendix must detail failover spec");
+});
+
+test("V8 Trust & Safeguarding: /trust enforces non-clinical boundaries, CPWB 1121 and truth in compliance", () => {
+  const trustPath = path.join(WEB_ROOT, "app/trust/page.tsx");
+  const content = fs.readFileSync(trustPath, "utf8");
+  assert.match(content, /Trust, Safety &amp; Safeguarding/, "Must render title");
+  assert.match(content, /Child-Centered Design/, "Pillar 1");
+  assert.match(content, /Clear AI Disclosure/, "Pillar 2");
+  assert.match(content, /Strict Non-Diagnostic Boundaries/, "Pillar 3");
+  assert.match(content, /Weebly NEVER generates psychiatric diagnoses/, "Non-clinical invariant");
+  assert.match(content, /Data Handling &amp; Zero PII Guarantee/, "Pillar 4");
+  assert.match(content, /School Access Controls/, "Pillar 5");
+  assert.match(content, /Human Safeguarding Protocols/, "Pillar 6");
+  assert.match(content, /Punjab CPWB Helpline/, "Must display CPWB 1121 helpline");
+  assert.match(content, /1121/, "Helpline number 1121");
+  assert.match(content, /0311-7786264/, "Umang helpline");
+  assert.match(content, /Caregiver Harm &amp; Domestic Endangerment Exception/, "Caregiver harm exception");
+  assert.match(content, /standard parent notification is actively suppressed/, "Active parent suppression");
+  assert.match(content, /Truth in Compliance/, "Pillar 7");
+});
+
+test("V8 Punjab School Pilot: /schools/pilot features 8-week timeline, PCTB SLO alignment, and briefing form", () => {
+  const pilotPath = path.join(WEB_ROOT, "app/schools/pilot/page.tsx");
+  const content = fs.readFileSync(pilotPath, "utf8");
+  assert.match(content, /Punjab School Pilot Program/, "Must render title");
+  assert.match(content, /Measurable Academic &amp; Confidence Gains/, "Section 1: Objectives");
+  assert.match(content, /Target Groups: Developmental Adaptations/, "Section 2: Age Tiers");
+  assert.match(content, /Teacher Training Modules: 4-Hour Rapid Onboarding/, "Section 3: Teacher PD");
+  assert.match(content, /Parent Onboarding &amp; Consent/, "Section 4: Consent");
+  assert.match(content, /3,000 Questions Mapped to PCTB SLOs/, "Section 5: Curriculum");
+  assert.match(content, /Observation &amp; Support Workflows/, "Section 6: Observations");
+  assert.match(content, /Evaluation Metrics: Four Pillar Institutional Impact/, "Section 7: Metrics");
+  assert.match(content, /Phased 8-Week Roadmap/, "Section 8: Timeline");
+  assert.match(content, /Request an On-Site Pilot Briefing/, "Section 9: Request Form");
+  assert.match(content, /handleSubmit/, "Form submission handler");
+  assert.match(content, /Pilot Reference ID/, "Generates confirmation reference ID");
+});
+
+test("V8 Government Documents: /documents provides 10 printable documents with markdown copy and print CSS", () => {
+  const docPath = path.join(WEB_ROOT, "app/documents/page.tsx");
+  const content = fs.readFileSync(docPath, "utf8");
+  assert.match(content, /Weebly Platform Executive Overview/, "Doc 1");
+  assert.match(content, /Weebly Complete Functionality Guide/, "Doc 2");
+  assert.match(content, /Weebly Technical Architecture (&amp;|&) Security Whitepaper/, "Doc 3");
+  assert.match(content, /Punjab School Pilot Program: Formal Implementation Proposal/, "Doc 4");
+  assert.match(content, /Weebly Child Safeguarding (&amp;|&) Safety Governance Policy/, "Doc 5");
+  assert.match(content, /Weebly Pilot Evaluation Plan (&amp;|&) KPI Methodology/, "Doc 6");
+  assert.match(content, /Weebly Accessibility Compliance Summary/, "Doc 7");
+  assert.match(content, /Weebly Platform Demonstration Guide/, "Doc 8");
+  assert.match(content, /Weebly Product Readiness (&amp;|&) Verification Matrix/, "Doc 9");
+  assert.match(content, /Weebly Verified Evidence (&amp;|&) Curriculum References/, "Doc 10");
+  assert.match(content, /@media print/, "Must contain print-optimized CSS");
+  assert.match(content, /handlePrint/, "Print trigger function");
+  assert.match(content, /handleCopy/, "Markdown copy function");
+  assert.match(content, /handleDownload/, "File download trigger");
+});
+
+test("V8 Public Navigation: MarketingShell links Explore and Try Demo to /demos, and provides government footer links", () => {
+  const shellPath = path.join(WEB_ROOT, "components/marketing/MarketingShell.tsx");
+  const content = fs.readFileSync(shellPath, "utf8");
+  assert.match(content, /\{\s*href:\s*"\/demos",\s*label:\s*"Explore"\s*\}/, "Explore link must point to /demos");
+  assert.match(content, /href="\/demos"[^>]*>[\s\S]*?Try Demo/, "Primary CTA must point to /demos");
+  assert.match(content, /href="\/platform"/, "Footer must link to /platform");
+  assert.match(content, /href="\/technology"/, "Footer must link to /technology");
+  assert.match(content, /href="\/trust"/, "Footer must link to /trust");
+  assert.match(content, /href="\/schools\/pilot"/, "Footer must link to /schools/pilot");
+  assert.match(content, /href="\/documents"/, "Footer must link to /documents");
+});
+
 
 
