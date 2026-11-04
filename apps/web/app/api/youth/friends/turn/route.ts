@@ -1,5 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 
+export interface ToolAction {
+  tool:
+    | "open_story"
+    | "start_learning_activity"
+    | "start_math_practice"
+    | "open_visual_schedule"
+    | "start_memory_game"
+    | "open_feelings_activity"
+    | "start_calm_activity"
+    | "set_conversation_language"
+    | "apply_sensory_preferences"
+    | "show_learning_progress"
+    | "suggest_offline_activity";
+  route?: string;
+  label: string;
+  icon?: string;
+  params?: Record<string, any>;
+}
+
+export interface ChoiceOption {
+  label: string;
+  icon: string;
+  action: ToolAction;
+}
+
 interface TurnRequest {
   character_id: "kai" | "mia" | "lumi" | "zayn";
   message: string;
@@ -129,14 +154,27 @@ export async function POST(req: NextRequest) {
           : "We have just a few more turns before it's time to stretch your legs and take a screen break!";
     }
 
-    // 4. Character Conversational Generation
-    const reply = generateCharacterReply(characterId, userUtterance, language, ageTier);
+    // 4. Tool & Intent Routing Engine
+    const toolMatch = evaluateToolRouting(userUtterance, language, characterId);
+
+    // 5. Generate Response (either tool-guided confirmation or conversational dialogue)
+    let reply = "";
+    let action: ToolAction | undefined = toolMatch.action;
+    let choices: ChoiceOption[] | undefined = toolMatch.choices;
+
+    if (toolMatch.confirmationReply) {
+      reply = toolMatch.confirmationReply;
+    } else {
+      reply = generateCharacterReply(characterId, userUtterance, language, ageTier);
+    }
 
     return NextResponse.json({
       turn_id: `turn_${Date.now()}`,
       character_id: characterId,
       reply,
-      detected_language: language,
+      action,
+      choices,
+      detected_language: action?.tool === "set_conversation_language" ? action.params?.language : language,
       is_safety_escalation: false,
       safety_resources: [],
       wind_down_notice: windDownNotice,
@@ -151,7 +189,6 @@ export async function POST(req: NextRequest) {
 }
 
 function detectLanguage(text: string): "en" | "ur" | "pa" {
-  // Check for Arabic/Shahmukhi/Nastaliq script characters
   const arabicRegex = /[\u0600-\u06FF]/;
   if (!arabicRegex.test(text)) {
     const lower = text.toLowerCase();
@@ -160,7 +197,9 @@ function detectLanguage(text: string): "en" | "ur" | "pa" {
       lower.includes("tusi") ||
       lower.includes("hoya") ||
       lower.includes("kiddan") ||
-      lower.includes("chahidi")
+      lower.includes("chahidi") ||
+      lower.includes("khed") ||
+      lower.includes("punjabi")
     ) {
       return "pa";
     }
@@ -169,19 +208,364 @@ function detectLanguage(text: string): "en" | "ur" | "pa" {
       lower.includes("kya") ||
       lower.includes("hoon") ||
       lower.includes("mujhe") ||
-      lower.includes("hai")
+      lower.includes("hai") ||
+      lower.includes("urdu")
     ) {
       return "ur";
     }
     return "en";
   }
 
-  // Distinguish Shahmukhi Punjabi from Urdu
-  const punjabiMarkers = ["نئیں", "تواڈی", "تہاڈا", "کیہڑا", "ہوندے", "کیندا", "آکھیا", "مینوں", "تسی"];
+  const punjabiMarkers = ["نئیں", "تواڈی", "تہاڈا", "کیہڑا", "ہوندے", "کیندا", "آکھیا", "مینوں", "تسی", "کھیڈ", "کھیلو"];
   if (punjabiMarkers.some((m) => text.includes(m))) {
     return "pa";
   }
   return "ur";
+}
+
+interface ToolRoutingResult {
+  action?: ToolAction;
+  choices?: ChoiceOption[];
+  confirmationReply?: string;
+}
+
+function evaluateToolRouting(
+  utterance: string,
+  lang: "en" | "ur" | "pa" | "ur-Latn" | "pa-Latn" | string,
+  characterId: string
+): ToolRoutingResult {
+  const normalizedLang = lang.startsWith("ur") ? "ur" : lang.startsWith("pa") ? "pa" : "en";
+  const lower = utterance.toLowerCase();
+
+  // 1. Language Switching ("Can we speak Punjabi?", "Urdu please", "English please")
+  if (lower.includes("punjabi") || lower.includes("پنجابی") || lower.includes("panjabi")) {
+    return {
+      action: {
+        tool: "set_conversation_language",
+        label: "Switch to Punjabi (پنجابی)",
+        icon: "🗣️",
+        params: { language: "pa" },
+      },
+      confirmationReply: "ہاں جی، بالکل! ہن اسیں پنجابی وچ گلاں کراں گے۔ تسیں اج کی کرنا چاہندے او؟",
+    };
+  }
+
+  if (lower.includes("urdu") || lower.includes("اردو")) {
+    return {
+      action: {
+        tool: "set_conversation_language",
+        label: "Switch to Urdu (اردو)",
+        icon: "🗣️",
+        params: { language: "ur" },
+      },
+      confirmationReply: "جی بالکل! اب ہم اردو میں بات کریں گے۔ آپ آج مجھ سے کیا پوچھنا چاہتے ہیں؟",
+    };
+  }
+
+  if (lower.includes("english") || lower.includes("انگریزی")) {
+    return {
+      action: {
+        tool: "set_conversation_language",
+        label: "Switch to English",
+        icon: "🗣️",
+        params: { language: "en" },
+      },
+      confirmationReply: "Awesome! Let's talk in English. What would you like to explore today?",
+    };
+  }
+
+  // 2. Math practice / Homework ("Help me with maths", "I have homework", "Maths questions")
+  if (
+    lower.includes("math") ||
+    lower.includes("homework") ||
+    lower.includes("fraction") ||
+    lower.includes("addition") ||
+    lower.includes("multiplication") ||
+    utterance.includes("ریاضی") ||
+    utterance.includes("حساب") ||
+    utterance.includes("ہوم ورک") ||
+    lower.includes("homework samajh")
+  ) {
+    const replies = {
+      ur: "زبردست! آئیے مل کر ریاضی کے دلچسپ سوالات حل کرتے ہیں۔ میں آپ کا میتھ پیج کھول رہا ہوں۔",
+      pa: "شاباش پیارے دوست! آؤ مل کے حساب دی پریکٹس کریے۔ میں حساب دا صفحہ کھول ریا واں۔",
+      en: "Let's do some fun math together! I am opening your math practice right now.",
+    };
+    return {
+      action: {
+        tool: "start_math_practice",
+        route: "/youth/activities?category=mathematics",
+        label: "Open Math Practice",
+        icon: "🔢",
+        params: { category: "mathematics" },
+      },
+      confirmationReply: replies[normalizedLang as "ur" | "pa" | "en"] || replies.en,
+    };
+  }
+
+  // 3. Bedtime / Moral Story ("Tell me a story", "Bedtime story", "I want a story", "Kahani sunao")
+  if (
+    lower.includes("story") ||
+    lower.includes("bedtime") ||
+    lower.includes("kahani") ||
+    utterance.includes("کہانی") ||
+    utterance.includes("کہانیاں")
+  ) {
+    const replies = {
+      ur: "بہت خوب! میرے پاس ایک بہت ہی پیاری اور سبق آموز کہانی ہے۔ آئیے کہانیوں کی دنیا میں چلتے ہیں۔",
+      pa: "واہ جی واہ! میرے کول اک بڑی سوہنی کہانی اے۔ آؤ کہانی سنئے!",
+      en: "I have a wonderful story ready for you! Opening story time right now.",
+    };
+    return {
+      action: {
+        tool: "open_story",
+        route: "/youth/stories",
+        label: "Open Story Reader",
+        icon: "📖",
+      },
+      confirmationReply: replies[normalizedLang as "ur" | "pa" | "en"] || replies.en,
+    };
+  }
+
+  // 4. Learning Games & Puzzles ("I want to play a game", "Let's play", "khed")
+  if (
+    lower.includes("play a game") ||
+    lower.includes("want a game") ||
+    lower.includes("let's play") ||
+    lower.includes("play game") ||
+    utterance.includes("کھیل کھیلنا") ||
+    utterance.includes("کھیل") ||
+    lower.includes("khed khilao") ||
+    lower.includes("koi khed") ||
+    utterance.includes("کھیڈ")
+  ) {
+    const replies = {
+      ur: "کھیل کا وقت! آئیے ایک زبردست تعلیمی گیم کھیلتے ہیں۔ میں گیمز کھول رہا ہوں۔",
+      pa: "کھیڈن دا ویلا آ گیا! آؤ رل کے مزے دار کھیل کھیڈیے۔ میں پیج کھول ریا واں۔",
+      en: "Game time! Let's play an exciting learning adventure together!",
+    };
+    return {
+      action: {
+        tool: "start_learning_activity",
+        route: "/youth/activities",
+        label: "Open Learning Games",
+        icon: "🎮",
+      },
+      confirmationReply: replies[normalizedLang as "ur" | "pa" | "en"] || replies.en,
+    };
+  }
+
+  // 5. Visual Schedule & Routine ("What do I do next?", "Show me my day", "routine", "schedule")
+  if (
+    lower.includes("routine") ||
+    lower.includes("schedule") ||
+    lower.includes("what do i do next") ||
+    lower.includes("what should i do next") ||
+    lower.includes("my day") ||
+    utterance.includes("روٹین") ||
+    utterance.includes("شیڈول") ||
+    utterance.includes("ٹائم ٹیبل")
+  ) {
+    const replies = {
+      ur: "آئیے مل کر دیکھتے ہیں کہ آج آپ کا اگلا مرحلہ کیا ہے۔ آپ کا شیڈول حاضر ہے!",
+      pa: "آؤ ویکھئے اج تہاڈے دن دا اگلا کم کیہڑا اے۔ شیڈول تہاڈے سامنے اے۔",
+      en: "Let's look at your day together! Opening your visual routine now.",
+    };
+    return {
+      action: {
+        tool: "open_visual_schedule",
+        route: "/youth/routines",
+        label: "Open My Routine",
+        icon: "📅",
+      },
+      confirmationReply: replies[normalizedLang as "ur" | "pa" | "en"] || replies.en,
+    };
+  }
+
+  // 6. Feelings & Emotional Expression ("I feel sad", "I feel angry", "I am worried", "feelings")
+  if (
+    lower.includes("feel sad") ||
+    lower.includes("feel angry") ||
+    lower.includes("feel mad") ||
+    lower.includes("feel worried") ||
+    lower.includes("feel scared") ||
+    lower.includes("upset") ||
+    utterance.includes("اداس") ||
+    utterance.includes("غصہ") ||
+    utterance.includes("پریشان") ||
+    lower.includes("khush") ||
+    lower.includes("udaas")
+  ) {
+    const replies = {
+      ur: "آپ کے جذبات بہت اہم ہیں۔ پریشان نہ ہوں، میں آپ کے ساتھ ہوں۔ آئیے احساسات کا پہیہ دیکھتے ہیں۔",
+      pa: "تہاڈے دل دی گل بڑی اہم اے۔ لومی تہاڈے کول اے، آؤ پرسکون ہوئیے۔",
+      en: "I'm right here with you, and it's okay to feel that way. Let's explore our feelings together.",
+    };
+    return {
+      action: {
+        tool: "open_feelings_activity",
+        route: "/youth/emotions",
+        label: "Open Feelings Wheel",
+        icon: "💛",
+      },
+      confirmationReply: replies[normalizedLang as "ur" | "pa" | "en"] || replies.en,
+    };
+  }
+
+  // 7. Calm Breaths & Quiet Sensory Time ("I want something quiet", "breathe", "calm down")
+  if (
+    lower.includes("something quiet") ||
+    lower.includes("calm down") ||
+    lower.includes("take a breath") ||
+    lower.includes("bunny breath") ||
+    lower.includes("belly breath") ||
+    utterance.includes("پرسکون") ||
+    utterance.includes("سانس") ||
+    utterance.includes("سکون")
+  ) {
+    const replies = {
+      ur: "بہت اچھا خیال ہے۔ آئیے چند نرم اور پرسکون سانسیں لیتے ہیں تاکہ ہمارا جسم اور ذہن پرسکون ہو جائے۔",
+      pa: "آؤ رل کے ہولا جیا ساہ لئیے تے سکون پائیے۔",
+      en: "Taking calm belly breaths helps our body feel so safe and peaceful. Let's do a gentle breathing exercise.",
+    };
+    return {
+      action: {
+        tool: "start_calm_activity",
+        route: "/youth/emotions",
+        label: "Start Calm Breaths",
+        icon: "🌸",
+      },
+      confirmationReply: replies[normalizedLang as "ur" | "pa" | "en"] || replies.en,
+    };
+  }
+
+  // 8. Science & Dinosaurs ("Teach me about dinosaurs", "science", "space", "planets")
+  if (
+    lower.includes("dinosaur") ||
+    lower.includes("science") ||
+    lower.includes("planet") ||
+    lower.includes("space") ||
+    utterance.includes("سائنس") ||
+    utterance.includes("ڈائنوسار")
+  ) {
+    const replies = {
+      ur: "ڈائنوسار اور سائنس! یہ تو بہت ہی زبردست دنیا ہے۔ آئیے سائنس اور تحقیق کا صفحہ کھولتے ہیں۔",
+      pa: "ڈائنوسار تے سائنس! آؤ نویاں چیزاں دی کھوج کرئیے۔",
+      en: "Rawr! Dinosaurs and science mysteries are incredible! Let's explore science adventures together!",
+    };
+    return {
+      action: {
+        tool: "start_learning_activity",
+        route: "/youth/activities?category=science_and_discovery",
+        label: "Explore Science Activities",
+        icon: "🔬",
+        params: { category: "science_and_discovery" },
+      },
+      confirmationReply: replies[normalizedLang as "ur" | "pa" | "en"] || replies.en,
+    };
+  }
+
+  // 9. Memory Game ("Memory game", "card match")
+  if (lower.includes("memory game") || lower.includes("card match") || utterance.includes("یادداشت")) {
+    return {
+      action: {
+        tool: "start_memory_game",
+        route: "/youth/activities?category=memory",
+        label: "Start Memory Match",
+        icon: "🃏",
+      },
+      confirmationReply:
+        normalizedLang === "ur"
+          ? "آئیے دیکھتے ہیں آپ کی یادداشت کتنی تیز ہے! کارڈز کا جوڑا بنانے کا کھیل شروع ہو رہا ہے۔"
+          : "Let's test your super memory! Opening your memory card match right now.",
+    };
+  }
+
+  // 10. Show Learning Progress / Trophies ("How am I doing?", "My trophies", "progress")
+  if (
+    lower.includes("how am i doing") ||
+    lower.includes("my progress") ||
+    lower.includes("badges") ||
+    lower.includes("trophies") ||
+    lower.includes("achievements") ||
+    utterance.includes("انعام") ||
+    utterance.includes("ستارے")
+  ) {
+    return {
+      action: {
+        tool: "show_learning_progress",
+        route: "/youth/achievements",
+        label: "View My Achievements",
+        icon: "🏆",
+      },
+      confirmationReply:
+        normalizedLang === "ur"
+          ? "آپ نے بہت محنت کی ہے! آئیے دیکھتے ہیں کہ آپ نے کتنے ستارے اور بیجز جیتے ہیں۔"
+          : "You have been doing fantastic work! Look at all your earned trophies and stars.",
+    };
+  }
+
+  // 11. Suggest Offline Activity / Drawing ("Suggest an offline activity", "build something", "drawing")
+  if (
+    lower.includes("offline") ||
+    lower.includes("build something") ||
+    lower.includes("drawing") ||
+    lower.includes("craft") ||
+    utterance.includes("ڈرائنگ") ||
+    utterance.includes("تصویر")
+  ) {
+    return {
+      action: {
+        tool: "suggest_offline_activity",
+        route: "/youth/visual-supports",
+        label: "Open Drawing & Visual Tools",
+        icon: "🎨",
+      },
+      confirmationReply:
+        normalizedLang === "ur"
+          ? "کاغذ اور رنگ نکالیں! آئیے ایک خوبصورت ڈرائنگ یا ماڈل بناتے ہیں۔"
+          : "Hands-on creativity time! Grab some paper and pencils—let's make something amazing offline.",
+    };
+  }
+
+  // 12. Ambiguous Query ("I'm bored", "What should I do?", "What can we do?")
+  if (
+    lower.includes("bored") ||
+    lower.includes("what should i do") ||
+    lower.includes("what can we do") ||
+    lower.includes("kujh samajh nahi") ||
+    utterance.includes("بور") ||
+    utterance.includes("کیا کریں")
+  ) {
+    return {
+      choices: [
+        {
+          label: normalizedLang === "ur" ? "📖 کہانی سنیں" : "📖 Listen to a Story",
+          icon: "📖",
+          action: {
+            tool: "open_story",
+            route: "/youth/stories",
+            label: "Open Story Reader",
+          },
+        },
+        {
+          label: normalizedLang === "ur" ? "🎮 کھیل کھیلیں" : "🎮 Play a Fun Game",
+          icon: "🎮",
+          action: {
+            tool: "start_learning_activity",
+            route: "/youth/activities",
+            label: "Open Learning Games",
+          },
+        },
+      ],
+      confirmationReply:
+        normalizedLang === "ur"
+          ? "کوئی بات نہیں! ہم مل کر مزہ کر سکتے ہیں۔ بتائیں، کیا آپ ایک پیاری کہانی سننا چاہتے ہیں یا کوئی کھیل کھیلنا چاہتے ہیں؟"
+          : "We have lots of fun things we can do! Would you like to hear an exciting story, or play a fun game?",
+    };
+  }
+
+  return {};
 }
 
 function generateCharacterReply(
@@ -192,11 +576,8 @@ function generateCharacterReply(
 ): string {
   const lower = userText.toLowerCase();
 
-  // =========================================================================
-  // 1. KAI — THE CURIOUS LEARNING GUIDE (Homework, Questions, Confidence)
-  // =========================================================================
+  // 1. KAI — THE CURIOUS LEARNING GUIDE
   if (characterId === "kai") {
-    // A. Specific Test Phrase: "I don't understand this question."
     if (
       lower.includes("don't understand this question") ||
       lower.includes("dont understand this question") ||
@@ -206,7 +587,6 @@ function generateCharacterReply(
       return "That's completely okay! Tricky questions are just puzzles in disguise. What is the very first sentence or number that the question mentions?";
     }
 
-    // B. Specific Test Phrase: "مجھے یہ سوال سمجھ نہیں آ رہا۔"
     if (
       userText.includes("مجھے یہ سوال سمجھ نہیں آ رہا") ||
       userText.includes("سوال سمجھ نہیں آ رہا") ||
@@ -215,88 +595,45 @@ function generateCharacterReply(
       return "کوئی بات نہیں! مشکل سوالات دیکھ کر پریشان ہونا قدرتی بات ہے۔ آئیے مل کر دیکھتے ہیں۔ سب سے پہلے بتائیں کہ سوال میں کیا معلومات دی گئی ہیں؟";
     }
 
-    // C. Specific Test Phrase: "Mainu homework samajh nahi aa reha."
     if (
-      lower.includes("mainu homework samajh nahi") ||
-      lower.includes("homework samajh nahi aa reha") ||
+      lower.includes("mainu homework samajh nahi aa reha") ||
+      userText.includes("Mainu homework samajh nahi aa reha") ||
       userText.includes("ہوم ورک سمجھ نہیں") ||
       userText.includes("ہوم ورک سمجھ نئیں")
     ) {
       return "فکر نہ کرو پیارے دوست! ہوم ورک اوکھا لگ سکدا اے، پر اسیں مل کے کر لواں گے۔ سوال دا پہلا جملہ کی کہندا اے؟ مینوں دسّو۔";
     }
 
-    // Urdu General Responses for Kai
     if (lang === "ur") {
-      if (lower.includes("math") || userText.includes("ریاضی") || userText.includes("حساب")) {
-        return "ریاضی کی سب سے اچھی بات یہ ہے کہ اس کا حل قدم بہ قدم نکلتا ہے۔ پہلا قدم کیا ہے جو آپ کو یاد ہے؟";
-      }
-      if (lower.includes("science") || userText.includes("سائنس")) {
-        return "سائنس تو کھوج اور سوال پوچھنے کا نام ہے! آپ اس بارے میں کیا سوچتے ہیں؟";
-      }
       return "بہت عمدہ سوال! جب ہم کوشش کرتے ہیں تو ہمارا دماغ مضبوط ہوتا ہے۔ آئیے اس کو چھوٹے حصوں میں تقسیم کر کے سمجھتے ہیں۔";
     }
 
-    // Punjabi General Responses for Kai
     if (lang === "pa") {
-      if (lower.includes("math") || userText.includes("حساب")) {
-        return "حساب دا سوال سٹا سٹا حل کرئیے تے بڑا مزا آندا اے۔ پہلا سٹا کی کرنا چاہیدا اے؟";
-      }
       return "شاباش! سوال پچھنا ہی سکھن دا پہلا قدم اے۔ آؤ مل کے ایہدا حل لبھدے آں۔";
-    }
-
-    // English Responses for Kai
-    if (lower.includes("math") || lower.includes("fraction") || lower.includes("multiplication")) {
-      return "Math is like a puzzle! If we break it into one small step at a time, it gets much easier. What do you think our first step should be?";
-    }
-    if (lower.includes("science") || lower.includes("project")) {
-      return "I love science mysteries! The coolest scientists start with a hypothesis. What do you guess might happen?";
-    }
-    if (lower.includes("stupid") || lower.includes("dumb") || lower.includes("can't do it")) {
-      return "Hey, please don't be hard on yourself. Making mistakes isn't failure—it's literally how our brain grows new connections. Let's try it together, zero pressure!";
     }
 
     return "That's a fantastic thing to explore. If you had to guess the very first clue, where would you start?";
   }
 
-  // =========================================================================
-  // 2. MIA — THE WARM CREATIVE GUIDE (Stories, Feelings, Social Learning)
-  // =========================================================================
+  // 2. MIA — THE WARM CREATIVE GUIDE
   if (characterId === "mia") {
     if (lang === "ur") {
       if (userText.includes("کہانی") || lower.includes("story")) {
         return "ایک دفعہ کا ذکر ہے کہ ایک چھوٹے جنگل میں ایک نٹکھٹ تتلی رہتی تھی جو سب کے چہروں پر مسکراہٹ لاتی تھی۔ کیا آپ اس کے سفر کے بارے میں سننا چاہیں گے؟";
       }
-      if (userText.includes("اداس") || userText.includes("غم") || userText.includes("غصہ")) {
-        return "آپ کے دل کی بات سن کر مجھے خوشی ہوئی۔ اداس یا غصہ ہونا بالکل قدرتی ہے۔ کیا آپ بتانا چاہیں گے کہ دل میں کیا چل رہا ہے؟";
-      }
       return "میں بڑی محبت سے آپ کی بات سن رہی ہوں۔ آپ جو محسوس کرتے ہیں وہ اہم ہے۔ آپ اس بارے میں کیسا محسوس کر رہے ہیں؟";
     }
 
     if (lang === "pa") {
-      if (userText.includes("کہانی") || lower.includes("kahani")) {
-        return "اک واری دا ذکر اے، اک چھوٹے جئے پنڈ وچ اک بڑا پیارا چڑیا دا جوڑا رہندا سی۔ کی تسیں اوہناں دی کہانی سننا چاہندے او؟";
-      }
       return "تہاڈی گل سن کے بڑا چنگا لگیا۔ دل دے سارے والولے میرے نال سانجھے کر سکدے او۔";
-    }
-
-    if (lower.includes("story") || lower.includes("tell me a story")) {
-      return "Once upon a time, deep in a moonlit forest, a little owl named Pip decided to find out where the stars went during the day. Would you like to hear what Pip discovered?";
-    }
-    if (lower.includes("friend") || lower.includes("fight") || lower.includes("sad") || lower.includes("mad")) {
-      return "That sounds like a really big feeling to carry. It's totally okay and understandable to feel that way. What was the hardest part of what happened?";
     }
 
     return "I'm right here listening with my whole heart. How does talking about it make your chest or shoulders feel right now?";
   }
 
-  // =========================================================================
-  // 3. LUMI — THE CALM GUIDE (Routines, Co-Regulation, Breaths)
-  // =========================================================================
+  // 3. LUMI — THE CALM GUIDE
   if (characterId === "lumi") {
     if (lang === "ur") {
-      if (userText.includes("سانس") || lower.includes("breath")) {
-        return "آئیے ایک نرم خرگوش جیسی سانس لیتے ہیں۔ تین بار ناک سے آہستہ آہستہ سانس اندر کھینچیں... اور منہ سے لمبا سانس باہر نکالیں۔ کیسا لگا؟";
-      }
       return "آرام سے بیٹھیں۔ کندھوں کو ڈھیلا چھوڑ دیں اور ایک پرسکون سانس لیں۔ لومی آپ کے ساتھ ہے۔";
     }
 
@@ -304,33 +641,17 @@ function generateCharacterReply(
       return "اک لمبا تے سوہنا ساہ لئو۔ لومی تہاڈے کول اے، کوئی جلدی نئیں، سارا سکون تہاڈا اے۔";
     }
 
-    if (lower.includes("breath") || lower.includes("breathing") || lower.includes("anxious") || lower.includes("overwhelm")) {
-      return "Let's do a gentle bunny breath together. Take three quick little sniffs in through your nose... and one long, soft sigh out through your mouth. How does that feel in your body?";
-    }
-
     return "Notice your feet resting on the floor and take a nice, slow, comforting breath with me. There is no rush at all.";
   }
 
-  // =========================================================================
-  // 4. ZAYN — THE ENERGETIC EXPLORER (Science, Nature, Puzzles)
-  // =========================================================================
+  // 4. ZAYN — THE ENERGETIC EXPLORER
   if (characterId === "zayn") {
     if (lang === "ur") {
-      if (userText.includes("پہیلی") || lower.includes("riddle")) {
-        return "ایک زبردست پہیلی سنیں: وہ کون سی چیز ہے جس کی آنکھیں تو ہیں مگر دیکھ نہیں سکتی؟ سوچ کر بتائیں!";
-      }
       return "ارے واہ! سائنس کی دنیا تو حیرت انگیز رازوں سے بھری ہے۔ کیا آپ کو معلوم ہے کہ نیلا وہیل مچھلی کا دل ایک کار جتنا بڑا ہوتا ہے؟";
     }
 
     if (lang === "pa") {
       return "اوئے ہوئے! کھوج لئی میں ہر ویلے تیار آں۔ اک سوہنی پہیلی دساں یا خلا دے راز؟";
-    }
-
-    if (lower.includes("riddle") || lower.includes("puzzle")) {
-      return "Here is a fun brain-teaser: What has hands and a face, but cannot hold anything or smile? What's your guess?";
-    }
-    if (lower.includes("space") || lower.includes("star") || lower.includes("planet")) {
-      return "Space is wild! Did you know a day on Venus is longer than an entire year on Venus? What planet would you explore if you had a spaceship?";
     }
 
     return "Discovery mode activated! The universe has so many cool mysteries. What question should our explorer mission tackle next?";

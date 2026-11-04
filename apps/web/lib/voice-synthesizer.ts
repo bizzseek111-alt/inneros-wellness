@@ -79,7 +79,33 @@ class VoiceSynthesizer {
     this.activeUtterance = null;
   }
 
-  public speak(options: SpeakOptions): Promise<void> {
+  public speak(
+    optionsOrText: SpeakOptions | string,
+    legacyOptions?: {
+      characterId?: CharacterId;
+      locale?: string;
+      lang?: string;
+      rate?: number;
+      pitch?: number;
+      volume?: number;
+      onStart?: () => void;
+      onEnd?: () => void;
+      onError?: (error: any) => void;
+    }
+  ): Promise<void> {
+    const options: SpeakOptions =
+      typeof optionsOrText === "string"
+        ? {
+            characterId: legacyOptions?.characterId || "kai",
+            text: optionsOrText,
+            locale: legacyOptions?.locale || legacyOptions?.lang || "en",
+            volume: legacyOptions?.volume,
+            onStart: legacyOptions?.onStart,
+            onEnd: legacyOptions?.onEnd,
+            onError: legacyOptions?.onError,
+          }
+        : optionsOrText;
+
     return new Promise((resolve) => {
       if (typeof window === "undefined") {
         resolve();
@@ -103,8 +129,8 @@ class VoiceSynthesizer {
       }
 
       const utterance = new SpeechSynthesisUtterance(options.text);
-      utterance.pitch = charDef.voiceProfile.pitch;
-      utterance.rate = charDef.voiceProfile.rate;
+      utterance.pitch = legacyOptions?.pitch !== undefined ? legacyOptions.pitch : charDef.voiceProfile.pitch;
+      utterance.rate = legacyOptions?.rate !== undefined ? legacyOptions.rate : charDef.voiceProfile.rate;
       utterance.volume = volume;
 
       // Assign matched language code
