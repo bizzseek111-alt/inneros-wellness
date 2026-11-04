@@ -78,10 +78,16 @@ const MATH_QUESTIONS: MathQuestion[] = [
   },
 ];
 
-function ActivitiesContent() {
+function ActivitiesContent({
+  initialCategory,
+  initialTopic,
+}: {
+  initialCategory?: string;
+  initialTopic?: string;
+}) {
   const searchParams = useSearchParams();
-  const categoryParam = searchParams?.get("category");
-  const topicParam = searchParams?.get("topic");
+  const categoryParam = searchParams?.get("category") || initialCategory;
+  const topicParam = searchParams?.get("topic") || initialTopic;
   const { locale } = useYouth();
 
   const [activeTab, setActiveTab] = useState<"math" | "focus" | "tech">(
@@ -470,18 +476,60 @@ function ActivitiesContent() {
   );
 }
 
-export default function CognitiveActivitiesPage() {
+export default function CognitiveActivitiesPage({
+  searchParams,
+}: {
+  searchParams?: { category?: string; topic?: string };
+}) {
+  const initialCategory = searchParams?.category;
+  const initialTopic = searchParams?.topic;
+
   return (
     <Suspense
       fallback={
         <ChildNavigationShell activeTab="play">
-          <div className="min-h-[50vh] flex items-center justify-center text-slate-500 font-bold">
-            Loading Weebly Activities...
-          </div>
+          {initialCategory === "mathematics" ? (
+            <div className="space-y-6 max-w-4xl mx-auto px-4 py-8">
+              <div className="text-center space-y-2">
+                <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-black">
+                  <span>✨ Guided Problem Solving</span>
+                </span>
+                <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
+                  Khanmigo-Inspired Math &amp; Logic Quests
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto">
+                  Solve engaging math puzzles step-by-step with your AI friends!
+                </p>
+              </div>
+              <div className="rounded-[36px] bg-white border-2 border-amber-200 p-6 sm:p-10 shadow-sm space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-amber-700 bg-amber-50 px-3 py-1 rounded-full">
+                    Khanmigo-Inspired Guided Reasoning &bull; The Mango Sharing Feast
+                  </span>
+                </div>
+                <div className="space-y-4">
+                  <h2 className="text-xl sm:text-2xl font-black text-slate-900">
+                    The Mango Sharing Feast
+                  </h2>
+                  <p className="text-base sm:text-lg font-bold text-slate-800">
+                    Kai has 12 delicious Chaunsa mangoes. He wants to share them equally among 3 friends: Pip, Zara, and Leo. How many mangoes does each friend get?
+                  </p>
+                  <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200 text-center text-2xl tracking-widest select-none">
+                    🥭 🥭 🥭 🥭 🥭 🥭 🥭 🥭 🥭 🥭 🥭 🥭
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="min-h-[50vh] flex items-center justify-center text-slate-500 font-bold">
+              Loading Weebly Activities...
+            </div>
+          )}
         </ChildNavigationShell>
       }
     >
-      <ActivitiesContent />
+      <ActivitiesContent initialCategory={initialCategory} initialTopic={initialTopic} />
     </Suspense>
   );
 }
+
