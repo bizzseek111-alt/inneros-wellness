@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { SanctuaryShell } from "@/components/shell/SanctuaryShell";
 import { Button } from "@/components/primitives/Button";
 import { Badge } from "@/components/primitives/Badge";
@@ -35,6 +36,20 @@ export default function SafetySupportPage() {
   return (
     <SanctuaryShell>
       <div className="max-w-4xl mx-auto space-y-6 pb-8">
+        {/* Weebly Child & Family Safeguarding Portal Banner */}
+        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-2xs">
+          <div className="flex items-center space-x-2 text-amber-900 font-bold">
+            <Shield className="w-4 h-4 text-amber-700 shrink-0" />
+            <span>Looking for Weebly Child Safeguarding, Regional Youth Helplines, or School Protocols?</span>
+          </div>
+          <Link
+            href="/child-safety"
+            className="px-3.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs transition-colors flex items-center space-x-1 shrink-0"
+          >
+            <span>Visit Child Safeguarding Hub</span>
+          </Link>
+        </div>
+
         {/* Warm, Reassuring Header */}
         <div className="p-6 rounded-3xl bg-white border border-[#E6E0D6] shadow-sm space-y-2">
           <div className="flex items-center space-x-2 text-[#285B55] text-[14px] font-medium">

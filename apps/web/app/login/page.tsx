@@ -93,40 +93,40 @@ export default function LoginPage() {
           href="/"
           className="inline-flex items-center gap-3 text-[#263330] hover:opacity-90 transition-opacity"
         >
-          <span className="w-10 h-10 rounded-2xl bg-[#E5F1E8] border border-[#285B55]/20 flex items-center justify-center text-[#285B55] font-serif text-lg font-semibold">
-            I
+          <span className="w-10 h-10 rounded-2xl bg-amber-400 text-slate-950 font-black text-xl flex items-center justify-center shadow-xs">
+            W
           </span>
           <div>
-            <span className="font-serif text-xl font-medium tracking-tight block leading-none">
+            <span className="text-xl font-black tracking-tight block leading-none text-[#0F172A]">
               Weebly
             </span>
-            <span className="text-xs text-[#52625E] block mt-0.5">
-              Personal Wellbeing Sanctuary
+            <span className="text-xs text-slate-500 font-semibold block mt-0.5">
+              Learning, Family &amp; School Platform
             </span>
           </div>
         </Link>
 
         <Link
           href="/signup"
-          className="text-sm font-medium text-[#285B55] hover:underline px-4 py-2 rounded-xl bg-[#E5F1E8]/60"
+          className="text-sm font-bold text-amber-800 hover:underline px-4 py-2 rounded-xl bg-amber-50 border border-amber-200"
         >
-          Create a new sanctuary →
+          Create an account →
         </Link>
       </header>
 
       {/* Main Card */}
       <main className="max-w-md w-full mx-auto my-10">
         <div className="bg-white rounded-3xl border border-[#E4E0D8] shadow-card p-8 sm:p-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E5F1E8] text-[#285B55] text-xs font-medium mb-5">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Welcome Back to Your Sanctuary</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200 text-xs font-bold mb-5">
+            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+            <span>Weebly Unified Sign In</span>
           </div>
 
-          <h1 className="font-serif text-3xl font-medium text-[#263330] tracking-tight">
+          <h1 className="text-3xl font-black text-[#0F172A] tracking-tight">
             Sign in to Weebly
           </h1>
-          <p className="text-sm text-[#52625E] mt-2 leading-relaxed">
-            Your reflections, personal memory vault, and growth intentions remain private and under your control.
+          <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed font-medium">
+            Access your caregiver oversight dashboard, educator classroom tools, or student learning sessions.
           </p>
 
           {errorMessage && (

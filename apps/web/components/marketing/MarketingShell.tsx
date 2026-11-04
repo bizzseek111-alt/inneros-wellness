@@ -340,31 +340,31 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                   </div>
 
                   <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white leading-[1.14]">
-                    Empowering minds through <br />
+                    Joyful learning, voice-first creativity <br />
                     <span className="text-[#38BDF8]">
-                      AI-driven mental wellness.
+                      and practical life skills.
                     </span>
                   </h2>
 
                   <p className="text-[14.5px] text-slate-300 leading-relaxed max-w-md">
-                    Real-time self-awareness, adaptive voice and text reflection, personalized Life Graph insights, and evidence-backed psychology in one calming sanctuary.
+                    Multilingual conversational AI companions, guided drawing, movement drills, interactive moral cartoons, and evidence-backed curriculum for children, parents, and schools.
                   </p>
 
                   <div className="flex flex-wrap items-center gap-3 pt-1">
                     <Link
-                      href="/contact"
-                      className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-full bg-[#2B4CDE] text-white hover:bg-[#1E3A8A] text-[13.5px] font-semibold transition-all shadow-[0_4px_14px_rgba(43,76,222,0.25)]"
+                      href="/demo"
+                      className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-full bg-amber-400 text-slate-950 hover:bg-amber-300 text-[13.5px] font-black transition-all shadow-[0_4px_14px_rgba(245,158,11,0.25)]"
                     >
-                      <span>Contact Us</span>
-                      <span className="w-5 h-5 rounded-full bg-white/20 text-white flex items-center justify-center">
+                      <span>Try Interactive Demo</span>
+                      <span className="w-5 h-5 rounded-full bg-slate-950/20 text-slate-950 flex items-center justify-center">
                         <ArrowUpRight className="w-3.5 h-3.5" />
                       </span>
                     </Link>
                     <Link
-                      href="/dashboard"
+                      href="/youth/dashboard"
                       className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-full bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-white text-[13.5px] font-medium transition-all"
                     >
-                      <span>Open Sanctuary</span>
+                      <span>Kids Magic Home</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>
@@ -528,14 +528,14 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                 <div className="flex items-start sm:items-center space-x-3">
                   <HeartHandshake className="w-5 h-5 text-[#38BDF8] shrink-0 mt-0.5 sm:mt-0" />
                   <p className="text-[13px] text-slate-300 leading-relaxed">
-                    <strong>Child Safety &amp; Non-Clinical Notice:</strong> Weebly provides supportive, developmental learning and emotional literacy scaffolding for children and teens. It is not medical treatment or psychotherapy. Existing adult users can access the <Link href="/dashboard" className="text-sky-300 underline font-medium">InnerOS Adult Sanctuary</Link>. Free 24/7 crisis lines: <strong>988</strong> (US/Canada), <strong>116 123</strong> (UK), <strong>112</strong> (EU).
+                    <strong>Child Safety &amp; Non-Clinical Notice:</strong> Weebly provides supportive, developmental learning and emotional literacy scaffolding for children and teens. It is not medical treatment or psychotherapy. Existing adult users can access the <Link href="/inneros/dashboard" className="text-sky-300 underline font-medium">InnerOS Adult Sanctuary</Link>. Free 24/7 crisis lines: <strong>988</strong> (US/Canada), <strong>116 123</strong> (UK), <strong>112</strong> (EU).
                   </p>
                 </div>
                 <Link
-                  href="/safety"
+                  href="/child-safety"
                   className="px-4 py-2 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-[12.5px] font-medium shrink-0 self-start md:self-auto"
                 >
-                  View All Helplines
+                  Child Safeguarding
                 </Link>
               </div>
             </div>

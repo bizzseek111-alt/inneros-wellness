@@ -55,7 +55,7 @@ export default function ChildSafetyPublicPage() {
               Child Safety &amp; Human Safeguarding
             </h1>
             <p className="text-base sm:text-lg text-[#475569] max-w-2xl mx-auto leading-relaxed">
-              How InnerOS protects young users, prevents emotional manipulation, refuses secrets, and connects children to real-world help.
+              How Weebly protects young users, prevents emotional manipulation, refuses secrets, and connects children to real-world help.
             </p>
           </div>
         </section>

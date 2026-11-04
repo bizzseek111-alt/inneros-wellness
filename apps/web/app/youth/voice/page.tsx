@@ -233,11 +233,16 @@ export default function YouthVoiceRoomPage() {
 
       setCompanionReply(response.transcript_agent);
 
-      // 1. Safety Escalation
+      // 1. Safety Escalation — Speak gentle reassurance aloud and show support cards
       if (response.is_safety_escalation) {
         setCrisisAlert(response.transcript_agent);
         setSafetyResources(response.safety_resources || []);
-        setMicState("idle");
+        if (voiceDeliveryMode !== "text_only") {
+          setMicState("speaking");
+          speakViaWebSpeech(response.transcript_agent);
+        } else {
+          setMicState("idle");
+        }
         return;
       }
 

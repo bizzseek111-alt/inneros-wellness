@@ -343,10 +343,16 @@ function MoveAndPlaySection({ onBack }: { onBack: () => void }) {
   );
 }
 
-function PlayHubContent() {
+function PlayHubContent({
+  initialWorld,
+  initialActivity,
+}: {
+  initialWorld?: string;
+  initialActivity?: string;
+}) {
   const searchParams = useSearchParams();
-  const world = searchParams?.get("world");
-  const activity = searchParams?.get("activity");
+  const world = searchParams?.get("world") || initialWorld;
+  const activity = searchParams?.get("activity") || initialActivity;
   const { locale } = useYouth();
 
   const [activeWorldOverride, setActiveWorldOverride] = useState<string | null>(null);
@@ -467,18 +473,32 @@ function PlayHubContent() {
   );
 }
 
-export default function PlayHubPage() {
+export default function PlayHubPage({
+  searchParams,
+}: {
+  searchParams?: { world?: string; activity?: string };
+}) {
+  const initialWorld = searchParams?.world;
+  const initialActivity = searchParams?.activity;
+
   return (
     <Suspense
       fallback={
         <ChildNavigationShell activeTab="play">
-          <div className="min-h-[50vh] flex items-center justify-center text-slate-500 font-bold">
-            Loading Weebly Play Room...
-          </div>
+          {initialWorld === "creative-studio" ? (
+            <div className="space-y-6">
+              <CreativeStudioCanvas initialActivity={initialActivity || "draw-dinosaur"} />
+            </div>
+          ) : (
+            <div className="space-y-8 animate-fade-in text-center pt-8">
+              <h1 className="text-3xl font-black text-slate-900">Weebly Global Play Worlds</h1>
+              <p className="text-sm text-slate-600">Loading creative studio canvas &amp; play worlds...</p>
+            </div>
+          )}
         </ChildNavigationShell>
       }
     >
-      <PlayHubContent />
+      <PlayHubContent initialWorld={initialWorld} initialActivity={initialActivity} />
     </Suspense>
   );
 }

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { SanctuaryShell } from "@/components/shell/SanctuaryShell";
+import { WeeblyParentShell } from "@/components/shell/WeeblyParentShell";
 import { Badge } from "@/components/primitives/Badge";
 import { Button } from "@/components/primitives/Button";
 import { api } from "@/lib/api-client";
@@ -362,7 +362,7 @@ export default function ParentDashboardPage() {
   };
 
   return (
-    <SanctuaryShell>
+    <WeeblyParentShell>
       <div className="max-w-[1380px] mx-auto space-y-6 pb-20">
         {/* Top Header Banner */}
         <div className="peopleflow-card p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-[#E4ECE8]">
@@ -1586,6 +1586,6 @@ export default function ParentDashboardPage() {
           </div>
         )}
       </div>
-    </SanctuaryShell>
+    </WeeblyParentShell>
   );
 }

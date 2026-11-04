@@ -85,6 +85,8 @@ const EXPECTED_ROUTE_PAGES = [
   "app/demo/page.tsx",
   "app/schools/onboarding/page.tsx",
   "app/offline/page.tsx",
+  "app/inneros/dashboard/page.tsx",
+  "app/inneros/safety/page.tsx",
 ];
 
 test("All adult, marketing, kids, teens, AI friends, interactive demo, school onboarding, portals, and offline route page files exist and export default components", () => {
@@ -276,5 +278,52 @@ test("OfflineSyncManager module provides schema-validated IndexedDB milestone pe
   assert.match(content, /getChildCompletedLessons\(/);
   assert.match(content, /flushSyncQueue\(/);
   assert.match(content, /clearAllLocalData\(/);
+});
+
+test("V8 Brand Repair & Architecture: /parent uses WeeblyParentShell and isolates from adult SanctuaryShell", () => {
+  const parentPagePath = path.join(WEB_ROOT, "app/parent/page.tsx");
+  const parentContent = fs.readFileSync(parentPagePath, "utf8");
+  assert.match(parentContent, /WeeblyParentShell/, "/parent must use WeeblyParentShell");
+  assert.ok(!parentContent.includes("SanctuaryShell"), "/parent must not use adult SanctuaryShell");
+
+  const weeblyShellPath = path.join(WEB_ROOT, "components/shell/WeeblyParentShell.tsx");
+  assert.ok(fs.existsSync(weeblyShellPath), "WeeblyParentShell component must exist");
+  const shellContent = fs.readFileSync(weeblyShellPath, "utf8");
+  assert.match(shellContent, /Weebly Parent/, "WeeblyParentShell must display Weebly Parent brand");
+});
+
+test("V8 Brand Repair & Architecture: /dashboard has role-based redirect and bridge banner, adult pages isolated", () => {
+  const dashboardPath = path.join(WEB_ROOT, "app/dashboard/page.tsx");
+  const dashboardContent = fs.readFileSync(dashboardPath, "utf8");
+  assert.match(dashboardContent, /storedRole\s*===\s*"caregiver"/, "Dashboard must route caregivers to parent portal");
+  assert.match(dashboardContent, /Looking for Weebly Child/, "Dashboard must provide Weebly Family bridge");
+
+  const innerosDashPath = path.join(WEB_ROOT, "app/inneros/dashboard/page.tsx");
+  assert.ok(fs.existsSync(innerosDashPath), "Adult /inneros/dashboard must exist for adult preservation");
+
+  const safetyPath = path.join(WEB_ROOT, "app/safety/page.tsx");
+  const safetyContent = fs.readFileSync(safetyPath, "utf8");
+  assert.match(safetyContent, /\/child-safety/, "Adult safety page must cross-link to child safety");
+});
+
+test("V8 Child UX: /youth/activities handles category=mathematics and uses ChildNavigationShell", () => {
+  const actPath = path.join(WEB_ROOT, "app/youth/activities/page.tsx");
+  const actContent = fs.readFileSync(actPath, "utf8");
+  assert.match(actContent, /ChildNavigationShell/, "Activities page must use ChildNavigationShell");
+  assert.match(actContent, /categoryParam\s*===\s*"mathematics"/, "Activities page must handle category=mathematics");
+  assert.match(actContent, /The Mango Sharing Feast/, "Mathematics category must render interactive Mango Math Quest");
+});
+
+test("V8 Child Safeguarding: /youth/voice speaks reassuring voice guidance on distress escalation", () => {
+  const voicePath = path.join(WEB_ROOT, "app/youth/voice/page.tsx");
+  const voiceContent = fs.readFileSync(voicePath, "utf8");
+  assert.match(voiceContent, /speakViaWebSpeech\(response\.transcript_agent\)/, "Safeguarding must speak calming reassurance aloud");
+});
+
+test("V8 Compliance & Transparency: /school/portal labels demonstration metrics and aligned architecture", () => {
+  const portalPath = path.join(WEB_ROOT, "app/school/portal/page.tsx");
+  const portalContent = fs.readFileSync(portalPath, "utf8");
+  assert.match(portalContent, /FERPA (&amp;|&) COPPA Aligned Architecture/, "Must accurately claim aligned architecture");
+  assert.match(portalContent, /Simulated Institutional Demonstration Data/, "Must label mock data banner transparently");
 });
 

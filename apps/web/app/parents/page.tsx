@@ -28,7 +28,7 @@ export default function ParentsPage() {
   const PARENT_FAQS = [
     {
       q: "Can I see what my child says to the AI companion?",
-      a: "For younger children (ages 2–12), you have full visibility into aggregate themes, active feelings explored, and completed learning milestones. For teenagers (ages 13–18), InnerOS protects adolescent developmental autonomy by keeping reflective journals private, while alerting you if any severe safety concern or crisis trigger occurs."
+      a: "For younger children (ages 2–12), you have full visibility into aggregate themes, active feelings explored, and completed learning milestones. For teenagers (ages 13–18), Weebly protects adolescent developmental autonomy by keeping reflective journals private, while alerting you if any severe safety concern or crisis trigger occurs."
     },
     {
       q: "How does verified parental consent work?",
@@ -39,8 +39,8 @@ export default function ParentsPage() {
       a: "Yes. From your parent portal, you can set daily conversational turn limits (defaulting to 15 turns per session) and configure bedtime shutdown windows to ensure balanced screen use and healthy offline play."
     },
     {
-      q: "Is InnerOS a replacement for child therapy?",
-      a: "No. InnerOS is an educational psychoeducational platform designed to foster emotional vocabulary, routines, and cognitive resilience. It does not diagnose, treat, or claim to cure mental health conditions. If clinical support is needed, we provide accredited professional referral pathways."
+      q: "Is Weebly a replacement for child therapy?",
+      a: "No. Weebly is an educational psychoeducational platform designed to foster emotional vocabulary, routines, and cognitive resilience. It does not diagnose, treat, or claim to cure mental health conditions. If clinical support is needed, we provide accredited professional referral pathways."
     }
   ];
 

@@ -202,7 +202,7 @@ export default function SchoolPortalPage() {
             </Link>
             <div className="px-3.5 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-black flex items-center space-x-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>FERPA &amp; COPPA Certified</span>
+              <span>FERPA &amp; COPPA Aligned Architecture</span>
             </div>
           </div>
         </div>
@@ -210,6 +210,19 @@ export default function SchoolPortalPage() {
 
       {/* Main Container */}
       <div className="max-w-7xl mx-auto w-full px-4 sm:px-8 py-8 space-y-8 flex-1">
+        {/* Simulated Demonstration Data Disclaimer */}
+        <div className="p-4 rounded-2xl bg-amber-50/90 border border-amber-200 text-xs text-amber-950 flex items-start space-x-3 shadow-2xs">
+          <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <div className="space-y-0.5">
+            <span className="font-bold text-sm text-amber-900 block">
+              Simulated Institutional Demonstration Data
+            </span>
+            <p className="leading-relaxed text-amber-800">
+              Oakridge Public School District, student enrollment figures (990), classroom rosters, and CASEL competency outcomes are illustrative demonstration data for pilot evaluation. Live district integrations connect via OneRoster / Clever with verified administrator authorization.
+            </p>
+          </div>
+        </div>
+
         {/* Navigation Tabs Bar */}
         <div className="flex overflow-x-auto no-scrollbar border-b border-slate-200 gap-2 pb-1">
           {[

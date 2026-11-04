@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { SanctuaryShell } from "@/components/shell/SanctuaryShell";
 import { prototypeService, PrototypeState } from "@/lib/prototype-service";
 import { api } from "@/lib/api-client";
@@ -20,9 +21,13 @@ import {
   HeartHandshake,
   ChevronDown,
   Sparkles,
+  Users,
+  Smile,
+  GraduationCap,
 } from "lucide-react";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [state, setState] = useState<PrototypeState>(prototypeService.getState());
   const [selectedQuickMood, setSelectedQuickMood] = useState<string | null>(null);
   const [activeDateTab, setActiveDateTab] = useState<number>(0);
@@ -34,6 +39,20 @@ export default function DashboardPage() {
   });
 
   useEffect(() => {
+    try {
+      const storedRole = typeof window !== "undefined" ? sessionStorage.getItem("user_role") : null;
+      if (storedRole === "caregiver") {
+        router.push("/parent");
+        return;
+      } else if (storedRole === "teacher") {
+        router.push("/teacher/dashboard");
+        return;
+      } else if (storedRole === "child" || storedRole === "teen") {
+        router.push("/youth/dashboard");
+        return;
+      }
+    } catch {}
+
     const local = prototypeService.getState();
     setState(local);
 
@@ -100,6 +119,28 @@ export default function DashboardPage() {
   return (
     <SanctuaryShell>
       <div className="space-y-6">
+        {/* Weebly Family & School Bridge Notice */}
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-amber-50/80 border border-amber-200 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-2xs">
+          <div className="flex items-center space-x-2 text-amber-900 font-bold">
+            <span className="w-5 h-5 rounded-full bg-amber-200 text-amber-900 flex items-center justify-center text-xs font-black">W</span>
+            <span>Looking for Weebly Child, Parent, or School Experiences?</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Link href="/youth/dashboard" className="px-3 py-1 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black transition-colors flex items-center space-x-1 shadow-2xs">
+              <Smile className="w-3.5 h-3.5" />
+              <span>Kids Magic Home</span>
+            </Link>
+            <Link href="/parent" className="px-3 py-1 rounded-xl bg-white hover:bg-slate-50 border border-amber-300 text-amber-950 font-bold transition-colors flex items-center space-x-1">
+              <Users className="w-3.5 h-3.5 text-amber-700" />
+              <span>Parent Center</span>
+            </Link>
+            <Link href="/teacher/dashboard" className="px-3 py-1 rounded-xl bg-white hover:bg-slate-50 border border-amber-300 text-amber-950 font-bold transition-colors flex items-center space-x-1">
+              <GraduationCap className="w-3.5 h-3.5 text-amber-700" />
+              <span>Educator Hub</span>
+            </Link>
+          </div>
+        </div>
+
         {/* ===================================================================
             1. TOP HEADER BAR (Matches "Teams Management" in Reference Image)
             =================================================================== */}
