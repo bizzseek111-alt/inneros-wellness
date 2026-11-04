@@ -457,3 +457,45 @@ class ClassroomAssignmentModel(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
 
 
+class EducationalQuestionModel(Base):
+    """3,000-Question Relational Bank for Child Learning & Speech Diagnostics."""
+    __tablename__ = "educational_questions"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    category: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    subcategory: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    age_range: Mapped[str] = mapped_column(String(16), index=True, nullable=False)
+    learning_objective: Mapped[str] = mapped_column(String(255), nullable=False)
+    difficulty: Mapped[str] = mapped_column(String(16), default="beginner", nullable=False)
+    text_en: Mapped[str] = mapped_column(Text, nullable=False)
+    text_ur: Mapped[str] = mapped_column(Text, nullable=False)
+    text_pa: Mapped[str] = mapped_column(Text, nullable=False)
+    text_roman: Mapped[str] = mapped_column(Text, nullable=False)
+    correct_answer_or_rubric: Mapped[str] = mapped_column(Text, nullable=False)
+    hints_json: Mapped[str] = mapped_column(Text, default="[]", nullable=False)
+    follow_up_questions_json: Mapped[str] = mapped_column(Text, default="[]", nullable=False)
+    accessibility_notes: Mapped[str] = mapped_column(Text, default="", nullable=False)
+    review_status: Mapped[str] = mapped_column(String(24), default="drafted", index=True, nullable=False)
+    curriculum_version: Mapped[str] = mapped_column(String(32), default="v2.4.0", nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
+    reviewed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    approved_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class EducationalActivityEventModel(Base):
+    """Structured minimal analytics event recorded after approved learning activities."""
+    __tablename__ = "educational_activity_events"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    student_pseudonymous_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    activity_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    learning_objective: Mapped[str] = mapped_column(String(255), nullable=False)
+    completion_status: Mapped[str] = mapped_column(String(32), default="completed", nullable=False)
+    hints_used_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    language_used: Mapped[str] = mapped_column(String(16), default="en", nullable=False)
+    duration_seconds: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    curriculum_version: Mapped[str] = mapped_column(String(32), default="v2.4.0", nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
+
+
+

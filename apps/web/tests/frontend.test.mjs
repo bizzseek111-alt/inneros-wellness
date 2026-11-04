@@ -79,16 +79,45 @@ const EXPECTED_ROUTE_PAGES = [
   "app/student/page.tsx",
   "app/teacher/page.tsx",
   "app/youth/friends/page.tsx",
+  "app/investor-demo/page.tsx",
   "app/offline/page.tsx",
 ];
 
-test("All 70 adult, marketing, kids, teens, AI friends, portals, and offline route page files exist and export default components", () => {
+test("All 71 adult, marketing, kids, teens, AI friends, investor demo, portals, and offline route page files exist and export default components", () => {
   for (const relPath of EXPECTED_ROUTE_PAGES) {
     const fullPath = path.join(WEB_ROOT, relPath);
     assert.ok(fs.existsSync(fullPath), `Missing route file: ${relPath}`);
     const content = fs.readFileSync(fullPath, "utf8");
     assert.match(content, /export\s+default\s+function/, `Route ${relPath} must export a default function component`);
   }
+});
+
+test("3,000-Question Relational Bank exists with exact category distribution and review gating", () => {
+  const manifestPath = path.join(WEB_ROOT, "lib/question-bank-manifest.json");
+  assert.ok(fs.existsSync(manifestPath), "question-bank-manifest.json must exist");
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  assert.equal(manifest.total_questions, 3000);
+  assert.equal(manifest.category_distribution.emotional_vocabulary, 400);
+  assert.equal(manifest.category_distribution.language_and_communication, 400);
+  assert.equal(manifest.category_distribution.cognitive_development, 450);
+  assert.equal(manifest.category_distribution.science_and_discovery, 350);
+  assert.equal(manifest.category_distribution.social_skills, 350);
+  assert.equal(manifest.category_distribution.mathematics, 350);
+  assert.equal(manifest.category_distribution.life_skills, 300);
+  assert.equal(manifest.category_distribution.creativity, 250);
+  assert.equal(manifest.category_distribution.routines_and_executive_skills, 150);
+
+  // Review status tracking: at least 100 published & approved for demo
+  assert.ok(manifest.review_status_summary.published >= 100);
+  assert.ok(manifest.review_status_summary.reviewed > 0);
+  assert.ok(manifest.review_status_summary.drafted > 0);
+
+  // Sample approved questions contain trilingual texts
+  const sample = manifest.sample_approved_questions[0];
+  assert.ok(sample.text_en);
+  assert.ok(sample.text_ur);
+  assert.ok(sample.text_pa);
+  assert.ok(sample.correct_answer_or_rubric);
 });
 
 test("AI Friends voice experience supports Kai, Mia, Lumi, Zayn with serverless turn-taking and multilingual support", () => {
