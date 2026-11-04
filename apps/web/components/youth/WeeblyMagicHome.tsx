@@ -1,9 +1,21 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Mic, Sparkles, Volume2, ArrowRight } from "lucide-react";
+import {
+  Mic,
+  Sparkles,
+  Volume2,
+  ArrowRight,
+  BookOpen,
+  Gamepad2,
+  GraduationCap,
+  Users,
+  Compass,
+  Heart,
+  Calendar,
+} from "lucide-react";
 import { ChildNavigationShell } from "./ChildNavigationShell";
 import { CharacterAvatar } from "./friends/CharacterAvatar";
 import { AI_FRIENDS, CharacterId } from "@/lib/friends-data";
@@ -91,7 +103,8 @@ const MAGIC_FRIENDS: FriendCardData[] = [
 
 export const WeeblyMagicHome: React.FC = () => {
   const router = useRouter();
-  const { locale } = useYouth();
+  const { ageTier, setAgeTier, locale } = useYouth();
+  const [isCaregiverMode, setIsCaregiverMode] = useState(ageTier === "little");
 
   const handleSpeakCard = (friend: FriendCardData, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -112,118 +125,270 @@ export const WeeblyMagicHome: React.FC = () => {
 
   return (
     <ChildNavigationShell activeTab="home">
-      <div className="space-y-8 animate-fade-in">
-        {/* Header Hero */}
-        <div className="text-center space-y-3 pt-2">
-          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-amber-100 border border-amber-200 text-xs font-black text-amber-900 shadow-2xs">
+      <div className="space-y-10 animate-fade-in max-w-5xl mx-auto">
+        {/* Age Tier Indicator / Gentle Switcher */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-amber-100/80 border border-amber-200 text-xs font-black text-amber-900 shadow-2xs">
             <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-            <span>Weebly Magic Home</span>
+            <span>Weebly Magic World</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#0F172A] tracking-tight">
-            Hi! Who would you like to talk to?
-          </h1>
-
-          <p className="text-sm sm:text-base text-slate-600 max-w-lg mx-auto font-medium">
-            Tap a friend to start talking, or press the big microphone button to say what you want to do!
-          </p>
-        </div>
-
-        {/* Four Large Illustrated Character Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 max-w-4xl mx-auto">
-          {MAGIC_FRIENDS.map((friend) => {
-            const purpose = friend.simplePurpose[locale === "ur" ? "ur" : locale === "pa" ? "pa" : "en"];
-            return (
-              <div
-                key={friend.id}
-                className={`relative rounded-[36px] bg-gradient-to-b ${friend.cardBg} border-2 p-6 sm:p-7 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 ${friend.borderHover}`}
-              >
-                {/* Top Strip: Tag & Audio Read-Out Button */}
-                <div className="flex items-center justify-between gap-2">
-                  <span
-                    className="px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-white shadow-2xs"
-                    style={{ color: friend.accentColor }}
-                  >
-                    {friend.specialtyTag}
-                  </span>
-
-                  <button
-                    type="button"
-                    onClick={(e) => handleSpeakCard(friend, e)}
-                    className="p-2 rounded-full bg-white/80 hover:bg-white text-slate-600 hover:text-slate-900 shadow-2xs transition-transform active:scale-95"
-                    title={`Hear what ${friend.name} does`}
-                    aria-label={`Listen to description of ${friend.name}`}
-                  >
-                    <Volume2 className="w-4 h-4" />
-                  </button>
-                </div>
-
-                {/* Character Illustration & Name Centerpiece */}
-                <div className="flex flex-col items-center text-center py-4 space-y-3">
-                  <div className="group-hover:scale-105 transition-transform">
-                    <CharacterAvatar
-                      characterId={friend.id}
-                      state="idle"
-                      size="lg"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <h2 className="text-2xl font-black text-[#0F172A]">
-                      {friend.name}
-                    </h2>
-                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">
-                      {friend.role}
-                    </p>
-                  </div>
-
-                  <p
-                    className={`text-xs sm:text-sm text-slate-700 leading-relaxed font-semibold max-w-xs ${
-                      locale === "ur" || locale === "pa" ? "font-serif text-base" : ""
-                    }`}
-                  >
-                    {purpose}
-                  </p>
-                </div>
-
-                {/* Large "Talk to [Name]" Button */}
-                <Link
-                  href={`/youth/friends?friend=${friend.id}`}
-                  className="w-full py-4 rounded-2xl text-white font-black text-sm flex items-center justify-center space-x-2 shadow-md hover:opacity-95 active:scale-98 transition-all"
-                  style={{ backgroundColor: friend.accentColor }}
-                >
-                  <span>Talk to {friend.name}</span>
-                  <ArrowRight className="w-4 h-4 rtl:rotate-180" />
-                </Link>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Large Central Microphone Button */}
-        <div className="max-w-md mx-auto pt-4 text-center space-y-3">
-          <div className="relative inline-flex items-center justify-center">
-            {/* Glowing Pulse Ring */}
-            <span className="absolute w-28 h-28 rounded-full bg-amber-400/20 animate-ping" />
-            <span className="absolute w-24 h-24 rounded-full bg-amber-400/30 animate-pulse" />
-
+          <div className="flex items-center space-x-1.5 bg-slate-100 p-1 rounded-2xl text-xs font-bold text-slate-700">
             <button
               type="button"
-              onClick={handleQuickMicClick}
-              className="relative w-20 h-20 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
-              aria-label="Press and speak to any friend"
+              onClick={() => {
+                setIsCaregiverMode(true);
+                setAgeTier("little");
+              }}
+              className={`px-3 py-1 rounded-xl transition-all ${
+                isCaregiverMode
+                  ? "bg-white text-emerald-700 shadow-2xs font-black"
+                  : "hover:text-slate-900"
+              }`}
             >
-              <Mic className="w-8 h-8" />
+              Ages 2–5 (Caregiver)
             </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsCaregiverMode(false);
+                setAgeTier("junior");
+              }}
+              className={`px-3 py-1 rounded-xl transition-all ${
+                !isCaregiverMode && ageTier === "junior"
+                  ? "bg-white text-amber-700 shadow-2xs font-black"
+                  : "hover:text-slate-900"
+              }`}
+            >
+              Ages 6–12 (Magic Friends)
+            </button>
+            <Link
+              href="/teens"
+              className="px-3 py-1 rounded-xl hover:text-slate-900 transition-all font-bold"
+            >
+              Ages 13–18 &rarr;
+            </Link>
           </div>
-
-          <p className="text-sm font-black text-slate-700">
-            Or just press and speak to anyone!
-          </p>
-          <p className="text-xs text-slate-500">
-            Tell us what you want to learn, play, or explore today.
-          </p>
         </div>
+
+        {/* =========================================================================
+            TIER 1: AGES 2–5 (CAREGIVER-MEDIATED PLAYROOM)
+           ========================================================================= */}
+        {isCaregiverMode ? (
+          <div className="space-y-8 animate-fade-in">
+            <div className="p-8 rounded-[40px] bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-100/60 border-2 border-emerald-200 text-center space-y-4">
+              <span className="text-6xl block">🐰</span>
+              <h1 className="text-3xl sm:text-4xl font-black text-slate-900">
+                Welcome to Little Explorers Playroom
+              </h1>
+              <p className="text-base text-slate-600 max-w-xl mx-auto font-medium leading-relaxed">
+                A safe, caregiver-guided space with soft bedtime stories, bunny breathing, and gentle music. No unmediated AI conversations.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <Link
+                href="/youth/stories"
+                className="p-6 rounded-[32px] bg-white border-2 border-pink-200 hover:border-pink-400 transition-all shadow-sm flex flex-col items-center text-center space-y-3 group"
+              >
+                <span className="text-5xl group-hover:scale-110 transition-transform">📖</span>
+                <h2 className="text-xl font-black text-slate-900">Bedtime Stories</h2>
+                <p className="text-xs text-slate-500">Soothing narrated animal tales</p>
+                <span className="px-4 py-2 rounded-xl bg-pink-100 text-pink-900 text-xs font-black">
+                  Listen with Child
+                </span>
+              </Link>
+
+              <Link
+                href="/youth/emotions"
+                className="p-6 rounded-[32px] bg-white border-2 border-emerald-200 hover:border-emerald-400 transition-all shadow-sm flex flex-col items-center text-center space-y-3 group"
+              >
+                <span className="text-5xl group-hover:scale-110 transition-transform">🌸</span>
+                <h2 className="text-xl font-black text-slate-900">Bunny Breaths</h2>
+                <p className="text-xs text-slate-500">Soft belly breathing exercise</p>
+                <span className="px-4 py-2 rounded-xl bg-emerald-100 text-emerald-900 text-xs font-black">
+                  Breathe Together
+                </span>
+              </Link>
+
+              <Link
+                href="/youth/routines"
+                className="p-6 rounded-[32px] bg-white border-2 border-sky-200 hover:border-sky-400 transition-all shadow-sm flex flex-col items-center text-center space-y-3 group"
+              >
+                <span className="text-5xl group-hover:scale-110 transition-transform">📅</span>
+                <h2 className="text-xl font-black text-slate-900">Daily Routines</h2>
+                <p className="text-xs text-slate-500">Visual cards for wake, meals & bedtime</p>
+                <span className="px-4 py-2 rounded-xl bg-sky-100 text-sky-900 text-xs font-black">
+                  View Schedule
+                </span>
+              </Link>
+            </div>
+          </div>
+        ) : (
+          /* =========================================================================
+              TIER 2: AGES 6–12 (KIDS MAGIC HOME)
+             ========================================================================= */
+          <div className="space-y-10 animate-fade-in">
+            {/* Header Hero */}
+            <div className="text-center space-y-2 pt-1">
+              <h1 className="text-3xl sm:text-5xl font-black text-[#0F172A] tracking-tight">
+                Who would you like to talk to?
+              </h1>
+              <p className="text-sm sm:text-base text-slate-600 max-w-lg mx-auto font-medium">
+                Tap a friend to start talking, or press the big microphone button to say what you want to do!
+              </p>
+            </div>
+
+            {/* Four Large Illustrated Character Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 max-w-4xl mx-auto">
+              {MAGIC_FRIENDS.map((friend) => {
+                const purpose = friend.simplePurpose[locale === "ur" ? "ur" : locale === "pa" ? "pa" : "en"];
+                return (
+                  <div
+                    key={friend.id}
+                    className={`relative rounded-[36px] bg-gradient-to-b ${friend.cardBg} border-2 p-6 sm:p-7 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 ${friend.borderHover}`}
+                  >
+                    {/* Top Tag & Audio Read-Out Button */}
+                    <div className="flex items-center justify-between gap-2">
+                      <span
+                        className="px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-white shadow-2xs"
+                        style={{ color: friend.accentColor }}
+                      >
+                        {friend.specialtyTag}
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={(e) => handleSpeakCard(friend, e)}
+                        className="p-2 rounded-full bg-white/80 hover:bg-white text-slate-600 hover:text-slate-900 shadow-2xs transition-transform active:scale-95"
+                        title={`Hear what ${friend.name} does`}
+                        aria-label={`Listen to description of ${friend.name}`}
+                      >
+                        <Volume2 className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    {/* Character Illustration & Name Centerpiece */}
+                    <div className="flex flex-col items-center text-center py-4 space-y-3">
+                      <div className="group-hover:scale-105 transition-transform">
+                        <CharacterAvatar
+                          characterId={friend.id}
+                          state="idle"
+                          size="lg"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <h2 className="text-2xl font-black text-[#0F172A]">
+                          {friend.name}
+                        </h2>
+                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+                          {friend.role}
+                        </p>
+                      </div>
+
+                      <p
+                        className={`text-xs sm:text-sm text-slate-700 leading-relaxed font-semibold max-w-xs ${
+                          locale === "ur" || locale === "pa" ? "font-serif text-base" : ""
+                        }`}
+                      >
+                        {purpose}
+                      </p>
+                    </div>
+
+                    {/* Large "Talk to [Name]" Button */}
+                    <Link
+                      href={`/youth/friends?friend=${friend.id}`}
+                      className="w-full py-4 rounded-2xl text-white font-black text-sm flex items-center justify-center space-x-2 shadow-md hover:opacity-95 active:scale-98 transition-all"
+                      style={{ backgroundColor: friend.accentColor }}
+                    >
+                      <span>Talk to {friend.name}</span>
+                      <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+                    </Link>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Large Central Microphone Button */}
+            <div className="max-w-md mx-auto pt-2 text-center space-y-3">
+              <div className="relative inline-flex items-center justify-center">
+                <span className="absolute w-28 h-28 rounded-full bg-amber-400/20 animate-ping" />
+                <span className="absolute w-24 h-24 rounded-full bg-amber-400/30 animate-pulse" />
+
+                <button
+                  type="button"
+                  onClick={handleQuickMicClick}
+                  className="relative w-20 h-20 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
+                  aria-label="Press and speak to any friend"
+                >
+                  <Mic className="w-8 h-8" />
+                </button>
+              </div>
+
+              <p className="text-sm font-black text-slate-700">
+                Or just press and speak to anyone!
+              </p>
+              <p className="text-xs text-slate-500">
+                Tell us what you want to learn, play, or explore today.
+              </p>
+            </div>
+
+            {/* Below: Quick Access Activity Navigation (Play, Stories, Continue Learning) */}
+            <div className="pt-6 border-t border-slate-200/80 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-base font-black text-slate-800 flex items-center space-x-2">
+                  <Compass className="w-4 h-4 text-amber-500" />
+                  <span>Explore Learning Worlds</span>
+                </h3>
+                <Link
+                  href="/youth/play"
+                  className="text-xs font-black text-amber-600 hover:text-amber-700 flex items-center space-x-1"
+                >
+                  <span>See all worlds &rarr;</span>
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {/* 1. PLAY */}
+                <Link
+                  href="/youth/play"
+                  className="p-5 rounded-[28px] bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 hover:border-amber-400 transition-all shadow-xs flex items-center space-x-4 group"
+                >
+                  <span className="text-4xl group-hover:scale-110 transition-transform">🎮</span>
+                  <div>
+                    <h4 className="text-base font-black text-slate-900">Play</h4>
+                    <p className="text-xs text-slate-600 font-medium">Mini-games & quizzes</p>
+                  </div>
+                </Link>
+
+                {/* 2. STORIES */}
+                <Link
+                  href="/youth/stories"
+                  className="p-5 rounded-[28px] bg-gradient-to-r from-pink-50 to-rose-50 border-2 border-pink-200 hover:border-pink-400 transition-all shadow-xs flex items-center space-x-4 group"
+                >
+                  <span className="text-4xl group-hover:scale-110 transition-transform">📖</span>
+                  <div>
+                    <h4 className="text-base font-black text-slate-900">Stories</h4>
+                    <p className="text-xs text-slate-600 font-medium">Bedtime tales with Mia</p>
+                  </div>
+                </Link>
+
+                {/* 3. CONTINUE LEARNING */}
+                <Link
+                  href="/youth/activities?category=mathematics"
+                  className="p-5 rounded-[28px] bg-gradient-to-r from-sky-50 to-indigo-50 border-2 border-sky-200 hover:border-sky-400 transition-all shadow-xs flex items-center space-x-4 group"
+                >
+                  <span className="text-4xl group-hover:scale-110 transition-transform">🚀</span>
+                  <div>
+                    <h4 className="text-base font-black text-slate-900">Continue Learning</h4>
+                    <p className="text-xs text-slate-600 font-medium">3,000 question bank</p>
+                  </div>
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </ChildNavigationShell>
   );

@@ -50,12 +50,13 @@ type ParentTab =
   | "overview"
   | "children"
   | "programmes"
-  | "subscriptions"
-  | "billing"
   | "progress"
+  | "observations"
   | "shared_activities"
   | "routines"
   | "languages"
+  | "subscriptions"
+  | "billing"
   | "permissions"
   | "privacy"
   | "support";
@@ -65,6 +66,7 @@ const TABS: { id: ParentTab; label: string; icon: any; category: string }[] = [
   { id: "children", label: "My Children", icon: Users, category: "Core" },
   { id: "programmes", label: "Learning Programmes", icon: BookOpen, category: "Learning" },
   { id: "progress", label: "Learning Progress", icon: Activity, category: "Learning" },
+  { id: "observations", label: "Parent Observations", icon: FileText, category: "Learning" },
   { id: "shared_activities", label: "Shared Activities", icon: Heart, category: "Learning" },
   { id: "routines", label: "Daily Routines", icon: Clock, category: "Support" },
   { id: "languages", label: "Languages & Sensory", icon: Globe, category: "Support" },
@@ -119,6 +121,71 @@ export default function ParentDashboardPage() {
   const [firstTask, setFirstTask] = useState("Math & Reading Quest (20m)");
   const [thenTask, setThenTask] = useState("Calm Nature Audio Sanctuary (15m)");
   const [routineSaved, setRoutineSaved] = useState(false);
+
+  // Parent Observations Diary state
+  const [parentObservations, setParentObservations] = useState<any[]>([
+    {
+      id: "obs_01",
+      date: "Today, 4:30 PM",
+      child_name: "Ayan (Fictional Demo)",
+      type: "fact",
+      tag: "OBSERVED FACT",
+      badgeVariant: "emerald",
+      content: "Completed 20 minutes of math practice with Kai. Answered 12 division questions accurately.",
+      hints_used: 0,
+      duration_mins: 20,
+    },
+    {
+      id: "obs_02",
+      date: "Today, 8:15 AM",
+      child_name: "Ayan (Fictional Demo)",
+      type: "parent_note",
+      tag: "PARENT-ENTERED NOTE",
+      badgeVariant: "indigo",
+      content: "Slept 9 hours peacefully. Had steady focus during breakfast and followed morning visual checklist smoothly.",
+      sleep_hours: 9,
+      mood: "Calm & Cheerful",
+      school_notes: "None reported",
+    },
+    {
+      id: "obs_03",
+      date: "Yesterday, 7:00 PM",
+      child_name: "Ayan (Fictional Demo)",
+      type: "ai_summary",
+      tag: "AI-GENERATED SUMMARY",
+      badgeVariant: "amber",
+      content: "Practiced animal vocabulary and somatic bunny breaths with Lumi before bed. Transitioned to sleep without distress.",
+      topic: "Emotional Vocabulary & Calm Breaths",
+    },
+  ]);
+  const [newObsChild, setNewObsChild] = useState("Ayan (Fictional Demo)");
+  const [newObsSleep, setNewObsSleep] = useState("9");
+  const [newObsMood, setNewObsMood] = useState("Calm");
+  const [newObsNote, setNewObsNote] = useState("");
+  const [newObsSchool, setNewObsSchool] = useState("");
+  const [obsSavedMessage, setObsSavedMessage] = useState<string | null>(null);
+
+  const handleSaveObservation = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newObsNote.trim()) return;
+    const newEntry = {
+      id: `obs_${Date.now()}`,
+      date: "Just now",
+      child_name: newObsChild,
+      type: "parent_note",
+      tag: "PARENT-ENTERED NOTE",
+      badgeVariant: "indigo",
+      content: newObsNote.trim(),
+      sleep_hours: Number(newObsSleep),
+      mood: newObsMood,
+      school_notes: newObsSchool.trim() || "None reported",
+    };
+    setParentObservations([newEntry, ...parentObservations]);
+    setNewObsNote("");
+    setNewObsSchool("");
+    setObsSavedMessage("Observation entry saved to secure family record.");
+    setTimeout(() => setObsSavedMessage(null), 3000);
+  };
 
   const loadAllData = async () => {
     setLoading(true);
@@ -842,6 +909,186 @@ export default function ParentDashboardPage() {
 
                 <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs leading-relaxed">
                   <strong>Notice of Non-Diagnostic Purpose:</strong> Weebly provides educational scaffolding for emotional and executive development. These progress indicators celebrate personal learning milestones and are never evaluated as diagnostic behavioral markers.
+                </div>
+              </div>
+            )}
+
+            {/* MODULE: PARENT OBSERVATIONS DIARY */}
+            {activeTab === "observations" && (
+              <div className="peopleflow-card p-6 space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h2 className="text-lg font-semibold text-[#1A1E1C]">Parent Observation Diary &amp; Routine Notes</h2>
+                    <p className="text-xs text-[#5C6661]">
+                      Record daily sleep, mood, family context, and school concerns with explicit categorization
+                    </p>
+                  </div>
+                  <span className="text-xs px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold self-start">
+                    Zero Clinical Inference
+                  </span>
+                </div>
+
+                {obsSavedMessage && (
+                  <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold animate-fade-in flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    <span>{obsSavedMessage}</span>
+                  </div>
+                )}
+
+                {/* Form to log new observation */}
+                <form onSubmit={handleSaveObservation} className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#EBE7DF] space-y-4">
+                  <h3 className="text-sm font-bold text-[#1A1E1C] flex items-center gap-2">
+                    <Plus className="w-4 h-4 text-[#285B55]" />
+                    <span>Log New Observation Entry</span>
+                  </h3>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="text-[11px] font-bold text-[#5C6661] uppercase tracking-wider block mb-1">
+                        Child
+                      </label>
+                      <select
+                        value={newObsChild}
+                        onChange={(e) => setNewObsChild(e.target.value)}
+                        className="w-full text-xs font-semibold p-2.5 rounded-xl border border-[#D5DDD8] bg-white text-[#1A1E1C]"
+                      >
+                        <option value="Ayan (Fictional Demo)">Ayan (Fictional Demo)</option>
+                        <option value="Zainab (Fictional Demo)">Zainab (Fictional Demo)</option>
+                        {children.map((c) => (
+                          <option key={c.id} value={c.display_name}>
+                            {c.display_name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-bold text-[#5C6661] uppercase tracking-wider block mb-1">
+                        Sleep Duration (Hours)
+                      </label>
+                      <input
+                        type="number"
+                        step="0.5"
+                        min="4"
+                        max="14"
+                        value={newObsSleep}
+                        onChange={(e) => setNewObsSleep(e.target.value)}
+                        className="w-full text-xs font-semibold p-2.5 rounded-xl border border-[#D5DDD8] bg-white text-[#1A1E1C]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-bold text-[#5C6661] uppercase tracking-wider block mb-1">
+                        Parent-Observed Mood
+                      </label>
+                      <select
+                        value={newObsMood}
+                        onChange={(e) => setNewObsMood(e.target.value)}
+                        className="w-full text-xs font-semibold p-2.5 rounded-xl border border-[#D5DDD8] bg-white text-[#1A1E1C]"
+                      >
+                        <option value="Calm">Calm &amp; Receptive</option>
+                        <option value="Cheerful">Cheerful &amp; Enthusiastic</option>
+                        <option value="Focused">Focused &amp; Persistent</option>
+                        <option value="Tired">Tired / Low Energy</option>
+                        <option value="Restless">Restless / Needs Movement</option>
+                        <option value="Overwhelmed">Sensitive to Overstimulation</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-[11px] font-bold text-[#5C6661] uppercase tracking-wider block mb-1">
+                        School / Homework Related Notes
+                      </label>
+                      <input
+                        type="text"
+                        value={newObsSchool}
+                        onChange={(e) => setNewObsSchool(e.target.value)}
+                        placeholder="e.g. Practiced fractions smoothly, tired after science test"
+                        className="w-full text-xs font-semibold p-2.5 rounded-xl border border-[#D5DDD8] bg-white text-[#1A1E1C]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-bold text-[#5C6661] uppercase tracking-wider block mb-1">
+                        Behavior &amp; Routine Notes
+                      </label>
+                      <input
+                        type="text"
+                        value={newObsNote}
+                        onChange={(e) => setNewObsNote(e.target.value)}
+                        placeholder="e.g. Requested evening story with Mia, followed bedtime steps"
+                        className="w-full text-xs font-semibold p-2.5 rounded-xl border border-[#D5DDD8] bg-white text-[#1A1E1C]"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end pt-1">
+                    <Button type="submit" variant="primary" size="sm" className="bg-[#285B55] text-white gap-1.5 font-bold">
+                      <Plus className="w-3.5 h-3.5" /> Save Observation Note
+                    </Button>
+                  </div>
+                </form>
+
+                {/* Feed of Observations */}
+                <div className="space-y-3 pt-2">
+                  <h3 className="text-xs font-bold text-[#7D8A84] uppercase tracking-wider">
+                    Recent Timeline Entries &amp; Verified Events
+                  </h3>
+
+                  <div className="space-y-3">
+                    {parentObservations.map((obs) => (
+                      <div key={obs.id} className="p-4 rounded-xl border border-[#E4ECE8] bg-white space-y-2.5 shadow-2xs">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full ${
+                                obs.type === "fact"
+                                  ? "bg-emerald-100 text-emerald-900 border border-emerald-300"
+                                  : obs.type === "parent_note"
+                                  ? "bg-indigo-100 text-indigo-900 border border-indigo-300"
+                                  : "bg-amber-100 text-amber-900 border border-amber-300"
+                              }`}
+                            >
+                              [{obs.tag}]
+                            </span>
+                            <span className="text-xs font-bold text-[#1A1E1C]">{obs.child_name}</span>
+                          </div>
+                          <span className="text-[11px] text-[#7D8A84] font-semibold">{obs.date}</span>
+                        </div>
+
+                        <p className="text-xs text-[#263330] leading-relaxed font-medium">{obs.content}</p>
+
+                        <div className="flex flex-wrap gap-3 text-[11px] text-[#5C6661] pt-1 border-t border-[#F0F4F2]">
+                          {obs.sleep_hours && (
+                            <span>
+                              <strong>Sleep:</strong> {obs.sleep_hours} hrs
+                            </span>
+                          )}
+                          {obs.mood && (
+                            <span>
+                              <strong>Observed Mood:</strong> {obs.mood}
+                            </span>
+                          )}
+                          {obs.school_notes && obs.school_notes !== "None reported" && (
+                            <span>
+                              <strong>School Context:</strong> {obs.school_notes}
+                            </span>
+                          )}
+                          {obs.duration_mins && (
+                            <span>
+                              <strong>Duration:</strong> {obs.duration_mins} mins
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-amber-50/80 border border-amber-200 text-amber-950 text-xs leading-relaxed">
+                  <strong>Non-Diagnostic &amp; Non-Clinical Standards:</strong> Weebly records observational facts and caregiver notes to assist family routines and home-school dialogue. These entries are strictly non-clinical, do not calculate psychiatric disorder indices, and are not shared with third parties without direct caregiver consent.
                 </div>
               </div>
             )}
