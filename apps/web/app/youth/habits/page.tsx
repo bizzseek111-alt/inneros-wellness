@@ -45,7 +45,7 @@ export default function DailyHabitsPage() {
               {completedCount} of {habits.length} Habits Explored Today
             </h3>
             <p className="text-xs text-[#4A5568]">
-              InnerOS never tracks streaks. Every day is a fresh, gentle beginning without guilt.
+              Weebly never tracks streaks. Every day is a fresh, gentle beginning without guilt.
             </p>
           </div>
           <LumiMascot size="sm" state={completedCount === habits.length ? "celebrating" : "idle"} />

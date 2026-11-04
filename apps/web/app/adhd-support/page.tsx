@@ -82,7 +82,7 @@ export default function ADHDSupportPage() {
           <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs sm:text-sm flex items-start space-x-3 shadow-xs">
             <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
             <p>
-              <strong>Educational Support Disclaimer:</strong> InnerOS provides organizational and psychological learning aids inspired by Universal Design for Learning. It is not an ADHD diagnosis tool, medical treatment, or prescription therapy.
+              <strong>Educational Support Disclaimer:</strong> Weebly provides organizational and psychological learning aids inspired by Universal Design for Learning. It is not an ADHD diagnosis tool, medical treatment, or prescription therapy.
             </p>
           </div>
         </section>
@@ -139,7 +139,7 @@ export default function ADHDSupportPage() {
                 href="/youth/routines"
                 className="inline-flex items-center space-x-2 text-sm font-bold text-amber-700 hover:underline"
               >
-                <span>Launch Interactive Task Tool in InnerOS Kids</span>
+                <span>Launch Interactive Task Tool in Weebly Kids</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>

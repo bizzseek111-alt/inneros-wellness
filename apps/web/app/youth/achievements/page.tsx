@@ -40,7 +40,7 @@ export default function AchievementsPage() {
               Every child grows on their own unique timeline
             </h3>
             <p className="text-xs text-[#4A5568]">
-              InnerOS never displays public leaderboards or ranks children against each other.
+              Weebly never displays public leaderboards or ranks children against each other.
             </p>
           </div>
           <LumiMascot size="sm" state="celebrating" />

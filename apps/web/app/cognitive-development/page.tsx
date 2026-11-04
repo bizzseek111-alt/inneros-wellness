@@ -104,7 +104,7 @@ export default function CognitiveDevelopmentPage() {
                 href="/kids"
                 className="px-8 py-3 rounded-full bg-[#4F46E5] text-white font-semibold text-sm hover:bg-[#4338CA] shadow-md transition-all inline-flex items-center space-x-2"
               >
-                <span>Enter InnerOS Kids</span>
+                <span>Enter Weebly Kids</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>

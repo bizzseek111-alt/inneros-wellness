@@ -33,7 +33,7 @@ export default function YouthPublicHomePage() {
             <LumiMascot size="sm" state="idle" />
             <div>
               <span className="text-xl font-extrabold text-[#0F172A] tracking-tight block leading-tight">
-                InnerOS Youth
+                Weebly Youth
               </span>
               <span className="text-[11px] font-bold text-[#36A871] block">
                 Safe Emotional Sanctuary
@@ -64,7 +64,7 @@ export default function YouthPublicHomePage() {
         {/* Trust Pill */}
         <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-800 mx-auto">
           <Shield className="w-4 h-4 text-emerald-600" />
-          <span>Research-Backed &bull; Zero Addictive Loops &bull; COPPA & GDPR-K Certified</span>
+          <span>Research-Backed &bull; Zero Addictive Loops &bull; COPPA & GDPR-K Aligned Architecture</span>
         </div>
 
         {/* Mascot Centerpiece */}
@@ -248,7 +248,7 @@ export default function YouthPublicHomePage() {
       {/* Footer */}
       <footer className="border-t border-[#E2E8F0] bg-white px-6 py-6 text-center text-xs text-[#718096]">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span>&copy; 2026 InnerOS Youth Sanctuary &bull; Built with love for developing minds</span>
+          <span>&copy; 2026 Weebly Youth Platform &bull; Built with love for developing minds</span>
           <div className="flex items-center space-x-4 rtl:space-x-reverse">
             <Link href="/youth/safety" className="hover:underline font-semibold text-rose-600">
               Safety Lifelines

@@ -171,7 +171,7 @@ export default function AdminCurriculumCMSPage() {
               </h1>
             </div>
             <p className="text-xs text-muted-foreground ml-11">
-              Governance portal for the 25 InnerOS Kids Development Academy departments. Review, localize, verify citations, and approve educational modules.
+              Governance portal for the 25 Weebly Kids Development Academy departments. Review, localize, verify citations, and approve educational modules.
             </p>
           </div>
 

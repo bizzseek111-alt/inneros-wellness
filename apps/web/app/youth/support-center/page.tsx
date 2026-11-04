@@ -187,7 +187,7 @@ export default function YouthSupportCenterPage() {
               Educational & Accessibility Support Tool &bull; Non-Medical Sanctuary
             </span>
             <p className="leading-relaxed">
-              InnerOS does not diagnose ADHD, autism, or learning differences, does not generate clinical probability scores, and does not claim to cure or normalize neurodivergent minds. Harmless self-regulatory behaviors (stimming) and non-eye-contact listening are respected as natural nervous system regulation.
+              Weebly does not diagnose ADHD, autism, or learning differences, does not generate clinical probability scores, and does not claim to cure or normalize neurodivergent minds. Harmless self-regulatory behaviors (stimming) and non-eye-contact listening are respected as natural nervous system regulation.
             </p>
           </div>
         </div>

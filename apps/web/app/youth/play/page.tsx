@@ -57,7 +57,7 @@ const PLAY_TILES: PlayTile[] = [
       pa: "میا نال مل کے سوہنیاں تصویراں تے رنگ برنگے خاکے بناؤ۔",
     },
     emoji: "🎨",
-    href: "/youth/play?world=creative-studio&activity=draw-dinosaur",
+    href: "/youth/creative-studio",
     tag: "Guided Drawing Canvas",
     gradient: "from-pink-500 via-rose-500 to-amber-500",
     badgeBg: "bg-pink-100 text-pink-800",

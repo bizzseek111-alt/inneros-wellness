@@ -1,0 +1,11 @@
+# Weebly Platform V8 — Issue Register & Remediation History
+
+| Issue ID | Category | Previous Problem | Root Cause | Remediation & Fix | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **ISS-01** | Brand Separation | Child routes featured "InnerOS Kids", causing brand confusion with adult sanctuary. | Legacy brand reuse across shared components and templates. | Replaced all child/family page copy with Weebly. Created isolated `/inneros/*` routes. | **RESOLVED** |
+| **ISS-02** | Child UX / Routing | Creative Studio stalled in infinite loading state on public inspection. | Relied solely on query parameter hydration inside client Suspense. | Created dedicated `/creative-studio` and `/youth/creative-studio` routes. | **RESOLVED** |
+| **ISS-03** | Truth in Compliance| Marketing claimed "COPPA Certified" and "Certified Teachers" without external certs. | Promotional copy written before regulatory audit standards. | Replaced with verifiable factual language: "COPPA Aligned Architecture", "Assigned Classroom Teachers". | **RESOLVED** |
+| **ISS-04** | Safeguarding | Voice companion muted when child expressed acute distress. | Naive safety rule cutting audio on crisis keywords. | Replaced muting with reassuring spoken voice guidance, crisis helpline numbers, and caregiver alert. | **RESOLVED** |
+| **ISS-05** | Child Welfare | Child disclosing caregiver abuse would notify the abusive caregiver. | Standard notification pipeline lacked exception logic. | Implemented Caregiver Harm Protocol: suppresses parent notification and logs directly to Punjab CPWB 1121. | **RESOLVED** |
+| **ISS-06** | Signup Journey | Signup role selector was cluttered with 4 technical roles and adult mental health terminology. | Merged adult and child onboarding flows. | Streamlined to Parent, Teacher, Student, with clear secondary bridge to Adult InnerOS Sanctuary. | **RESOLVED** |
+| **ISS-07** | Multilingual Voice | Urdu and Punjabi voice options were not visible in the main signup options. | Locale list was restricted to standard western locales. | Added `ur-PK` (Urdu) and `pa-PK` (Punjabi Shahmukhi) to signup locale selection. | **RESOLVED** |\n

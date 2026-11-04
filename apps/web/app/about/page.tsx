@@ -58,13 +58,13 @@ export default function AboutMarketingPage() {
         <div className="max-w-3xl space-y-5">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#E8F1EB] border border-[#CFE2D6] text-[#1F4742] text-[13.5px] font-medium">
             <Heart className="w-4 h-4 text-[#285B55]" />
-            <span>About InnerOS</span>
+            <span>About Weebly</span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-serif font-medium text-[#263330] tracking-tight leading-tight">
-            Technology that respects your quiet moments, your privacy, and your humanity.
+            Joyful, voice-first learning that respects child development, privacy, and families.
           </h1>
           <p className="text-[18px] text-[#52625E] leading-relaxed">
-            We built InnerOS because people deserve a calm, trustworthy place to think out loud, reflect on their day, and navigate practical life challenges—without being tracked, analyzed in secret, or overwhelmed by clinical jargon.
+            We built Weebly because children deserve a warm, trustworthy place to explore curiosity, learn curriculum concepts, practice spoken language, and build life skills—without commercial ads, addictive hooks, or clinical profiling.
           </p>
         </div>
 
@@ -75,10 +75,10 @@ export default function AboutMarketingPage() {
               Our Mission
             </Badge>
             <h2 className="text-2xl sm:text-3xl font-serif font-medium text-[#263330]">
-              Everyday emotional wellbeing made warm, accessible, and personal.
+              Foundational literacy, creativity, and life skills made voice-first and personal.
             </h2>
             <p className="text-[16px] text-[#52625E] leading-relaxed">
-              Between busy workdays, family responsibilities, and constant digital noise, it is easy to lose touch with how you are actually feeling. InnerOS offers a steady, unhurried companion for the moments in between—helping you pause, name what is on your mind, and choose one gentle next step.
+              From early childhood phonics to middle school science and emotional vocabulary, Weebly provides four friendly companions (Kai, Mia, Lumi, Zayn) that guide, listen, and encourage curiosity without doing the thinking for the child.
             </p>
           </div>
 
@@ -87,10 +87,10 @@ export default function AboutMarketingPage() {
               Design Philosophy
             </Badge>
             <h2 className="text-2xl sm:text-3xl font-serif font-medium text-[#263330]">
-              Warm Human Minimalism with Gentle Futurism.
+              Warm Human Minimalism &bull; Playful, Safe &amp; Calm.
             </h2>
             <p className="text-[16px] text-[#52625E] leading-relaxed">
-              We rejected cold hospital dashboards and dark cybersecurity interfaces in favor of warm daylight surfaces (`#FAF8F4`), soft botanical accents, generous whitespace, and clear, human language. Technology should feel reassuring—not intimidating.
+              We rejected loud gaming slots and dopamine traps in favor of gentle pastel surfaces, tactile illustrated characters, natural audio turn-taking, and clear non-clinical boundaries. Learning should feel joyful and grounded.
             </p>
           </div>
         </div>
@@ -137,7 +137,7 @@ export default function AboutMarketingPage() {
               Architected for 30 languages—with honest readiness standards
             </h2>
             <p className="text-[16px] text-[#52625E] leading-relaxed">
-              Reflecting in your native language—or switching naturally between languages—is deeply personal. InnerOS is architected for 30 languages (including full right-to-left layout support for Arabic and Urdu), and we never claim a language is production-ready simply because a speech API supports it. Each language undergoes dialect, code-switching, and safety evaluation first.
+              Reflecting and learning in your native language—or switching naturally between languages—is deeply personal. Weebly is architected for English, Urdu (اردو), and Pakistani Punjabi (پنجابی) with native dialect validation gating. We never claim a voice is production-ready without real acoustic evaluation.
             </p>
           </div>
 
@@ -168,25 +168,25 @@ export default function AboutMarketingPage() {
         <div className="p-8 sm:p-12 rounded-[36px] bg-[#E8F1EB] border border-[#CFE2D6] flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-2 max-w-xl">
             <h2 className="text-2xl sm:text-3xl font-serif font-medium text-[#263330]">
-              Explore our privacy controls or start using InnerOS today.
+              Explore our interactive demos or start with Weebly today.
             </h2>
             <p className="text-[16px] text-[#52625E]">
-              See how we protect your personal autonomy at every step.
+              See how Kai, Mia, Lumi, and Zayn support joyful learning and confidence.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link href="/privacy-trust">
+            <Link href="/trust">
               <Button variant="outline" size="md">
-                Privacy &amp; Trust
+                Trust &amp; Safeguarding
               </Button>
             </Link>
-            <Link href="/onboarding">
+            <Link href="/demos">
               <Button
                 variant="primary"
                 size="md"
                 rightIcon={<ArrowRight className="w-4 h-4" />}
               >
-                Start Your Journey
+                Try Interactive Demos
               </Button>
             </Link>
           </div>

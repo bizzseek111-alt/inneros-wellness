@@ -7,24 +7,26 @@ import { Badge } from "@/components/primitives/Badge";
 import { Button } from "@/components/primitives/Button";
 import {
   Mic,
-  MessageCircle,
-  Heart,
+  Smile,
   BookOpen,
-  Bookmark,
-  PenTool,
-  Sprout,
-  Clock,
-  Link2,
+  Palette,
+  Activity,
+  Heart,
+  GraduationCap,
+  Building2,
+  ShieldCheck,
   ArrowRight,
   CheckCircle2,
   Sparkles,
+  Layers,
+  Compass,
 } from "lucide-react";
 
 interface FeatureItem {
   id: string;
   title: string;
   subtitle: string;
-  category: "talk" | "reflect" | "organize";
+  category: "friends" | "worlds" | "portals";
   badge: string;
   icon: React.ElementType;
   surface: string;
@@ -34,307 +36,238 @@ interface FeatureItem {
   appCta: string;
 }
 
-const FEATURES_LIST: FeatureItem[] = [
+const WEEBLY_FEATURES: FeatureItem[] = [
   {
-    id: "voice-companion",
-    title: "Voice Companion",
-    subtitle: "Natural, low-latency spoken conversations with a calm visual presence",
-    category: "talk",
-    badge: "Real-Time Audio",
-    icon: Mic,
-    surface: "bg-[#E8F1EB] border-[#CFE2D6]",
+    id: "ai-friends",
+    title: "Four Illustrated AI Friends",
+    subtitle: "Conversational companions with distinct personalities and pedagogical roles",
+    category: "friends",
+    badge: "Voice-First Companions",
+    icon: Smile,
+    surface: "bg-amber-50 border-amber-200",
     description:
-      "Talk through your thoughts aloud without staring at a keyboard. The Voice Companion features smooth turn-taking, interruptible responses, live streaming transcripts, and a gentle breathing orb that respects reduced-motion preferences.",
+      "Children choose Kai, Mia, Lumi, or Zayn. Each companion provides Socratic guidance, gentle encouragement, and spoken turn-taking in English, Urdu, and Pakistani Punjabi.",
     highlights: [
-      "4 calming voice options (Sanctuary Calm, Aurora Warm, Atlas Ground, Serene Willow)",
-      "Mute, pause, interrupt, or switch to text fallback at any moment",
-      "Multilingual voice recognition and synthesis architecture",
+      "Kai: STEM problem solving and confidence without giving away answers",
+      "Mia: Bilingual storytelling, oral vocabulary, and creative writing",
+      "Lumi: Emotional labeling, daily morning/bedtime routines, and calming",
+      "Zayn: Science experiments, natural world phenomena, and space exploration",
     ],
-    appHref: "/companion/voice",
-    appCta: "Open Voice Companion",
+    appHref: "/demos",
+    appCta: "Meet the AI Friends",
   },
   {
-    id: "text-conversations",
-    title: "Text Conversations",
-    subtitle: "Spacious written dialogue where you choose how your companion responds",
-    category: "talk",
-    badge: "5 Response Modes",
-    icon: MessageCircle,
-    surface: "bg-white border-[#E6E0D6]",
-    description:
-      "Whether you want to vent without receiving advice or break a complicated challenge into manageable steps, you can set the conversational mode with a single click.",
-    highlights: [
-      "Modes: Just Listen, Help Me Understand, Help Me Solve, Teach Me, Help Me Settle",
-      "Warmth and directness sliders to calibrate tone",
-      "Clear AI identity and immediate crisis helpline handoff when needed",
-    ],
-    appHref: "/companion/chat",
-    appCta: "Start Text Chat",
-  },
-  {
-    id: "daily-reflections",
-    title: "Daily Reflections & Check-Ins",
-    subtitle: "Notice your mood, energy, and what your body needs right now",
-    category: "reflect",
-    badge: "Gentle Check-In",
-    icon: Heart,
-    surface: "bg-[#F7E7E2] border-[#EED2C9]",
-    description:
-      "Pause for sixty seconds to check in with your mood, energy level, physical tension areas, and primary emotional need—helping you slow down before jumping into the next task.",
-    highlights: [
-      "Simple mood & energy sliders with plain-language descriptions",
-      "Body comfort check-in (jaw, shoulders, breath, stomach, settled)",
-      "Identifies whether you need quiet company, venting space, or clarity",
-    ],
-    appHref: "/check-in",
-    appCta: "Try a Check-In",
-  },
-  {
-    id: "psychology-library",
-    title: "Psychology Knowledge Library",
-    subtitle: "Evidence-informed guides for everyday stress, boundaries, and rest",
-    category: "reflect",
-    badge: "Evidence-Informed",
+    id: "curriculum-rag",
+    title: "Punjab Curriculum RAG Engine",
+    subtitle: "3,000 PCTB-aligned questions with anti-injection context delimiters",
+    category: "friends",
+    badge: "Zero-Hallucination Tutoring",
     icon: BookOpen,
-    surface: "bg-[#EDE8F5] border-[#DDD4EC]",
+    surface: "bg-blue-50 border-blue-200",
     description:
-      "Explore practical, jargon-free guides drawing from Cognitive Behavioral principles, Acceptance & Commitment practices, and nervous-system grounding—curated with clear source attribution.",
+      "Our hybrid lexical and dense vector search engine grounds conversational tutoring in official Punjab Curriculum and Textbook Board (PCTB) Student Learning Outcomes across Grades 1–8.",
     highlights: [
-      "Step-by-step exercises for stepping back from heavy thoughts",
-      "Clear distinction between educational concepts and clinical therapy",
-      "Searchable by topic, mood, or time available",
+      "Explicit XML context boundaries preventing prompt injection",
+      "Socratic progressive hints rather than automatic answer-giving",
+      "Polite missing-source refusals when curriculum evidence is absent",
     ],
-    appHref: "/knowledge",
-    appCta: "Browse Wellbeing Guides",
+    appHref: "/platform",
+    appCta: "Inspect RAG Architecture",
   },
   {
-    id: "personal-memory",
-    title: "Personal Memory (“Things I Remember”)",
-    subtitle: "User-approved context with an optional visual connections view",
-    category: "organize",
-    badge: "100% User-Controlled",
-    icon: Bookmark,
-    surface: "bg-[#E8F1EB] border-[#CFE2D6]",
+    id: "creative-studio",
+    title: "Creative Studio & Guided Drawing",
+    subtitle: "Tactile HTML5 canvas, dino sketchpads, and artistic confidence",
+    category: "worlds",
+    badge: "World 1",
+    icon: Palette,
+    surface: "bg-pink-50 border-pink-200",
     description:
-      "InnerOS remembers what matters to you—like important people, routines, communication preferences, and personal goals—only after you confirm it.",
+      "Children sketch, paint, and follow step-by-step drawing tutorials with Mia. Features full touch support, brush palette, undo/redo, and PNG export.",
     highlights: [
-      "Readable Saved Memories card list organized into everyday categories",
-      "Suggested notes require explicit confirmation before saving",
-      "Optional 'View Connections' graph, 1-click edit, forget, pause, and JSON export",
+      "Step-by-step dinosaur drawing and storytelling prompts",
+      "Custom color palette with variable brush widths and clear canvas tools",
+      "Zero commercial ads and zero manipulative reward mechanics",
     ],
-    appHref: "/memory",
-    appCta: "Explore Things I Remember",
+    appHref: "/youth/play?world=creative-studio",
+    appCta: "Open Creative Studio",
   },
   {
-    id: "journaling",
-    title: "Journaling",
-    subtitle: "A peaceful, private notebook with guided reflection prompts",
-    category: "reflect",
-    badge: "Private Notebook",
-    icon: PenTool,
-    surface: "bg-white border-[#E6E0D6]",
+    id: "move-and-play",
+    title: "Move & Play Sports Fundamentals",
+    subtitle: "Indoor physical coordination drills and athletic sportsmanship",
+    category: "worlds",
+    badge: "World 2",
+    icon: Activity,
+    surface: "bg-emerald-50 border-emerald-200",
     description:
-      "Write freely or start from a gentle prompt like 'Three Small Good Moments' or 'Setting Down Today’s Worries.' Tag entries and revisit your reflections whenever you choose.",
+      "Children take active movement breaks guided by friendly coaches. Includes football footwork drills, balance exercises, stretching, and hydration reminders.",
     highlights: [
-      "One-click guided writing prompts for busy or heavy days",
-      "Optional mood and body-check notes alongside your writing",
-      "Delete individual entries or export your entire journal anytime",
+      "Bilingual coach audio guidance in English, Urdu, and Punjabi",
+      "Safety tips accompanying every physical exercise",
+      "Sensory-friendly options for children with motor challenges",
     ],
-    appHref: "/journal",
-    appCta: "Open My Journal",
+    appHref: "/youth/play?world=move-play",
+    appCta: "Open Move & Play",
   },
   {
-    id: "personal-growth",
-    title: "Personal Growth",
-    subtitle: "Values-based intentions and small steps without performance pressure",
-    category: "organize",
-    badge: "At Your Own Pace",
-    icon: Sprout,
-    surface: "bg-[#FAF8F4] border-[#E6E0D6]",
+    id: "parent-intelligence",
+    title: "Parent Center & Observation Diary",
+    subtitle: "Weekly learning summaries, bedtime settings, and non-diagnostic diaries",
+    category: "portals",
+    badge: "Caregiver Governance",
+    icon: Heart,
+    surface: "bg-rose-50 border-rose-200",
     description:
-      "Set meaningful personal intentions—like protecting quiet evenings or practicing calmer boundaries—broken down into small, realistic milestones.",
+      "Parents inspect daily learning quests, set healthy screen-time limits, and log factual behavioral observations without harmful clinical psychiatric labels.",
     highlights: [
-      "Zero punitive streaks or gamified guilt",
-      "Connects every goal to a personal value that matters to you",
-      "Simple milestone checklists you can update at your own pace",
+      "Automated weekly learning dispatches via SMS and portal",
+      "Granular consent controls for microphone, audio, and school sharing",
+      "Caregiver Harm Exception safeguarding child disclosures (CPWB 1121)",
     ],
-    appHref: "/growth",
-    appCta: "View My Growth",
+    appHref: "/parent",
+    appCta: "Open Parent Center",
   },
   {
-    id: "reminders-routines",
-    title: "Reminders and Routines",
-    subtitle: "Supportive daily check-ins, habit reminders, and protected quiet hours",
-    category: "organize",
-    badge: "Rest-Friendly",
-    icon: Clock,
-    surface: "bg-[#EDE8F5] border-[#DDD4EC]",
+    id: "teacher-studio",
+    title: "Teacher Studio & Assessment Generator",
+    subtitle: "Automated test authoring from 3,000 PCTB questions and classroom telemetry",
+    category: "portals",
+    badge: "Educator Workspace",
+    icon: GraduationCap,
+    surface: "bg-purple-50 border-purple-200",
     description:
-      "Schedule one-time or recurring reminders for reading, hydration, mood journaling, or goal follow-ups—with automatic evening quiet hours and discreet lock-screen previews.",
+      "Teachers generate printable test papers with answer rubrics in seconds, manage classroom rosters, and track student quest completion in real-time.",
     highlights: [
-      "Built-in anti-guilt filter prevents manipulative or possessive phrasing",
-      "Time-zone-aware Quiet Hours protect your evening wind-down and sleep",
-      "Snooze, pause, or dismiss any reminder without penalty",
+      "Reclaims over 4 hours of weekly assessment preparation time",
+      "Customizable difficulty filters and SLO curriculum topic matching",
+      "Non-diagnostic classroom observation diary with student support links",
     ],
-    appHref: "/reminders",
-    appCta: "Manage Reminders",
-  },
-  {
-    id: "integrations",
-    title: "User-Controlled Integrations",
-    subtitle: "Bring your past exports, notes, and calendar together safely",
-    category: "organize",
-    badge: "Preview Before Saving",
-    icon: Link2,
-    surface: "bg-[#F7E7E2] border-[#EED2C9]",
-    description:
-      "Import selected ChatGPT or Claude conversation exports, Markdown/TXT notes, or read-only Google Calendar availability—with automatic personal-detail redaction and item-by-item approval.",
-    highlights: [
-      "Never asks for third-party passwords or scrapes accounts",
-      "Interactive preview lets you exclude any item before import",
-      "One-click batch revocation deletes all associated memories",
-    ],
-    appHref: "/integrations",
-    appCta: "Open Connected Apps",
+    appHref: "/teacher/dashboard",
+    appCta: "Open Teacher Studio",
   },
 ];
 
-export default function FeaturesMarketingPage() {
-  const [filter, setFilter] = useState<"all" | "talk" | "reflect" | "organize">(
-    "all"
-  );
+export default function FeaturesPage() {
+  const [selectedCategory, setSelectedCategory] = useState<"all" | "friends" | "worlds" | "portals">("all");
 
-  const visibleFeatures =
-    filter === "all"
-      ? FEATURES_LIST
-      : FEATURES_LIST.filter((f) => f.category === filter);
+  const filteredFeatures =
+    selectedCategory === "all"
+      ? WEEBLY_FEATURES
+      : WEEBLY_FEATURES.filter((f) => f.category === selectedCategory);
 
   return (
     <MarketingShell>
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-10 sm:pt-14 pb-16 space-y-14">
-        {/* Page Header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-10 sm:pt-14 pb-16 space-y-16">
+        {/* Hero Header */}
         <div className="max-w-3xl space-y-4">
-          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#EEF4FF] border border-[#DCE7FE] text-[#2B4CDE] text-[13.5px] font-semibold">
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-900 text-xs font-bold">
             <Sparkles className="w-4 h-4 text-[#2B4CDE]" />
-            <span>Complete Platform Capabilities</span>
+            <span>Weebly Platform Capabilities</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold text-[#0F172A] tracking-tight">
-            Thoughtfully designed tools for reflection, calm, and everyday life.
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            Features engineered for joyful learning and child safety.
           </h1>
-          <p className="text-[18px] text-[#64748B] leading-relaxed">
-            Every feature in InnerOS works together harmoniously—giving you a supportive voice or text companion, a private journal, user-approved memory, and gentle daily routines.
+          <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+            Every feature in Weebly works together—giving children a playful AI friend, families honest visibility, and teachers automated classroom tools.
           </p>
+        </div>
 
-          {/* Category Filter Pills */}
-          <div className="flex flex-wrap gap-2 pt-2">
-            {[
-              { id: "all", label: "All 9 Features" },
-              { id: "talk", label: "Voice & Text Companion" },
-              { id: "reflect", label: "Reflection & Guides" },
-              { id: "organize", label: "Memory, Routines & Imports" },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setFilter(tab.id as any)}
-                className={`px-4 py-2.5 rounded-2xl text-[14px] font-semibold transition-all ${
-                  filter === tab.id
-                    ? "bg-[#2B4CDE] text-white shadow-xs"
-                    : "bg-white border border-[#DCE7FE] text-[#64748B] hover:text-[#0F172A]"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
+        {/* Category Filter Pills */}
+        <div className="flex flex-wrap gap-2">
+          {[
+            { id: "all", label: "All Capabilities" },
+            { id: "friends", label: "AI Friends & RAG" },
+            { id: "worlds", label: "Learning Worlds" },
+            { id: "portals", label: "Parent & Teacher Portals" },
+          ].map((cat) => (
+            <button
+              type="button"
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id as any)}
+              className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all ${
+                selectedCategory === cat.id
+                  ? "bg-[#2B4CDE] text-white shadow-sm"
+                  : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
         </div>
 
         {/* Features Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
-          {visibleFeatures.map((feat) => {
-            const Icon = feat.icon;
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredFeatures.map((feat) => {
+            const FeatIcon = feat.icon;
             return (
-              <article
+              <div
                 key={feat.id}
-                className="p-7 rounded-[32px] bg-white border border-[#DCE7FE] shadow-[0_8px_30px_rgba(43,76,222,0.05)] hover:shadow-[0_12px_36px_rgba(43,76,222,0.1)] transition-all flex flex-col justify-between space-y-6"
+                className={`p-6 sm:p-8 rounded-3xl border ${feat.surface} shadow-xs flex flex-col justify-between space-y-6 hover:shadow-md transition-shadow`}
               >
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="w-12 h-12 rounded-2xl bg-[#EEF4FF] border border-[#DCE7FE] flex items-center justify-center text-[#2B4CDE]">
-                      <Icon className="w-6 h-6" />
+                  <div className="flex items-center justify-between">
+                    <div className="w-10 h-10 rounded-2xl bg-white text-slate-900 flex items-center justify-center font-bold shadow-xs">
+                      <FeatIcon className="w-5 h-5 text-[#2B4CDE]" />
                     </div>
-                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#EEF4FF] text-[#2B4CDE] border border-[#DCE7FE]">
+                    <span className="px-3 py-1 rounded-full bg-white/80 border border-slate-200 text-[11px] font-black uppercase text-slate-700">
                       {feat.badge}
                     </span>
                   </div>
 
                   <div className="space-y-1.5">
-                    <h2 className="text-2xl font-bold text-[#0F172A]">
-                      {feat.title}
-                    </h2>
-                    <p className="text-[14.5px] font-semibold text-[#2B4CDE]">
-                      {feat.subtitle}
-                    </p>
+                    <h3 className="text-xl font-extrabold text-slate-900">{feat.title}</h3>
+                    <p className="text-xs text-slate-500 font-medium">{feat.subtitle}</p>
                   </div>
 
-                  <p className="text-[15px] text-[#64748B] leading-relaxed">
+                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
                     {feat.description}
                   </p>
 
-                  <ul className="space-y-2 pt-2 border-t border-[#F1F5F9]">
-                    {feat.highlights.map((item) => (
-                      <li
-                        key={item}
-                        className="flex items-start space-x-2 text-[13.5px] text-[#334155]"
-                      >
-                        <CheckCircle2 className="w-4 h-4 text-[#059669] shrink-0 mt-0.5" />
-                        <span>{item}</span>
+                  <ul className="space-y-1.5 text-xs text-slate-600 border-t border-slate-200/60 pt-3">
+                    {feat.highlights.map((h, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                        <span>{h}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <div className="pt-3 border-t border-[#F1F5F9]">
-                  <Link
-                    href={feat.appHref}
-                    className="w-full py-2.5 px-4 rounded-2xl bg-[#EEF4FF] hover:bg-[#2B4CDE] border border-[#DCE7FE] text-[#2B4CDE] hover:text-white text-[14px] font-semibold flex items-center justify-between transition-colors shadow-xs"
-                  >
-                    <span>{feat.appCta}</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
-              </article>
+                <Link
+                  href={feat.appHref}
+                  className="w-full py-3 rounded-xl bg-white border border-slate-300 hover:border-[#2B4CDE] hover:text-[#2B4CDE] text-slate-800 text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors shadow-2xs"
+                >
+                  <span>{feat.appCta}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
             );
           })}
         </div>
 
-        {/* Bottom CTA */}
-        <div className="p-8 sm:p-12 rounded-[36px] bg-gradient-to-r from-[#2B4CDE] via-[#3B82F6] to-[#1E3A8A] text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_20px_50px_rgba(43,76,222,0.25)]">
+        {/* Institutional Callout */}
+        <div className="p-8 sm:p-12 rounded-3xl bg-slate-900 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
           <div className="space-y-2 max-w-xl">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white">
-              Want to see how all 9 features work together in a single day?
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+              Ready to explore Weebly in action?
             </h2>
-            <p className="text-[16px] text-white/90">
-              Explore our step-by-step walkthrough or jump directly into the live companion space.
+            <p className="text-sm text-slate-300">
+              Try the interactive six-role demonstration center or review our complete 20-subsystem functionality guide.
             </p>
           </div>
           <div className="flex flex-wrap gap-3 shrink-0">
-            <Link href="/how-it-works">
-              <button
-                type="button"
-                className="px-5 py-2.5 rounded-full bg-white/15 hover:bg-white/25 border border-white/30 text-white font-semibold text-sm transition-all"
-              >
-                How It Works
-              </button>
+            <Link
+              href="/demos"
+              className="px-6 py-3 rounded-xl bg-amber-400 text-slate-950 font-bold hover:bg-amber-300 text-sm transition-all shadow-md"
+            >
+              Try Interactive Demos
             </Link>
-            <Link href="/onboarding">
-              <button
-                type="button"
-                className="px-6 py-2.5 rounded-full bg-white text-[#2B4CDE] hover:bg-[#EEF4FF] font-bold text-sm shadow-md transition-all flex items-center space-x-2"
-              >
-                <span>Start Your Journey</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+            <Link
+              href="/platform"
+              className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-sm transition-all"
+            >
+              Complete Functionality Guide
             </Link>
           </div>
         </div>

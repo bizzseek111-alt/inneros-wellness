@@ -382,7 +382,7 @@ export default function CaregiverDashboardPage() {
                   {summary?.recent_activities?.filter((a: any) => a.child_id === selectedChild.id).length ===
                   0 ? (
                     <div className="p-6 rounded-2xl border border-dashed text-center text-xs text-slate-400">
-                      No educational lessons recorded yet. Explore the InnerOS Kids Academy to begin!
+                      No educational lessons recorded yet. Explore the Weebly Kids Academy to begin!
                     </div>
                   ) : (
                     <div className="space-y-2">

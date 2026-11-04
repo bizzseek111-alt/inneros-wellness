@@ -27,7 +27,7 @@ export default function TermsPublicPage() {
               <span>1. Educational Nature — Not a Medical Device</span>
             </h2>
             <p className="text-sm text-[#475569] leading-relaxed">
-              InnerOS, InnerOS Kids, and InnerOS Teens are psychoeducational digital software programs designed for social-emotional learning, cognitive scaffolding, and executive-function routine organization. <strong>InnerOS does not provide psychiatric diagnoses, medical treatment, or clinical crisis stabilization.</strong>
+              Weebly, Weebly Kids, and Weebly Teens are educational, creative, and life-skills platforms designed for conversational learning, foundational literacy, and cognitive scaffolding. InnerOS is a separate adult personal wellbeing application. <strong>Neither Weebly nor InnerOS provides psychiatric diagnoses, medical treatment, or clinical crisis stabilization.</strong>
             </p>
           </div>
 

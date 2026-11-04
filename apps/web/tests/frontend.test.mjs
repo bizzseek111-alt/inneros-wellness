@@ -94,6 +94,8 @@ const EXPECTED_ROUTE_PAGES = [
   "app/trust/page.tsx",
   "app/schools/pilot/page.tsx",
   "app/documents/page.tsx",
+  "app/creative-studio/page.tsx",
+  "app/youth/creative-studio/page.tsx",
 ];
 
 test("All adult, marketing, kids, teens, AI friends, interactive demo, school onboarding, portals, and offline route page files exist and export default components", () => {

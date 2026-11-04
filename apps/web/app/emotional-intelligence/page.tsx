@@ -130,7 +130,7 @@ export default function EmotionalIntelligencePage() {
                 href="/kids"
                 className="px-8 py-3 rounded-full bg-[#BE185D] text-white font-semibold text-sm hover:bg-[#9D174D] shadow-md transition-all inline-flex items-center space-x-2"
               >
-                <span>Enter InnerOS Kids</span>
+                <span>Enter Weebly Kids</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>

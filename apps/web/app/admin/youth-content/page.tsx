@@ -307,7 +307,7 @@ export default function AdminYouthContentPage() {
               Clinical Incident Review: {resolvingIncident.id}
             </h3>
             <p className="text-xs text-slate-500">
-              Certified human safeguarding review for category: {resolvingIncident.category}.
+              Designated safeguarding specialist review for category: {resolvingIncident.category}.
             </p>
 
             <div className="space-y-2 text-xs">

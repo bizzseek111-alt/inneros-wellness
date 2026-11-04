@@ -60,7 +60,7 @@ export default function ParentsPage() {
             </h1>
 
             <p className="text-lg sm:text-xl text-[#475569] max-w-2xl mx-auto leading-relaxed">
-              InnerOS gives caregivers transparent oversight, shared connection exercises, and peace of mind. Zero dark patterns, zero ad tracking, and complete privacy separation.
+              Weebly gives caregivers transparent oversight, shared connection exercises, and peace of mind. Zero dark patterns, zero ad tracking, and complete privacy separation.
             </p>
 
             <div className="pt-4 flex flex-wrap items-center justify-center gap-4">

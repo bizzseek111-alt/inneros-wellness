@@ -2,314 +2,237 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { MarketingShell } from "@/components/marketing/MarketingShell";
-import { Badge } from "@/components/primitives/Badge";
-import { Button } from "@/components/primitives/Button";
 import {
+  Sparkles,
+  Mic,
   MessageCircle,
-  Sliders,
   BookOpen,
-  Sprout,
-  Bookmark,
+  Heart,
+  Palette,
+  Activity,
+  Award,
+  Users,
+  GraduationCap,
+  ShieldCheck,
   ArrowRight,
   CheckCircle2,
-  Sun,
-  Coffee,
-  Moon,
-  Sparkles,
+  Smile,
+  Compass,
 } from "lucide-react";
+import { MarketingShell } from "@/components/marketing/MarketingShell";
 
-const FIVE_STEPS = [
+interface Step {
+  number: string;
+  title: string;
+  subtitle: string;
+  icon: any;
+  surface: string;
+  description: string;
+  exampleLabel: string;
+  exampleQuote: string;
+  appHref: string;
+  appCta: string;
+}
+
+const WEEBLY_STEPS: Step[] = [
   {
     number: "01",
-    title: "Start a conversation",
-    subtitle: "Speak out loud or write a few lines whenever you need a quiet moment",
-    icon: MessageCircle,
-    surface: "bg-[#E8F1EB] border-[#CFE2D6]",
+    title: "Choose your learning companion",
+    subtitle: "Select Kai, Mia, Lumi, or Zayn based on what you want to explore today",
+    icon: Smile,
+    surface: "bg-amber-50 border-amber-200",
     description:
-      "Open InnerOS and begin talking in the Voice Room or typing in the Text Companion. You don’t need a structured agenda—share a busy thought, a difficult meeting, or how your energy feels today.",
-    exampleLabel: "What you might say:",
+      "Children are greeted by four friendly AI companions. Kai loves math and curiosity quests, Mia narrates bilingual stories, Lumi guides daily calm routines, and Zayn explores hands-on science and space.",
+    exampleLabel: "Companion Personas:",
     exampleQuote:
-      "“I have a lot on my plate this week and I’m not sure where to start without feeling overwhelmed.”",
-    appHref: "/companion/voice",
-    appCta: "Try Starting a Conversation",
+      "Kai (Curiosity & STEM) • Mia (Stories & Language) • Lumi (Feelings & Calming) • Zayn (Science & Inventions)",
+    appHref: "/demos",
+    appCta: "Meet the AI Friends in Demo",
   },
   {
     number: "02",
-    title: "Choose your preferred communication style",
-    subtitle: "Set the mode, warmth, and language that fit what you need right now",
-    icon: Sliders,
-    surface: "bg-[#F7E7E2] border-[#EED2C9]",
+    title: "Speak naturally in your language",
+    subtitle: "Natural voice turn-taking in English, Urdu, and Pakistani Punjabi",
+    icon: Mic,
+    surface: "bg-blue-50 border-blue-200",
     description:
-      "Before or during any conversation, select how you’d like InnerOS to respond. Pick 'Just Listen' when you want empathetic space without advice, 'Help Me Understand' for gentle reflection, or 'Help Me Solve' for practical next steps.",
-    exampleLabel: "Your controls:",
+      "Children simply press the big microphone button and speak. Kai and Mia respond with warm, child-friendly speech, synchronized subtitles, and Socratic hints rather than just giving away direct answers.",
+    exampleLabel: "What a child might ask:",
     exampleQuote:
-      "Mode: Just Listen (No unsolicited advice) • Voice: Sanctuary Calm • Warmth: 85%",
-    appHref: "/companion/chat",
-    appCta: "Explore Conversation Modes",
+      "“Kai, how do plants drink water through their roots?” or “Mia, ek sher aur chuhay ki kahani sunao!”",
+    appHref: "/youth/dashboard",
+    appCta: "Try Kids Magic Home",
   },
   {
     number: "03",
-    title: "Reflect and learn",
-    subtitle: "Unpack your thoughts with guided journaling and psychology guides",
-    icon: BookOpen,
-    surface: "bg-[#EDE8F5] border-[#DDD4EC]",
+    title: "Journey through 6 learning worlds",
+    subtitle: "Hands-on drawing, physical drills, coding logic, and moral adventures",
+    icon: Compass,
+    surface: "bg-purple-50 border-purple-200",
     description:
-      "When a conversation sparks an insight, capture it in your private Journal or explore short, evidence-informed guides on stepping back from heavy thoughts, setting healthy boundaries, and calming physical tension.",
-    exampleLabel: "Guided reflection prompt:",
+      "When a child wants to create, move, or practice, Weebly opens dedicated worlds: Creative Studio (guided drawing), Move & Play (sports drills), Story Adventure (branching tales), and Brain Quest (PCTB math & science).",
+    exampleLabel: "Interactive Learning Worlds:",
     exampleQuote:
-      "“Write down a thought that felt heavy today. Try starting with: ‘I notice I’m having the thought that...’”",
-    appHref: "/journal",
-    appCta: "Open Personal Journal",
+      "Creative Studio • Move & Play • Tech & Discovery • Life & Friendship • Story Adventure • Brain Quest",
+    appHref: "/youth/play",
+    appCta: "Explore Learning Worlds",
   },
   {
     number: "04",
-    title: "Create meaningful goals",
-    subtitle: "Turn insights into small, values-aligned steps and gentle reminders",
-    icon: Sprout,
-    surface: "bg-white border-[#E6E0D6]",
+    title: "Caregiver visibility without pressure",
+    subtitle: "Weekly SMS summaries, learning diaries, and bedtime routines",
+    icon: Heart,
+    surface: "bg-emerald-50 border-emerald-200",
     description:
-      "Anchor a personal intention in My Growth—like protecting twenty minutes of quiet evening time—and optionally set a rest-friendly reminder that respects your Evening Quiet Hours.",
-    exampleLabel: "Gentle step:",
+      "Parents view objective weekly learning progress, bedtime limits, and home observation notes. Weebly enforces strict non-diagnostic boundaries: we never label children with clinical psychiatric conditions.",
+    exampleLabel: "Weekly Caregiver Dispatch:",
     exampleQuote:
-      "Intention: Protect quiet evenings • Step 1: Take a 15-minute walk after work before checking messages.",
-    appHref: "/growth",
-    appCta: "Set a Personal Intention",
+      "“Maya completed 4 science quests on plant life cycles this week. Try asking her how leaves make food tonight!”",
+    appHref: "/parent",
+    appCta: "Open Parent Center",
   },
   {
     number: "05",
-    title: "Review progress at your own pace",
-    subtitle: "Approve helpful memories and revisit your connections without pressure",
-    icon: Bookmark,
-    surface: "bg-[#E8F1EB] border-[#CFE2D6]",
+    title: "Empowered classroom teachers & schools",
+    subtitle: "3,000-question PCTB library, instant question paper generation & roster tracking",
+    icon: GraduationCap,
+    surface: "bg-slate-50 border-slate-200",
     description:
-      "In Things I Remember, review suggested notes from your conversations, confirm what you’d like your companion to remember, and explore how your habits, values, and people connect—with zero streaks or guilt.",
-    exampleLabel: "Confirmed memory:",
+      "Teachers generate printable test papers aligned with Punjab Curriculum and Textbook Board (PCTB) Student Learning Outcomes (SLOs) in seconds, reclaiming over 4 hours of grading time each week.",
+    exampleLabel: "Teacher Studio Tools:",
     exampleQuote:
-      "“20-minute evening walks outside help me transition out of work stress.” (Confirmed by you • Editable anytime)",
-    appHref: "/memory",
-    appCta: "View Things I Remember",
+      "Customizable test paper builder with answer keys • Roster participation tracking • Formative mastery diagnostics",
+    appHref: "/teacher/dashboard",
+    appCta: "Open Teacher Studio",
   },
 ];
 
 export default function HowItWorksPage() {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
+  const activeStep = WEEBLY_STEPS[activeStepIndex];
 
   return (
     <MarketingShell>
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-10 sm:pt-14 pb-16 space-y-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-10 sm:pt-14 pb-16 space-y-16">
         {/* Hero Header */}
         <div className="max-w-3xl space-y-4">
-          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#E8F1EB] border border-[#CFE2D6] text-[#1F4742] text-[13.5px] font-medium">
-            <Sparkles className="w-4 h-4 text-[#285B55]" />
-            <span>How InnerOS Works</span>
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold">
+            <Sparkles className="w-4 h-4 text-amber-600" />
+            <span>How Weebly Works</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-serif font-medium text-[#263330] tracking-tight">
-            A calm, five-step rhythm designed around your pace.
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            Conversational learning, creativity, and family confidence.
           </h1>
-          <p className="text-[18px] text-[#52625E] leading-relaxed">
-            There is no complicated setup or rigid daily quota. Whether you visit for two minutes to breathe or twenty minutes to reflect, you are always in control.
+          <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+            Weebly combines natural voice companions, 3,000 curriculum questions, and safe learning worlds to help children grow with joy—supported by parents and teachers every step of the way.
           </p>
         </div>
 
-        {/* Interactive Step Selector + Detailed View */}
+        {/* Interactive Step Navigator */}
         <div className="grid lg:grid-cols-12 gap-8 items-start">
-          {/* Left Step Navigation List */}
+          {/* Step Buttons (Left) */}
           <div className="lg:col-span-5 space-y-3">
-            {FIVE_STEPS.map((step, idx) => {
+            {WEEBLY_STEPS.map((step, idx) => {
               const isSelected = activeStepIndex === idx;
+              const StepIcon = step.icon;
               return (
                 <button
-                  key={step.number}
                   type="button"
+                  key={step.number}
                   onClick={() => setActiveStepIndex(idx)}
-                  className={`w-full p-5 rounded-3xl border text-left transition-all flex items-start space-x-4 ${
+                  className={`w-full text-left p-4 rounded-2xl border transition-all flex items-start space-x-4 ${
                     isSelected
-                      ? "bg-[#285B55] text-white border-[#285B55] shadow-md"
-                      : "bg-white text-[#263330] border-[#E6E0D6] hover:border-[#285B55]/50"
+                      ? "bg-white border-[#2B4CDE] shadow-md ring-2 ring-blue-100"
+                      : "bg-slate-50/70 border-slate-200/80 hover:bg-white text-slate-600"
                   }`}
                 >
-                  <span
-                    className={`w-9 h-9 rounded-xl font-serif font-semibold text-[15px] flex items-center justify-center shrink-0 ${
+                  <div
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 ${
                       isSelected
-                        ? "bg-white/20 text-white"
-                        : "bg-[#E8F1EB] text-[#285B55]"
+                        ? "bg-[#2B4CDE] text-white shadow-xs"
+                        : "bg-slate-200 text-slate-700"
                     }`}
                   >
                     {step.number}
-                  </span>
-                  <div className="space-y-1">
-                    <h2 className="text-[17px] font-serif font-medium">
-                      {step.title}
-                    </h2>
-                    <p
-                      className={`text-[13.5px] leading-snug ${
-                        isSelected ? "text-white/85" : "text-[#52625E]"
-                      }`}
-                    >
-                      {step.subtitle}
-                    </p>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-bold text-slate-900 text-sm">{step.title}</h3>
+                    <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">{step.subtitle}</p>
                   </div>
                 </button>
               );
             })}
           </div>
 
-          {/* Right Active Step Spotlight Card */}
-          <div className="lg:col-span-7 p-8 sm:p-10 rounded-[36px] bg-white border border-[#E6E0D6] shadow-sm space-y-6">
-            {(() => {
-              const step = FIVE_STEPS[activeStepIndex];
-              const Icon = step.icon;
-              return (
-                <>
-                  <div className="flex items-center justify-between border-b border-[#F3EFE8] pb-5">
-                    <div className="flex items-center space-x-3">
-                      <div
-                        className={`w-12 h-12 rounded-2xl border ${step.surface} flex items-center justify-center text-[#285B55]`}
-                      >
-                        <Icon className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <span className="text-[13px] font-semibold uppercase tracking-wider text-[#285B55]">
-                          Step {step.number} of 05
-                        </span>
-                        <h3 className="text-2xl sm:text-3xl font-serif font-medium text-[#263330]">
-                          {step.title}
-                        </h3>
-                      </div>
-                    </div>
-                  </div>
+          {/* Step Detail Display (Right) */}
+          <div className="lg:col-span-7">
+            <div className={`p-8 sm:p-10 rounded-3xl border ${activeStep.surface} shadow-sm space-y-6 transition-all`}>
+              <div className="flex items-center justify-between">
+                <span className="px-3.5 py-1 rounded-full bg-white/90 border border-slate-200 text-xs font-extrabold uppercase tracking-wider text-slate-700">
+                  Step {activeStep.number} of {WEEBLY_STEPS.length}
+                </span>
+                <span className="text-xs font-bold text-slate-500">Weebly Core Workflow</span>
+              </div>
 
-                  <p className="text-[16.5px] text-[#263330] leading-relaxed">
-                    {step.description}
-                  </p>
+              <div className="space-y-3">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+                  {activeStep.title}
+                </h2>
+                <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
+                  {activeStep.description}
+                </p>
+              </div>
 
-                  <div className="p-6 rounded-3xl bg-[#FAF8F4] border border-[#E6E0D6] space-y-2">
-                    <span className="text-[13px] font-semibold text-[#285B55] block">
-                      {step.exampleLabel}
-                    </span>
-                    <p className="text-[16px] font-serif italic text-[#263330] leading-relaxed">
-                      {step.exampleQuote}
-                    </p>
-                  </div>
+              {/* Example Quote Card */}
+              <div className="p-5 rounded-2xl bg-white/90 border border-slate-200/80 space-y-2">
+                <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                  {activeStep.exampleLabel}
+                </div>
+                <p className="text-sm font-semibold text-slate-800 italic leading-relaxed">
+                  {activeStep.exampleQuote}
+                </p>
+              </div>
 
-                  <div className="pt-2 flex flex-wrap items-center justify-between gap-4">
-                    <Link href={step.appHref}>
-                      <Button
-                        variant="primary"
-                        size="md"
-                        rightIcon={<ArrowRight className="w-4 h-4" />}
-                      >
-                        {step.appCta}
-                      </Button>
-                    </Link>
-
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={activeStepIndex === 0}
-                        onClick={() =>
-                          setActiveStepIndex(Math.max(0, activeStepIndex - 1))
-                        }
-                      >
-                        Previous Step
-                      </Button>
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        disabled={activeStepIndex === FIVE_STEPS.length - 1}
-                        onClick={() =>
-                          setActiveStepIndex(
-                            Math.min(FIVE_STEPS.length - 1, activeStepIndex + 1)
-                          )
-                        }
-                      >
-                        Next Step
-                      </Button>
-                    </div>
-                  </div>
-                </>
-              );
-            })()}
+              {/* CTA Button */}
+              <div className="pt-2">
+                <Link
+                  href={activeStep.appHref}
+                  className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-[#2B4CDE] hover:bg-blue-700 text-white font-bold text-sm shadow-md transition-all hover:shadow-lg"
+                >
+                  <span>{activeStep.appCta}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* All 5 Steps Overview Cards */}
-        <section className="space-y-8">
-          <div className="space-y-2">
-            <Badge variant="sage" size="sm">
-              A Day with InnerOS
-            </Badge>
-            <h2 className="text-3xl font-serif font-medium text-[#263330]">
-              How people use InnerOS across morning, afternoon, and evening
+        {/* Safeguarding & Punjab Pilot Banner */}
+        <div className="p-8 sm:p-12 rounded-3xl bg-slate-900 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+          <div className="space-y-2 max-w-xl">
+            <div className="inline-flex items-center space-x-2 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+              <ShieldCheck className="w-4 h-4" />
+              <span>Ethical AI Disclosure &bull; Zero Dark Patterns</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+              Built with care for children in Punjab and worldwide.
             </h2>
+            <p className="text-sm text-slate-300">
+              Explore our six interactive demonstrations or request an on-site pilot briefing for your school.
+            </p>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="p-7 rounded-3xl bg-[#E8F1EB] border border-[#CFE2D6] space-y-3">
-              <div className="flex items-center space-x-2 text-[#1F4742] font-semibold text-[15px]">
-                <Sun className="w-5 h-5 text-[#285B55]" />
-                <span>Morning Intention (2 mins)</span>
-              </div>
-              <h3 className="text-xl font-serif font-medium text-[#263330]">
-                Start the day with clarity
-              </h3>
-              <p className="text-[14.5px] text-[#52625E] leading-relaxed">
-                Complete a quick 4-choice mood check-in on the Home screen and choose one gentle focus for the day before opening work messages.
-              </p>
-            </div>
-
-            <div className="p-7 rounded-3xl bg-white border border-[#E6E0D6] space-y-3 shadow-sm">
-              <div className="flex items-center space-x-2 text-[#285B55] font-semibold text-[15px]">
-                <Coffee className="w-5 h-5 text-[#285B55]" />
-                <span>Midday Reset (5 mins)</span>
-              </div>
-              <h3 className="text-xl font-serif font-medium text-[#263330]">
-                Untangle a busy afternoon
-              </h3>
-              <p className="text-[14.5px] text-[#52625E] leading-relaxed">
-                Use the Voice Companion in &ldquo;Just Listen&rdquo; or &ldquo;Help Me Solve&rdquo; mode to talk through a stressful meeting and step back from heavy thoughts.
-              </p>
-            </div>
-
-            <div className="p-7 rounded-3xl bg-[#EDE8F5] border border-[#DDD4EC] space-y-3">
-              <div className="flex items-center space-x-2 text-[#423166] font-semibold text-[15px]">
-                <Moon className="w-5 h-5 text-[#5A4878]" />
-                <span>Evening Wind-Down (5 mins)</span>
-              </div>
-              <h3 className="text-xl font-serif font-medium text-[#263330]">
-                Set down today’s worries
-              </h3>
-              <p className="text-[14.5px] text-[#52625E] leading-relaxed">
-                Write a brief evening reflection in your Journal while Quiet Hours automatically silence routine notifications until morning.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Bottom CTA */}
-        <div className="p-8 sm:p-12 rounded-[36px] bg-white border border-[#E6E0D6] shadow-sm text-center space-y-5">
-          <h2 className="text-3xl font-serif font-medium text-[#263330]">
-            Begin at your own pace
-          </h2>
-          <p className="text-[16px] text-[#52625E] max-w-xl mx-auto">
-            Set up your preferred name, voice, and privacy choices in a few calm steps.
-          </p>
-          <div className="flex justify-center gap-4">
-            <Link href="/onboarding">
-              <Button
-                variant="primary"
-                size="lg"
-                rightIcon={<ArrowRight className="w-5 h-5" />}
-              >
-                Start Your Journey
-              </Button>
+          <div className="flex flex-wrap gap-3 shrink-0">
+            <Link
+              href="/demos"
+              className="px-6 py-3 rounded-xl bg-amber-400 text-slate-950 font-bold hover:bg-amber-300 text-sm transition-all shadow-md"
+            >
+              Explore 6 Demos
             </Link>
-            <Link href="/dashboard">
-              <Button variant="secondary" size="lg">
-                Open Companion App
-              </Button>
+            <Link
+              href="/schools/pilot"
+              className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-sm transition-all"
+            >
+              Punjab School Pilot
             </Link>
           </div>
         </div>

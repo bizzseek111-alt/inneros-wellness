@@ -218,7 +218,7 @@ export default function YouthAcademyPage() {
                 <span>Evidence-Informed Learning Sanctuary • Ages 2–18</span>
               </div>
               <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-                InnerOS Kids Development Academy
+                Weebly Kids Development Academy
               </h1>
               <p className="text-base text-muted-foreground leading-relaxed">
                 25 departments rooted in CASEL, WHO Life Skills, Harvard Center on the Developing Child,
@@ -460,9 +460,9 @@ export default function YouthAcademyPage() {
           <div className="space-y-1">
             <h4 className="font-bold">Pedagogical Framework & Non-Clinical Sanctuary Notice</h4>
             <p className="leading-relaxed text-amber-800 dark:text-amber-300">
-              The InnerOS Kids Development Academy is an educational curriculum platform. Modules are designed
+              The Weebly Kids Development Academy is an educational curriculum platform. Modules are designed
               to cultivate emotional vocabulary, executive functioning, and somatic self-regulation.
-              InnerOS never generates IQ scores, diagnostic probabilities, or psychiatric labels. All content is
+              Weebly never generates IQ scores, diagnostic probabilities, or psychiatric labels. All content is
               draft educational material subject to ongoing clinical multidisciplinary governance.
             </p>
           </div>

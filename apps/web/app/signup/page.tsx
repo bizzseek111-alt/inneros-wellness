@@ -145,7 +145,7 @@ export default function SignupPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedRole("caregiver")}
-                  className={`p-3 rounded-2xl border text-left transition-all ${
+                  className={`p-3.5 rounded-2xl border text-left transition-all ${
                     selectedRole === "caregiver"
                       ? "bg-[#E3F6EC] border-[#16A34A] text-[#14532D] shadow-xs"
                       : "bg-[#F8FAFC] border-slate-200 text-slate-600 hover:bg-slate-100"
@@ -158,41 +158,38 @@ export default function SignupPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedRole("teacher")}
-                  className={`p-3 rounded-2xl border text-left transition-all ${
+                  className={`p-3.5 rounded-2xl border text-left transition-all ${
                     selectedRole === "teacher"
                       ? "bg-[#EEF4FF] border-[#2B4CDE] text-[#1E3A8A] shadow-xs"
                       : "bg-[#F8FAFC] border-slate-200 text-slate-600 hover:bg-slate-100"
                   }`}
                 >
-                  <span className="block font-bold">👩‍🏫 Teacher / School</span>
-                  <span className="block text-[10.5px] text-slate-500 font-normal mt-0.5">Classroom cohorts &amp; SEL</span>
+                  <span className="block font-bold">👩‍🏫 Teacher / School Staff</span>
+                  <span className="block text-[10.5px] text-slate-500 font-normal mt-0.5">Classroom cohorts &amp; progress</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setSelectedRole("student")}
-                  className={`p-3 rounded-2xl border text-left transition-all ${
+                  className={`col-span-2 p-3.5 rounded-2xl border text-left transition-all ${
                     selectedRole === "student"
                       ? "bg-[#FEF3C7] border-amber-500 text-amber-900 shadow-xs"
                       : "bg-[#F8FAFC] border-slate-200 text-slate-600 hover:bg-slate-100"
                   }`}
                 >
                   <span className="block font-bold">🌟 Student / Youth</span>
-                  <span className="block text-[10.5px] text-slate-500 font-normal mt-0.5">Spoken learning &amp; Lumi</span>
+                  <span className="block text-[10.5px] text-slate-500 font-normal mt-0.5">Magic learning home, voice AI companions &amp; 6 learning worlds</span>
                 </button>
+              </div>
 
-                <button
-                  type="button"
-                  onClick={() => setSelectedRole("user")}
-                  className={`p-3 rounded-2xl border text-left transition-all ${
-                    selectedRole === "user"
-                      ? "bg-[#F5F3FF] border-[#7C3AED] text-[#5B21B6] shadow-xs"
-                      : "bg-[#F8FAFC] border-slate-200 text-slate-600 hover:bg-slate-100"
-                  }`}
+              <div className="mt-3 p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-center justify-between">
+                <span>Looking for personal adult wellbeing?</span>
+                <Link
+                  href="/inneros/dashboard"
+                  className="font-bold text-indigo-600 hover:underline inline-flex items-center gap-1"
                 >
-                  <span className="block font-bold">🌿 Adult Sanctuary</span>
-                  <span className="block text-[10.5px] text-slate-500 font-normal mt-0.5">Personal wellbeing (InnerOS)</span>
-                </button>
+                  InnerOS Sanctuary →
+                </Link>
               </div>
             </div>
 
@@ -279,6 +276,8 @@ export default function SignupPage() {
                 >
                   <option value="en-US">English (United States / Global)</option>
                   <option value="en-GB">English (United Kingdom)</option>
+                  <option value="ur-PK">اردو (Pakistan / Punjab)</option>
+                  <option value="pa-PK">پنجابی (Punjab / Shahmukhi)</option>
                   <option value="es-ES">Español (España / Latinoamérica)</option>
                   <option value="fr-FR">Français (France / Canada)</option>
                   <option value="de-DE">Deutsch (Deutschland / DACH)</option>
@@ -296,16 +295,16 @@ export default function SignupPage() {
                 className="mt-1 rounded border-[#285B55] text-[#285B55] focus:ring-[#285B55]"
               />
               <span className="text-xs text-[#263330] leading-relaxed">
-                <strong>Preserve existing browser notes:</strong> Automatically import any journal entries, daily check-ins, or growth goals saved in this browser into my private account.
+                <strong>Preserve existing browser progress:</strong> Automatically sync any activities, check-ins, or voice milestones saved in this browser into my account.
               </span>
             </label>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3.5 px-6 rounded-2xl bg-[#285B55] hover:bg-[#1F4742] text-white font-medium text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
+              className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-60"
             >
-              <span>{isLoading ? "Creating your sanctuary..." : "Create Private Sanctuary"}</span>
+              <span>{isLoading ? "Creating your account..." : "Create Weebly Account"}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>

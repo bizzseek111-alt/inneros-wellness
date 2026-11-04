@@ -58,7 +58,7 @@ export default function CaregiverConsentPage() {
               <div className="text-xs text-[#0C436F] space-y-1">
                 <span className="font-bold block">Zero-Knowledge Child Privacy Commitment</span>
                 <p>
-                  InnerOS does not sell personal information, does not show ads, and does not retain raw audio recordings. Caregivers have full rights to inspect, pause, or permanently purge all records.
+                  Weebly does not sell personal information, does not show ads, and does not retain raw audio recordings. Caregivers have full rights to inspect, pause, or permanently purge all records.
                 </p>
               </div>
             </div>
@@ -143,7 +143,7 @@ export default function CaregiverConsentPage() {
                   className="w-4 h-4 mt-0.5 accent-[#0E87E3] rounded"
                 />
                 <span>
-                  I confirm I am the legal parent or guardian and grant permission for my child to use InnerOS Youth in non-clinical educational companion mode.
+                  I confirm I am the legal parent or guardian and grant permission for my child to use Weebly Youth in non-clinical educational companion mode.
                 </span>
               </label>
             </div>

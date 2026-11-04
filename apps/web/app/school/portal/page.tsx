@@ -442,7 +442,7 @@ export default function SchoolPortalPage() {
           <div className="space-y-6 animate-fade-in">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <h2 className="text-xl font-black text-slate-900">Certified Teachers &amp; Educators</h2>
+                <h2 className="text-xl font-black text-slate-900">Assigned Classroom Teachers &amp; Educators</h2>
                 <p className="text-xs text-slate-500 font-medium">
                   Educators licensed to deploy classroom quests and view authorized student progress
                 </p>

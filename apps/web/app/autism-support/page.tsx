@@ -81,7 +81,7 @@ export default function AutismSupportPage() {
           <div className="p-4 rounded-2xl bg-teal-50 border border-teal-200 text-teal-900 text-xs sm:text-sm flex items-start space-x-3 shadow-xs">
             <AlertCircle className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" />
             <p>
-              <strong>Neurodiversity Commitment:</strong> InnerOS never diagnoses autism, calculates &quot;autism risk&quot;, or uses coercive behavioral suppression. We honor harmless self-soothing behaviors, special interests, and diverse communication methods.
+              <strong>Neurodiversity Commitment:</strong> Weebly never diagnoses autism, calculates &quot;autism risk&quot;, or uses coercive behavioral suppression. We honor harmless self-soothing behaviors, special interests, and diverse communication methods.
             </p>
           </div>
         </section>
@@ -145,7 +145,7 @@ export default function AutismSupportPage() {
                 href="/youth/visual-supports"
                 className="inline-flex items-center space-x-2 text-sm font-bold text-[#0F766E] hover:underline"
               >
-                <span>View Full AAC Communication Suite in InnerOS Kids</span>
+                <span>View Full AAC Communication Suite in Weebly Kids</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>

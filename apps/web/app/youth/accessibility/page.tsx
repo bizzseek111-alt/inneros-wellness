@@ -24,7 +24,7 @@ export default function AccessibilitySettingsPage() {
   const [announcementMsg, setAnnouncementMsg] = useState("");
 
   const testScreenReader = () => {
-    setAnnouncementMsg("Screen reader live announcement verified: InnerOS Youth accessibility features active.");
+    setAnnouncementMsg("Screen reader live announcement verified: Weebly Youth accessibility features active.");
     setTimeout(() => setAnnouncementMsg(""), 4000);
   };
 

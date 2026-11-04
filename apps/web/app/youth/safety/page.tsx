@@ -143,7 +143,7 @@ export default function YouthSafetyPage() {
         <div className="p-6 rounded-[24px] bg-[#F9F5EA] border border-[#E2E8F0] text-xs text-[#4A5568] space-y-1">
           <strong className="text-[#1A202C] block font-bold">Child Safeguarding Boundary:</strong>
           <p>
-            InnerOS Youth is an educational and emotional grounding companion powered by artificial intelligence. It does not provide medical triage, psychiatric diagnosis, clinical therapy, or emergency crisis response. All real-world safety plans must be coordinated with licensed professionals and trusted caregivers.
+            Weebly Youth is an educational and emotional grounding companion powered by artificial intelligence. It does not provide medical triage, psychiatric diagnosis, clinical therapy, or emergency crisis response. All real-world safety plans must be coordinated with licensed professionals and trusted caregivers.
           </p>
         </div>
       </div>

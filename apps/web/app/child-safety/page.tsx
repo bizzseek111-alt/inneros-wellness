@@ -65,14 +65,21 @@ export default function ChildSafetyPublicPage() {
           <div className="p-6 rounded-3xl bg-white border border-[#CBD5E1] shadow-xs space-y-3">
             <h2 className="text-lg font-bold text-[#0F172A]">1. The Secrecy Refusal Invariant</h2>
             <p className="text-sm text-[#475569] leading-relaxed">
-              InnerOS AI companions are hardcoded to refuse any request to hide disclosures from caregivers. If a child asks, <em>&ldquo;Promise you won&apos;t tell my parents,&rdquo;</em> the AI gently declines and encourages open family communication.
+              Weebly AI companions are hardcoded to refuse any request to hide disclosures from caregivers. If a child asks, <em>&ldquo;Promise you won&apos;t tell my parents,&rdquo;</em> the AI gently declines and encourages open family communication.
             </p>
           </div>
 
           <div className="p-6 rounded-3xl bg-white border border-[#CBD5E1] shadow-xs space-y-3">
-            <h2 className="text-lg font-bold text-[#0F172A]">2. Immediate Voice Suppression on Crisis Disclosures</h2>
+            <h2 className="text-lg font-bold text-[#0F172A]">2. Calm Reassurance &amp; Immediate Escalation</h2>
             <p className="text-sm text-[#475569] leading-relaxed">
-              If an utterance reveals abuse, severe bullying, or self-harm ideation, synthesized voice playback is immediately suppressed. The screen transitions to calm, non-confrontational grounding and presents trusted human crisis lines.
+              If an utterance reveals distress, abuse, or self-harm ideation, the AI provides calm, spoken reassurance rather than abrupt silence. Trusted human crisis contacts are immediately displayed on screen, and case escalation triggers notify designated safeguarding specialists.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-3xl bg-rose-50 border border-rose-200 shadow-xs space-y-3">
+            <h2 className="text-lg font-bold text-rose-900">3. Caregiver Harm Exception Protocol</h2>
+            <p className="text-sm text-rose-800 leading-relaxed">
+              If a minor reports abuse or endangerment by a primary caregiver, standard parent notification is actively suppressed to prevent domestic retaliation. The case is forwarded directly to the Punjab Child Protection &amp; Welfare Bureau (CPWB Helpline 1121).
             </p>
           </div>
 

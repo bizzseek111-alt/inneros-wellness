@@ -545,7 +545,7 @@ export default function InvestorDemoPage() {
                     <span className="text-xs font-black uppercase text-emerald-400">
                       3,000-Question Relational Bank
                     </span>
-                    <span className="text-[10px] text-slate-500">v2.4.0 Certified</span>
+                    <span className="text-[10px] text-slate-500">v2.4.0 Verified Release</span>
                   </div>
 
                   {statsData ? (
