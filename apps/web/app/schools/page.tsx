@@ -65,6 +65,13 @@ export default function SchoolsPage() {
 
             <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
               <Link
+                href="/schools/onboarding"
+                className="px-8 py-3.5 rounded-full bg-emerald-700 text-white font-bold text-sm hover:bg-emerald-800 shadow-md transition-all inline-flex items-center space-x-2"
+              >
+                <span>8-Step School Setup Wizard</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
                 href="/school/portal"
                 className="px-8 py-3.5 rounded-full bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 shadow-md transition-all inline-flex items-center space-x-2"
               >

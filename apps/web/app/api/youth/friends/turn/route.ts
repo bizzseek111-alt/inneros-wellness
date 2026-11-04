@@ -12,7 +12,12 @@ export interface ToolAction {
     | "set_conversation_language"
     | "apply_sensory_preferences"
     | "show_learning_progress"
-    | "suggest_offline_activity";
+    | "suggest_offline_activity"
+    | "start_creative_drawing"
+    | "start_sports_drill"
+    | "open_interactive_cartoon"
+    | "start_tech_discovery"
+    | "start_life_skills_mission";
   route?: string;
   label: string;
   icon?: string;
@@ -271,6 +276,155 @@ function evaluateToolRouting(
         params: { language: "en" },
       },
       confirmationReply: "Awesome! Let's talk in English. What would you like to explore today?",
+    };
+  }
+
+  // V6 VOICE-TO-ACTIVITY ROUTING
+  // 1. "Teach me football." -> Move & Play
+  if (
+    lower.includes("football") ||
+    lower.includes("soccer") ||
+    lower.includes("teach me football") ||
+    lower.includes("sports drill") ||
+    utterance.includes("فٹ بال") ||
+    utterance.includes("کھیل سکھاؤ")
+  ) {
+    const replies = {
+      ur: "زبردست! فٹ بال کا کھیل اور جسمانی توازن سیکھتے ہیں۔ لومی آپ کے ساتھ فٹ بال کی پریکٹس شروع کر رہی ہے!",
+      pa: "شاباش! آؤ فٹ بال دی سچی سچی پریکٹس کریے۔ میں موو اینڈ پلے گراؤنڈ کھول ریا واں!",
+      en: "Awesome! Let's lace up and learn some fun football footwork and balance drills in Move & Play!",
+    };
+    return {
+      action: {
+        tool: "start_sports_drill",
+        route: "/youth/play?world=move-play&activity=football-fundamentals",
+        label: "Start Football Drill",
+        icon: "⚽",
+      },
+      confirmationReply: replies[normalizedLang as "ur" | "pa" | "en"] || replies.en,
+    };
+  }
+
+  // 2. "Let's make a cartoon." -> Story Adventure / Interactive Cartoon Player
+  if (
+    lower.includes("cartoon") ||
+    lower.includes("make a cartoon") ||
+    lower.includes("animated story") ||
+    utterance.includes("کارٹون") ||
+    utterance.includes("کارٹون بنائیں")
+  ) {
+    const replies = {
+      ur: "واہ! کارٹون بنانے اور دیکھنے کا وقت! میا کے ساتھ انٹرایکٹو کارٹون تھیٹر کھل رہا ہے۔",
+      pa: "واہ جی واہ! آؤ رل کے کارٹون ویکھیئے تے فیصلے کریے۔ کارٹون تھیٹر حاضر اے!",
+      en: "Yay! Let's launch our interactive cartoon theater with Mia where you get to decide what happens next!",
+    };
+    return {
+      action: {
+        tool: "open_interactive_cartoon",
+        route: "/youth/stories?cartoon=true",
+        label: "Open Cartoon Theater",
+        icon: "🎬",
+      },
+      confirmationReply: replies[normalizedLang as "ur" | "pa" | "en"] || replies.en,
+    };
+  }
+
+  // 3. "Help me draw a dinosaur." -> Creative Studio Guided Drawing
+  if (
+    (lower.includes("draw") && lower.includes("dinosaur")) ||
+    lower.includes("help me draw") ||
+    lower.includes("drawing canvas") ||
+    utterance.includes("ڈائنوسار بنائیں") ||
+    utterance.includes("ڈرائنگ میں مدد")
+  ) {
+    const replies = {
+      ur: "ڈائنوسار کی ڈرائنگ! چلیے کری ایٹو اسٹوڈیو میں چلتے ہیں، میں آپ کو قدم بہ قدم ڈائنوسار بنانا سکھاتی ہوں۔",
+      pa: "ڈائنوسار دی تصویر! آؤ کری ایٹو اسٹوڈیو چلیے، میں تہاڈے نال رنگ بھرواں گی۔",
+      en: "Rawr! Let's draw an awesome friendly dinosaur together in the Creative Studio step-by-step!",
+    };
+    return {
+      action: {
+        tool: "start_creative_drawing",
+        route: "/youth/play?world=creative-studio&activity=draw-dinosaur",
+        label: "Open Dinosaur Canvas",
+        icon: "🎨",
+      },
+      confirmationReply: replies[normalizedLang as "ur" | "pa" | "en"] || replies.en,
+    };
+  }
+
+  // 4. "Tell me a real story about space." -> Tech & Discovery / Space Story
+  if (
+    (lower.includes("story") && lower.includes("space")) ||
+    lower.includes("real story about space") ||
+    lower.includes("tell me about space") ||
+    utterance.includes("خلا کی کہانی") ||
+    utterance.includes("ستاروں کی کہانی")
+  ) {
+    const replies = {
+      ur: "خلا کا سچا سفر! چلیے زین کے ساتھ کائنات اور سیاروں کے دلچسپ راز دریافت کرتے ہیں۔",
+      pa: "خلا دی سچی کہانی! آؤ زین نال تاریاں تے سیاریاں دی سیر کریے۔",
+      en: "Blast off! Zayn has a true adventure about planets, rockets, and the mysteries of deep space ready for you!",
+    };
+    return {
+      action: {
+        tool: "open_story",
+        route: "/youth/stories?story=space-voyage",
+        label: "Launch Space Voyage",
+        icon: "🚀",
+      },
+      confirmationReply: replies[normalizedLang as "ur" | "pa" | "en"] || replies.en,
+    };
+  }
+
+  // 5. "I am having trouble with my friends." -> Life & Friendship
+  if (
+    lower.includes("trouble with my friends") ||
+    lower.includes("friend trouble") ||
+    lower.includes("fight with friend") ||
+    lower.includes("left out") ||
+    lower.includes("excluded") ||
+    utterance.includes("دوستوں سے مسئلہ") ||
+    utterance.includes("لڑائی ہو گئی")
+  ) {
+    const replies = {
+      ur: "دوستی میں اونچ نیچ ہونا قدرتی بات ہے، لیکن آپ اکیلے نہیں ہیں۔ آئیے لائف اینڈ فرینڈشپ میں مل کر راستہ تلاش کریں۔",
+      pa: "دوستاں نال کدے کدے مسئلہ ہو جاندا اے، پر تسیں پریشان نہ ہووو۔ آؤ گل کریے۔",
+      en: "Friendship bumps happen, and you are not alone. Let's explore feelings and gentle ways to solve it in Life & Friendship.",
+    };
+    return {
+      action: {
+        tool: "start_life_skills_mission",
+        route: "/youth/emotions?world=life-friendship&topic=friendship-conflict",
+        label: "Friendship Bridge",
+        icon: "🤝",
+      },
+      confirmationReply: replies[normalizedLang as "ur" | "pa" | "en"] || replies.en,
+    };
+  }
+
+  // 6. "Show me how computers work." -> Tech & Discovery AI & Coding Basics
+  if (
+    lower.includes("how computers work") ||
+    lower.includes("show me computers") ||
+    lower.includes("learn coding") ||
+    lower.includes("ai literacy") ||
+    utterance.includes("کمپیوٹر کیسے کام کرتا ہے") ||
+    utterance.includes("کوڈنگ")
+  ) {
+    const replies = {
+      ur: "کمپیوٹرز اور اے آئی کی دلچسپ دنیا! آئیے ٹیک اینڈ ڈسکوری میں دیکھیں کہ کمپیوٹر بٹس اور کوڈ کیسے کام کرتے ہیں۔",
+      pa: "کمپیوٹر دی دنیا! آؤ ویکھیئے کوڈنگ کیویں ہوندی اے۔ ٹیک اینڈ ڈسکوری کھول رہیا واں!",
+      en: "Computers run on curiosity and logic! Let's explore how binary codes and smart AI assistants work in Tech & Discovery!",
+    };
+    return {
+      action: {
+        tool: "start_tech_discovery",
+        route: "/youth/activities?category=science&topic=how-computers-work",
+        label: "Explore How Computers Work",
+        icon: "💻",
+      },
+      confirmationReply: replies[normalizedLang as "ur" | "pa" | "en"] || replies.en,
     };
   }
 

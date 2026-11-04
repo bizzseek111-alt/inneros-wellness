@@ -82,10 +82,12 @@ const EXPECTED_ROUTE_PAGES = [
   "app/youth/friends/page.tsx",
   "app/youth/play/page.tsx",
   "app/investor-demo/page.tsx",
+  "app/demo/page.tsx",
+  "app/schools/onboarding/page.tsx",
   "app/offline/page.tsx",
 ];
 
-test("All 72 adult, marketing, kids, teens, AI friends, investor demo, portals, and offline route page files exist and export default components", () => {
+test("All adult, marketing, kids, teens, AI friends, interactive demo, school onboarding, portals, and offline route page files exist and export default components", () => {
   for (const relPath of EXPECTED_ROUTE_PAGES) {
     const fullPath = path.join(WEB_ROOT, relPath);
     assert.ok(fs.existsSync(fullPath), `Missing route file: ${relPath}`);

@@ -188,6 +188,13 @@ export default function SchoolPortalPage() {
 
           <div className="flex items-center space-x-3">
             <Link
+              href="/schools/onboarding"
+              className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-black transition-colors flex items-center space-x-1.5 shadow-xs"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Onboarding Wizard</span>
+            </Link>
+            <Link
               href="/teacher/dashboard"
               className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black transition-colors"
             >
