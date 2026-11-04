@@ -87,6 +87,7 @@ const EXPECTED_ROUTE_PAGES = [
   "app/offline/page.tsx",
   "app/inneros/dashboard/page.tsx",
   "app/inneros/safety/page.tsx",
+  "app/professional/portal/page.tsx",
 ];
 
 test("All adult, marketing, kids, teens, AI friends, interactive demo, school onboarding, portals, and offline route page files exist and export default components", () => {
@@ -326,4 +327,14 @@ test("V8 Compliance & Transparency: /school/portal labels demonstration metrics 
   assert.match(portalContent, /FERPA (&amp;|&) COPPA Aligned Architecture/, "Must accurately claim aligned architecture");
   assert.match(portalContent, /Simulated Institutional Demonstration Data/, "Must label mock data banner transparently");
 });
+
+test("V8 Professional Support Portal: /professional/portal enforces clinical boundary and safeguarding protocol", () => {
+  const profPath = path.join(WEB_ROOT, "app/professional/portal/page.tsx");
+  const profContent = fs.readFileSync(profPath, "utf8");
+  assert.match(profContent, /Professional Clinical Boundary/, "Must display clinical boundary banner");
+  assert.match(profContent, /NEVER generate\s*psychiatric diagnoses/, "Must enforce non-diagnostic AI invariant");
+  assert.match(profContent, /Caregiver Harm Notification Exception Protocol/, "Must include caregiver harm protocol");
+  assert.match(profContent, /CPWB Punjab/, "Must reference regional Punjab child protection helpline");
+});
+
 

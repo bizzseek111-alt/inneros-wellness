@@ -32,6 +32,9 @@ from app.domains.educational_support.router import router as educational_support
 from app.domains.academy.router import router as academy_router
 from app.domains.youth_governance.router import router as youth_governance_router
 from app.domains.commerce.router import router as commerce_router
+from app.domains.curriculum_rag.router import router as curriculum_rag_router
+from app.domains.professional_support.router import router as professional_support_router
+from app.domains.voice_system.router import router as voice_system_router
 
 
 @asynccontextmanager
@@ -119,6 +122,9 @@ app.include_router(educational_support_router, prefix="/api/v1")
 app.include_router(academy_router, prefix="/api/v1")
 app.include_router(youth_governance_router, prefix="/api/v1")
 app.include_router(commerce_router, prefix="/api/v1")
+app.include_router(curriculum_rag_router, prefix="/api/v1")
+app.include_router(professional_support_router, prefix="/api/v1")
+app.include_router(voice_system_router, prefix="/api/v1")
 
 
 if __name__ == "__main__":

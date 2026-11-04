@@ -498,4 +498,212 @@ class EducationalActivityEventModel(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
 
 
+# =============================================================================
+# WEEBLY V8: CURRICULUM RAG & SOURCE PROVENANCE MODELS (Module 3 & 4)
+# =============================================================================
+
+class CurriculumSourceDocumentModel(Base):
+    """Source documents for Punjab and regional curriculum with copyright and review tracking."""
+    __tablename__ = "curriculum_source_documents"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    source_document: Mapped[str] = mapped_column(String(255), nullable=False)
+    source_version: Mapped[str] = mapped_column(String(32), default="2025-2026", nullable=False)
+    license_permission: Mapped[str] = mapped_column(String(120), default="Public Educational Standard PCTB", nullable=False)
+    board: Mapped[str] = mapped_column(String(120), default="Punjab Curriculum and Textbook Board (PCTB)", nullable=False)
+    grade: Mapped[str] = mapped_column(String(32), nullable=False)  # Grade 1 through Grade 8
+    subject: Mapped[str] = mapped_column(String(64), nullable=False)  # Mathematics, General Science, etc.
+    review_status: Mapped[str] = mapped_column(String(32), default="approved", nullable=False)  # drafted, reviewed, approved, rejected
+    reviewer: Mapped[Optional[str]] = mapped_column(String(120), nullable=True)
+    citation: Mapped[str] = mapped_column(String(255), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
+
+
+class CurriculumChunkModel(Base):
+    """Pedagogical chunks indexed for grounded tutoring with anti-injection protections."""
+    __tablename__ = "curriculum_chunks"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    source_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    board: Mapped[str] = mapped_column(String(120), default="Punjab Curriculum and Textbook Board (PCTB)", index=True, nullable=False)
+    grade: Mapped[str] = mapped_column(String(32), index=True, nullable=False)
+    subject: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    chapter: Mapped[str] = mapped_column(String(120), nullable=False)
+    topic: Mapped[str] = mapped_column(String(160), nullable=False)
+    learning_objective: Mapped[str] = mapped_column(String(255), nullable=False)
+    language: Mapped[str] = mapped_column(String(16), default="en", index=True, nullable=False)  # en, ur, pa
+    chunk_text: Mapped[str] = mapped_column(Text, nullable=False)
+    embedding_json: Mapped[str] = mapped_column(Text, default="[]", nullable=False)
+    review_status: Mapped[str] = mapped_column(String(32), default="approved", nullable=False)
+    reviewer: Mapped[Optional[str]] = mapped_column(String(120), nullable=True)
+    citation: Mapped[str] = mapped_column(String(255), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
+
+
+class RetrievalAuditLogModel(Base):
+    """Audit log verifying RAG provenance, citation attribution, and anti-injection defenses."""
+    __tablename__ = "retrieval_audit_logs"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    query: Mapped[str] = mapped_column(Text, nullable=False)
+    board: Mapped[str] = mapped_column(String(120), default="Punjab Curriculum and Textbook Board (PCTB)", nullable=False)
+    grade: Mapped[str] = mapped_column(String(32), nullable=False)
+    subject: Mapped[str] = mapped_column(String(64), nullable=False)
+    language: Mapped[str] = mapped_column(String(16), default="en", nullable=False)
+    retrieved_chunk_ids_json: Mapped[str] = mapped_column(Text, default="[]", nullable=False)
+    citations_json: Mapped[str] = mapped_column(Text, default="[]", nullable=False)
+    sanitized_tutoring_response: Mapped[str] = mapped_column(Text, nullable=False)
+    provenance_verified: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    anti_injection_triggered: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
+
+
+# =============================================================================
+# WEEBLY V8: WELLBEING, EARLY SUPPORT & PROFESSIONAL PORTAL MODELS (Module 8 & 12)
+# =============================================================================
+
+class ParentObservationModel(Base):
+    """Parent observation diary entries (strictly non-diagnostic; factual observations)."""
+    __tablename__ = "parent_observations"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    parent_user_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    child_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    category: Mapped[str] = mapped_column(String(64), default="general", nullable=False)  # focus, sleep, sensory, social, emotion
+    observation_text: Mapped[str] = mapped_column(Text, nullable=False)
+    context_setting: Mapped[str] = mapped_column(String(64), default="home", nullable=False)  # home, morning_routine, play, homework
+    accommodations_tried: Mapped[str] = mapped_column(Text, default="", nullable=False)
+    is_diagnostic: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)  # Invariant: NEVER diagnostic
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
+
+
+class TeacherObservationModel(Base):
+    """Teacher classroom observations regarding engagement and accommodations."""
+    __tablename__ = "teacher_observations"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    teacher_user_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    student_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    classroom_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    domain: Mapped[str] = mapped_column(String(64), default="engagement", nullable=False)  # engagement, peer_interaction, executive_function, accommodations
+    observation_text: Mapped[str] = mapped_column(Text, nullable=False)
+    supports_offered: Mapped[str] = mapped_column(Text, default="", nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
+
+
+class ProfessionalProfileModel(Base):
+    """Verified professional credential registry for licensed clinicians and child specialists."""
+    __tablename__ = "professional_profiles"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    user_id: Mapped[str] = mapped_column(String(64), unique=True, index=True, nullable=False)
+    full_name: Mapped[str] = mapped_column(String(160), nullable=False)
+    license_number: Mapped[str] = mapped_column(String(64), nullable=False)
+    issuing_authority: Mapped[str] = mapped_column(String(160), nullable=False)
+    jurisdiction: Mapped[str] = mapped_column(String(64), nullable=False)
+    specialties_json: Mapped[str] = mapped_column(Text, default="[]", nullable=False)
+    verification_status: Mapped[str] = mapped_column(String(32), default="verified", nullable=False)  # verified, pending, revoked
+    verified_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
+
+
+class SupportCaseModel(Base):
+    """Authorized early support cases with case-level privacy and safeguarding overrides."""
+    __tablename__ = "support_cases"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    case_number: Mapped[str] = mapped_column(String(32), unique=True, index=True, nullable=False)
+    child_pseudonym_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    referral_source: Mapped[str] = mapped_column(String(64), default="parent", nullable=False)  # parent, school, caregiver
+    assigned_professional_id: Mapped[Optional[str]] = mapped_column(String(64), index=True, nullable=True)
+    status: Mapped[str] = mapped_column(String(32), default="intake", nullable=False)  # intake, consent_verified, in_review, support_plan_active, closed
+    parental_consent_verified: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    caregiver_harm_suspected: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)  # If True: do NOT notify caregiver
+    support_recommendations_json: Mapped[str] = mapped_column(Text, default="[]", nullable=False)
+    follow_up_date: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, onupdate=_utc_now, nullable=False)
+
+
+class ProfessionalNoteModel(Base):
+    """Protected clinical case notes accessible exclusively to authorized assigned professionals."""
+    __tablename__ = "professional_notes"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    case_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    author_professional_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    note_type: Mapped[str] = mapped_column(String(64), default="observation_analysis", nullable=False)  # intake_review, observation_analysis, support_plan, follow_up
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    access_restricted_to_clinicians: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
+
+
+# =============================================================================
+# WEEBLY V8: SCHOOL COMMAND CENTER & SUBMISSIONS (Module 10 & 11)
+# =============================================================================
+
+class SchoolCampusModel(Base):
+    """Institutional school campuses with multi-tenant isolation."""
+    __tablename__ = "school_campuses"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    school_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(160), nullable=False)
+    grades_served: Mapped[str] = mapped_column(String(64), default="Pre-K to Grade 5", nullable=False)
+    address_city: Mapped[str] = mapped_column(String(120), default="Lahore", nullable=False)
+    lead_administrator: Mapped[str] = mapped_column(String(120), nullable=False)
+    license_tier: Mapped[str] = mapped_column(String(64), default="Institutional District Pack", nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
+
+
+class SchoolProgramModel(Base):
+    """Educational program assignments linked to curriculum boards."""
+    __tablename__ = "school_programs"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    campus_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    program_name: Mapped[str] = mapped_column(String(160), nullable=False)
+    curriculum_board: Mapped[str] = mapped_column(String(120), default="Punjab Curriculum and Textbook Board (PCTB)", nullable=False)
+    target_grades: Mapped[str] = mapped_column(String(64), default="Grade 1 to 5", nullable=False)
+    active_worlds_json: Mapped[str] = mapped_column(Text, default="[\"creative_studio\",\"brain_quest\",\"move_and_play\"]", nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
+
+
+class AssignmentSubmissionModel(Base):
+    """Student activity completion records for educator assignments."""
+    __tablename__ = "assignment_submissions"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    assignment_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    student_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    status: Mapped[str] = mapped_column(String(32), default="completed", nullable=False)  # submitted, reviewed, completed
+    hints_used: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    teacher_feedback: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    completed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
+
+
+# =============================================================================
+# WEEBLY V8: VOICE PROVIDER ABSTRACTION & CHARACTER PROFILES (Module 14)
+# =============================================================================
+
+class VoiceCharacterProfileModel(Base):
+    """Character voice profiles supporting multi-provider fallback and Punjabi validation."""
+    __tablename__ = "voice_character_profiles"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    character_id: Mapped[str] = mapped_column(String(32), index=True, nullable=False)  # kai, mia, lumi, zayn
+    primary_provider: Mapped[str] = mapped_column(String(32), default="openai_realtime", nullable=False)  # openai_realtime, elevenlabs, azure_speech, webspeech
+    model: Mapped[str] = mapped_column(String(64), default="gpt-4o-realtime", nullable=False)
+    voice_id: Mapped[str] = mapped_column(String(64), default="alloy", nullable=False)
+    language: Mapped[str] = mapped_column(String(16), default="en", index=True, nullable=False)  # en, ur, pa
+    speaking_rate: Mapped[float] = mapped_column(default=0.95, nullable=False)  # Gentle child-friendly pace
+    style: Mapped[str] = mapped_column(String(64), default="friendly_encouraging", nullable=False)
+    fallback_provider: Mapped[str] = mapped_column(String(32), default="webspeech", nullable=False)
+    approved_status: Mapped[str] = mapped_column(String(32), default="approved", nullable=False)  # approved, testing, drafted
+    native_speaker_validated: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
+
+
 
