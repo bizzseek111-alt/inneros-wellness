@@ -92,7 +92,7 @@ export default function LoginPage() {
           </span>
           <div>
             <span className="font-serif text-xl font-medium tracking-tight block leading-none">
-              InnerOS
+              Weebly
             </span>
             <span className="text-xs text-[#52625E] block mt-0.5">
               Personal Wellbeing Sanctuary
@@ -117,7 +117,7 @@ export default function LoginPage() {
           </div>
 
           <h1 className="font-serif text-3xl font-medium text-[#263330] tracking-tight">
-            Sign in to InnerOS
+            Sign in to Weebly
           </h1>
           <p className="text-sm text-[#52625E] mt-2 leading-relaxed">
             Your reflections, personal memory vault, and growth intentions remain private and under your control.
@@ -251,7 +251,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-sm text-[#52625E] mt-6">
-          New to InnerOS?{" "}
+          New to Weebly?{" "}
           <Link href="/signup" className="text-[#285B55] font-medium hover:underline">
             Create your private account
           </Link>

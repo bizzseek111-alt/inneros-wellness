@@ -12,7 +12,20 @@ const PUBLIC_MARKETING_ROUTES = new Set([
   "/safety",
   "/explore",
   "/design-system",
+  "/parents",
+  "/schools",
+  "/adhd-support",
+  "/autism-support",
+  "/emotional-intelligence",
+  "/cognitive-development",
+  "/languages",
+  "/research",
+  "/privacy",
+  "/terms",
+  "/child-safety",
+  "/accessibility",
 ]);
+
 
 const AUTH_ROUTES = new Set(["/login", "/signup", "/onboarding"]);
 
@@ -26,21 +39,36 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isAdminRoute = pathname.startsWith("/admin");
+  const isKidsRoute = pathname.startsWith("/kids");
+  const isTeensRoute = pathname.startsWith("/teens");
+  const isYouthRoute = pathname.startsWith("/youth");
+  const isCaregiverRoute = pathname.startsWith("/caregiver") || pathname.startsWith("/parent");
+  const isTeacherRoute = pathname.startsWith("/teacher");
   const isAuthRoute = AUTH_ROUTES.has(pathname);
   const isPublicRoute = PUBLIC_MARKETING_ROUTES.has(pathname);
 
   const routeTier = isAdminRoute
     ? "admin_console"
-    : isAuthRoute
-      ? "auth"
-      : isPublicRoute
-        ? "public_marketing"
-        : "sanctuary_app";
+    : isKidsRoute
+      ? "kids_sanctuary"
+      : isTeensRoute
+        ? "teens_sanctuary"
+        : isYouthRoute
+          ? "youth_sanctuary"
+          : isCaregiverRoute
+            ? "caregiver_portal"
+            : isTeacherRoute
+              ? "teacher_portal"
+              : isAuthRoute
+                ? "auth"
+                : isPublicRoute
+                  ? "public_marketing"
+                  : "sanctuary_app";
 
   const enforceStrictAuth = process.env.NEXT_PUBLIC_ENFORCE_STRICT_AUTH === "true";
   const hasSessionCookie = Boolean(request.cookies.get("inneros_session")?.value);
 
-  if (enforceStrictAuth && (routeTier === "sanctuary_app" || routeTier === "admin_console") && !hasSessionCookie) {
+  if (enforceStrictAuth && (routeTier === "sanctuary_app" || routeTier === "admin_console" || routeTier === "caregiver_portal") && !hasSessionCookie) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("next", pathname);
     return NextResponse.redirect(loginUrl);
@@ -60,5 +88,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|icons|sw\\.js|manifest\\.webmanifest|api/).*)"],
 };

@@ -27,6 +27,11 @@ from app.domains.voice.router import router as voice_router
 from app.domains.reminders.router import router as reminders_router
 from app.domains.integrations.router import router as integrations_router
 from app.domains.admin.router import router as admin_router
+from app.domains.youth_companion.router import router as youth_companion_router
+from app.domains.educational_support.router import router as educational_support_router
+from app.domains.academy.router import router as academy_router
+from app.domains.youth_governance.router import router as youth_governance_router
+from app.domains.commerce.router import router as commerce_router
 
 
 @asynccontextmanager
@@ -109,6 +114,11 @@ app.include_router(voice_router, prefix="/api/v1")
 app.include_router(reminders_router, prefix="/api/v1")
 app.include_router(integrations_router, prefix="/api/v1")
 app.include_router(admin_router, prefix="/api/v1")
+app.include_router(youth_companion_router, prefix="/api/v1")
+app.include_router(educational_support_router, prefix="/api/v1")
+app.include_router(academy_router, prefix="/api/v1")
+app.include_router(youth_governance_router, prefix="/api/v1")
+app.include_router(commerce_router, prefix="/api/v1")
 
 
 if __name__ == "__main__":

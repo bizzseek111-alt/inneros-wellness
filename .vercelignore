@@ -1,0 +1,10 @@
+# Python and local sqlite database files
+*.db
+*.sqlite
+inneros.db
+apps/api/inneros.db
+apps/api/backups/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/

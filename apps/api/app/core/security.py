@@ -7,6 +7,23 @@ from pydantic import BaseModel
 from fastapi import Cookie, Depends, Header, HTTPException, status
 
 
+class UserRole:
+    """Canonical role definitions for InnerOS Adult, Kids, Teens & Oversight Ecosystem."""
+    CHILD = "child"                  # InnerOS Kids (ages 6-12, tactile/guided, COPPA-scoped)
+    TEEN = "teen"                    # InnerOS Teens (ages 13-17, emotional autonomy, privacy-first)
+    USER = "user"                    # InnerOS Adult (standard adult sanctuary user)
+    CAREGIVER = "caregiver"          # Parent/legal guardian (consent governance, zero transcript snooping)
+    TEACHER = "teacher"              # Educator (aggregate wellbeing metrics, classroom grounding)
+    CLINICIAN = "clinician"          # External licensed therapist (read-only consent-delegated summary)
+    SAFEGUARDING = "safeguarding"    # Certified child-safety / safeguarding response officer
+    SUPPORT = "support"              # Platform support specialist
+    CONTENT_REVIEWER = "content_reviewer"  # Psychoeducation & knowledge reviewer
+    ADMIN = "admin"                  # Full platform steward
+
+    MINOR_ROLES = {CHILD, TEEN}
+    OVERSIGHT_ROLES = {CAREGIVER, TEACHER, CLINICIAN, SAFEGUARDING}
+
+
 class UserContext(BaseModel):
     user_id: str
     tenant_id: str
@@ -15,6 +32,8 @@ class UserContext(BaseModel):
     is_active: bool = True
     role: str = "user"
     is_synthetic_fallback: bool = False
+    guardian_id: Optional[str] = None
+    age_tier: Optional[str] = "adult"  # "child", "teen", "adult"
 
 
 # Synthetic default user for development & demonstrations
@@ -99,11 +118,12 @@ def require_role(allowed_roles: List[str]) -> Callable:
     async def _role_guard(user: UserContext = Depends(get_current_user)) -> UserContext:
         # If caller authenticated with a session token or passed explicit identity/role headers,
         # strictly enforce role membership.
-        if not user.is_synthetic_fallback and user.role not in allowed_roles:
+        if user.role not in allowed_roles:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail=f"Insufficient permissions. Required role: {', '.join(allowed_roles)}. Current role: {user.role}.",
             )
         return user
+
 
     return _role_guard

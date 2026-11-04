@@ -72,6 +72,13 @@ class Settings(BaseSettings):
     SAFETY_ENGINE_ENABLED: bool = True
     DEFAULT_REGION: str = "US"
 
+    # Youth Sanctuary & Child Safety Policy Controls
+    ENABLE_YOUTH_PUBLIC_ACCESS: bool = False  # Production public access disabled pending safeguarding review
+    YOUTH_SAFEGUARDING_REVIEW_PENDING: bool = True
+    YOUTH_MAX_TURNS_PER_SESSION_KIDS: int = 15
+    YOUTH_MAX_TURNS_PER_SESSION_TEENS: int = 25
+    YOUTH_DAILY_MINUTES_LIMIT: int = 30
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

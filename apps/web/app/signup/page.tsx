@@ -83,7 +83,7 @@ export default function SignupPage() {
           </span>
           <div>
             <span className="font-serif text-xl font-medium tracking-tight block leading-none">
-              InnerOS
+              Weebly
             </span>
             <span className="text-xs text-[#52625E] block mt-0.5">
               Personal Wellbeing Sanctuary
@@ -108,7 +108,7 @@ export default function SignupPage() {
           </div>
 
           <h1 className="font-serif text-3xl font-medium text-[#263330] tracking-tight">
-            Create your InnerOS sanctuary
+            Create your Weebly sanctuary
           </h1>
           <p className="text-sm text-[#52625E] mt-2 leading-relaxed">
             Set up a calm, private space for voice and text reflection, personal memory control, and evidence-informed psychology learning.
@@ -130,7 +130,7 @@ export default function SignupPage() {
                 htmlFor="signup-name"
                 className="block text-sm font-medium text-[#263330] mb-1.5"
               >
-                How should InnerOS address you?
+                How should Weebly address you?
               </label>
               <div className="relative">
                 <User className="w-4 h-4 text-[#687873] absolute left-4 top-1/2 -translate-y-1/2" />
@@ -252,7 +252,7 @@ export default function SignupPage() {
       <footer className="max-w-2xl w-full mx-auto text-center text-xs text-[#52625E] flex items-center justify-center gap-2">
         <ShieldCheck className="w-4 h-4 text-[#285B55] shrink-0" />
         <span>
-          InnerOS is an educational emotional wellbeing companion, not a medical device or licensed clinical provider.
+          Weebly is an educational emotional wellbeing companion, not a medical device or licensed clinical provider.
         </span>
       </footer>
     </div>

@@ -1,1730 +1,741 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import {
-  MarketingShell,
-  useMarketingLocale,
-} from "@/components/marketing/MarketingShell";
-import { InteractiveHeroPreview } from "@/components/marketing/InteractiveHeroPreview";
-import { trackMarketingEvent } from "@/lib/marketing-analytics";
+import { motion, AnimatePresence } from "framer-motion";
+import { MarketingShell } from "@/components/marketing/MarketingShell";
+import { LumiMascot } from "@/components/youth/LumiMascot";
 import {
   Sparkles,
   ArrowRight,
-  ArrowUpRight,
-  Mic,
-  MessageCircle,
-  BookOpen,
-  Bookmark,
-  Clock,
   ShieldCheck,
   Heart,
+  Brain,
+  MessageCircle,
+  Users,
   Compass,
-  Sprout,
-  Globe,
   CheckCircle2,
-  Lock,
-  LifeBuoy,
-  Activity,
-  Calendar,
+  Clock,
   Layers,
-  Sliders,
+  Volume2,
+  Lock,
   ChevronDown,
+  Smile,
+  Zap,
+  Globe,
+  School,
+  Check,
+  AlertCircle,
+  Calendar,
+  VolumeX,
+  Eye,
+  Sliders,
+  HelpCircle,
+  ArrowUpRight
 } from "lucide-react";
 
-const HOW_IT_WORKS_PREVIEW = [
-  {
-    step: "01",
-    title: "Check in with your voice",
-    desc: "Speak naturally with the voice companion or write a few lines about what is on your mind in any of 8 languages.",
-    accent: "bg-[#EEF4FF] text-[#2B4CDE] border border-[#DCE7FE]",
-  },
-  {
-    step: "02",
-    title: "Choose your companion style",
-    desc: "Pick whether you want your companion to Just Listen, Help You Understand, Help You Settle, or Guide Problem-Solving.",
-    accent: "bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0]",
-  },
-  {
-    step: "03",
-    title: "Reflect and uncover patterns",
-    desc: "Explore gentle journaling prompts, emotional wave graphs, and evidence-informed psychology concepts.",
-    accent: "bg-[#F5F3FF] text-[#7C3AED] border border-[#DDD6FE]",
-  },
-  {
-    step: "04",
-    title: "Set values-aligned intentions",
-    desc: "Break down personal growth milestones into calm, realistic steps anchored to what truly matters to you.",
-    accent: "bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A]",
-  },
-  {
-    step: "05",
-    title: "Review your Life Graph memory",
-    desc: "Revisit your user-approved memories, connections, and reflections without streak guilt or anxiety.",
-    accent: "bg-[#FFF1F2] text-[#E11D48] border border-[#FECDD3]",
-  },
-];
-
-const PSYCHOLOGY_PILLARS = [
-  {
-    dept: "Acceptance & Commitment (ACT)",
-    summary: "Step back from heavy thoughts with cognitive defusion, mindfulness, and values-aligned action.",
-    tier: "Tier 1 Meta-Analysis",
-    pillBg: "bg-[#EEF4FF] text-[#2B4CDE] border border-[#DCE7FE]",
-  },
-  {
-    dept: "Somatic & Polyvagal Regulation",
-    summary: "Settle sympathetic nervous system activation through paced breathwork, vagus nerve cues, and grounding.",
-    tier: "Peer-Reviewed Clinical",
-    pillBg: "bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0]",
-  },
-  {
-    dept: "Cognitive Behavioral Framing",
-    summary: "Identify all-or-nothing cognitive distortions gently without self-judgment or rigid grading.",
-    tier: "Tier 1 Systematic Review",
-    pillBg: "bg-[#F5F3FF] text-[#7C3AED] border border-[#DDD6FE]",
-  },
-  {
-    dept: "Relational & Attachment Clarity",
-    summary: "Navigate interpersonal boundaries, difficult conversations, and attachment styles with warmth.",
-    tier: "Evidence-Graded Guide",
-    pillBg: "bg-[#F5F3FF] text-[#7C3AED] border border-[#DDD6FE]",
-  },
-];
-
-const FAQS = [
-  {
-    q: "How does the AI voice companion understand my emotions?",
-    a: "InnerOS pairs acoustic cadence detection and semantic emotional analysis in real-time. It notices shifts like fatigue, hesitation, or anxiety and adjusts its vocal warmth and pacing naturally—just like speaking with a thoughtful, attentive friend.",
-  },
-  {
-    q: "Can I speak to InnerOS in different languages?",
-    a: "Yes. InnerOS natively detects and responds in your language without requiring manual switching, supporting English, Spanish, French, German, Arabic, Urdu, Bulgarian, and Hindi across 30 spoken accents.",
-  },
-  {
-    q: "Is my personal reflection data kept private and confidential?",
-    a: "Strictly. Your reflections, journal entries, and voice transcripts are encrypted and stored in your private sanctuary. We never sell your data, never display third-party advertisements, and never use personal reflections to train public models.",
-  },
-  {
-    q: "What is the difference between Core and Full Adaptive Sanctuary?",
-    a: "Core is 100% free forever and includes daily check-ins, private journaling, text companion with 5 modes, and full GDPR export. Full Adaptive Sanctuary adds unlimited real-time voice sessions, the interactive Visual Life Graph, and the 17-department evidence psychology library.",
-  },
-  {
-    q: "Is InnerOS a replacement for professional therapy or medical care?",
-    a: "No. InnerOS is an evidence-informed reflective companion and wellness tracking sanctuary. It provides evidence-graded self-reflection tools, but does not provide psychiatric diagnoses or medical treatments. 24/7 crisis helplines are prominently accessible worldwide at any time.",
-  },
-];
-
-function MarketingHomeContent() {
-  const { localeConfig, openCrisisModal } = useMarketingLocale();
-  const [billingAnnual, setBillingAnnual] = useState(true);
+export default function WorldClassHomePage() {
+  // State for interactive sections
+  const [selectedAgeBand, setSelectedAgeBand] = useState<"2-5" | "6-9" | "10-12" | "13-18">("6-9");
+  const [selectedFeeling, setSelectedFeeling] = useState<string | null>("Calm");
+  const [previewDialect, setPreviewDialect] = useState<"ur" | "pa" | "ur-Latn" | "en">("ur");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const [activeModeIdx, setActiveModeIdx] = useState(0);
-  const heroVideoRef = useRef<HTMLVideoElement>(null);
-  const lifeGraphVideoRef = useRef<HTMLVideoElement>(null);
 
-  useEffect(() => {
-    [heroVideoRef, lifeGraphVideoRef].forEach((ref) => {
-      if (ref.current) {
-        ref.current.muted = true;
-        ref.current.defaultMuted = true;
-        const playPromise = ref.current.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {});
-        }
-      }
-    });
-  }, []);
-
-  const modes = [
-    {
-      name: "Just Listen",
-      desc: "Zero unsolicited advice. Warm, validating presence when you simply need to be heard.",
-      angle: "25%",
+  // Section 2: Who It Is For Cards
+  const AGE_BANDS = {
+    "2-5": {
+      title: "Little Explorers (Ages 2–5)",
+      badge: "Caregiver-Mediated & Play-Based",
+      desc: "Designed to be experienced alongside a parent or educator. Large picture tiles, soothing narrated audio stories, and guided somatic breathing. No raw or unsupervised AI conversation.",
+      features: [
+        "Shared caregiver-child activities",
+        "Large illustrated touch tiles",
+        "Bedtime breathing stories",
+        "Zero open-ended text chat"
+      ],
+      color: "from-[#FDF2F8] to-[#FFF1F2] border-[#FBCFE8] text-[#9D174D]",
+      ctaLink: "/kids",
+      ctaText: "Explore Early Childhood"
     },
-    {
-      name: "Help Me Understand",
-      desc: "Gentle Socratic questions that help untangle complex emotions and recurring patterns.",
-      angle: "50%",
+    "6-9": {
+      title: "Curious Learners (Ages 6–9)",
+      badge: "Guided Emotion Discovery",
+      desc: "Friendly mascot Lumi guides children to name what they feel, explore visual routines, and learn empathy through interactive moral dilemma stories.",
+      features: [
+        "Feelings Wheel vocabulary games",
+        "First / Then routine task boards",
+        "Friendly mascot co-regulation",
+        "15-turn anti-addiction limits"
+      ],
+      color: "from-[#F0FDF4] to-[#ECFDF5] border-[#BBF7D0] text-[#166534]",
+      ctaLink: "/kids",
+      ctaText: "Explore Kids Sanctuary"
     },
-    {
-      name: "Help Me Settle",
-      desc: "Slow somatic pacing, 4-4-4-4 box breathing, and sensory grounding when overwhelmed.",
-      angle: "75%",
+    "10-12": {
+      title: "Growing Navigators (Ages 10–12)",
+      badge: "Resilience & Peer Dynamics",
+      desc: "Scaffolding for pre-teens navigating school friendships, academic pressure, emotional self-awareness, and step-by-step problem-solving.",
+      features: [
+        "Executive function study pacing",
+        "Conflict resolution scenarios",
+        "Perspective-taking exercises",
+        "Bilingual English & Urdu support"
+      ],
+      color: "from-[#EFF6FF] to-[#DBEAFE] border-[#BFDBFE] text-[#1E40AF]",
+      ctaLink: "/kids",
+      ctaText: "Explore Pre-Teen Academy"
     },
-    {
-      name: "Help Me Solve",
-      desc: "Practical, low-pressure next steps and boundary scripts when you are ready for action.",
-      angle: "100%",
-    },
-  ];
-
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: "InnerOS",
-    applicationCategory: "LifestyleApplication",
-    operatingSystem: "Web",
-    description:
-      "Multilingual AI emotional wellbeing and personal life companion supporting reflection, personal growth, everyday stress, and gentle routines.",
+    "13-18": {
+      title: "Adolescent Navigators (Ages 13–18)",
+      badge: "Autonomy, Identity & Life Skills",
+      desc: "A respectful, mature experience without childish mascots. Private self-reflection journals, digital well-being tracking, exam anxiety strategies, and healthy boundary tools.",
+      features: [
+        "Private developmental journaling",
+        "Cognitive reframing of self-criticism",
+        "Digital well-being & screen balance",
+        "Confidential 24/7 crisis helplines"
+      ],
+      color: "from-[#F5F3FF] to-[#EDE9FE] border-[#DDD6FE] text-[#6D28D9]",
+      ctaLink: "/teens",
+      ctaText: "Explore Weebly Teens"
+    }
   };
 
+  // Section 4: Developmental Areas
+  const DEVELOPMENTAL_AREAS = [
+    {
+      title: "Emotional Intelligence",
+      icon: Heart,
+      desc: "Affect labeling, somatic breath resets, and self-compassion inspired by Lieberman & CASEL frameworks.",
+      accent: "bg-[#FDF2F8] text-[#BE185D] border-[#FCE7F3]",
+      link: "/emotional-intelligence"
+    },
+    {
+      title: "Cognitive Problem-Solving",
+      icon: Brain,
+      desc: "Working memory recall, sequential planning, and lateral inquiry grounded in Baddeley's memory model.",
+      accent: "bg-[#EEF2FF] text-[#4F46E5] border-[#E0E7FF]",
+      link: "/cognitive-development"
+    },
+    {
+      title: "Communication & Empathy",
+      icon: MessageCircle,
+      desc: "Active listening, perspective taking, and non-violent communication across diverse peer groups.",
+      accent: "bg-[#ECFDF5] text-[#059669] border-[#D1FAE5]",
+      link: "/emotional-intelligence"
+    },
+    {
+      title: "ADHD Executive Support",
+      icon: Zap,
+      desc: "Micro-step task breakdowns, visual circular timers, and dopamine-friendly movement breaks.",
+      accent: "bg-[#FFFBEB] text-[#D97706] border-[#FEF3C7]",
+      link: "/adhd-support"
+    },
+    {
+      title: "Autism & AAC Picture Symbols",
+      icon: Layers,
+      desc: "Tap-to-communicate visual tiles, literal clear instructions, and low-stimulation sensory modes.",
+      accent: "bg-[#F0FDFA] text-[#0D9488] border-[#CCFBF1]",
+      link: "/autism-support"
+    },
+    {
+      title: "Multilingual Voice & Text",
+      icon: Globe,
+      desc: "Culturally natural dialogue in Urdu, Pakistani Punjabi Shahmukhi, Roman transliterations, and English.",
+      accent: "bg-[#F8FAFC] text-[#334155] border-[#E2E8F0]",
+      link: "/languages"
+    }
+  ];
+
+  // Section 6: Multilingual Previews
+  const MULTILINGUAL_DATA = {
+    ur: {
+      lang: "Urdu (اردو)",
+      direction: "rtl",
+      child: "امی کہتی ہیں کہ مجھے ریاضی سے گھبرانا نہیں چاہیے۔",
+      ai: "آپ کی امی بالکل ٹھیک کہہ رہی ہیں۔ جب سوال بڑا ہو تو اسے چھوٹے ٹکڑوں میں تقسیم کرنا مددگار ثابت ہوتا ہے۔ کیا ہم پہلا مرحلہ مل کر دیکھیں؟",
+      note: "Live text & natural Urdu voice synthesis active"
+    },
+    pa: {
+      lang: "Punjabi Shahmukhi (پنجابی)",
+      direction: "rtl",
+      child: "اج اسکول وچ میرے نال کوئی نئیں کھیڈیا۔",
+      ai: "ایہ سن کے دکھ ہویا، پر تسیں اکلے نئیں او۔ آؤ پہلے اک لمبا ساہ لئیے، فیر گل کردے آں کہ کل کیویں نویں دوست بنائے جا سکدے نیں۔",
+      note: "Honest text-only fallback status (Audio synthesis in validation)"
+    },
+    "ur-Latn": {
+      lang: "Roman Urdu",
+      direction: "ltr",
+      child: "Mujhe school ki presentation se darr lag raha hai.",
+      ai: "Presentation se pehle nervous feel hona bilkul normal hai. Chalein 3 baar volcano breath lete hain taake dil ki raftaar calm ho sake.",
+      note: "Full Romanized conversational understanding"
+    },
+    en: {
+      lang: "English",
+      direction: "ltr",
+      child: "I got upset because my tower fell down.",
+      ai: "It can feel so frustrating when something you built knocks over! It is okay to take a slow breath. Would you like to build an even stronger base together?",
+      note: "Full bidirectional streaming voice & text"
+    }
+  };
+
+  // Section 10: FAQ items
+  const HOMEPAGE_FAQS = [
+    {
+      q: "How does Weebly preserve the adult application?",
+      a: "Weebly Adults remains completely functional and architecturally segregated. Adult personal growth graphs, journal entries, and check-ins reside in isolated database schemas and are never shared or indexed with child or teen profiles."
+    },
+    {
+      q: "Does the AI ever diagnose psychological conditions?",
+      a: "Never. Under our strict ethical invariants, Weebly AI is hardcoded to refuse any request to diagnose ADHD, autism, depression, or calculate IQ scores. It acts strictly as an educational learning companion and organizational scaffold."
+    },
+    {
+      q: "Can children become addicted or form an unhealthy bond with Lumi?",
+      a: "We actively guard against compulsive use. Lumi explicitly identifies itself as an AI learning tool, refuses to pretend to be human, and never asks for secrets. Sessions enforce a strict 15-turn ceiling that guides children back to offline play and family conversation."
+    },
+    {
+      q: "How do parents verify consent and supervise their children?",
+      a: "In compliance with COPPA and GDPR-K, parents must authenticate their adult account and provide explicit parental consent before any child profile can be activated. Parents can configure daily screen limits and view aggregate learning milestones without violating teen privacy."
+    }
+  ];
+
+  const currentAgeInfo = AGE_BANDS[selectedAgeBand];
+  const currentLangInfo = MULTILINGUAL_DATA[previewDialect];
+
   return (
-    <div className="space-y-0">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
+    <MarketingShell>
+      <div className="bg-[#FAF8F5] min-h-screen text-[#1E293B] overflow-x-hidden">
+        {/* ========================================================================= */}
+        {/* SECTION 1 — HERO: Responsive Hero with Lumi Mascot & Multilingual Intro   */}
+        {/* ========================================================================= */}
+        <section className="relative pt-12 pb-24 px-4 sm:px-6 lg:px-8 border-b border-[#E2E8F0] bg-gradient-to-b from-[#F5EFE6] via-[#FAF8F5] to-white overflow-hidden">
+          {/* Subtle Ambient Decorative Circles */}
+          <div className="absolute top-12 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-r from-emerald-100/40 via-sky-100/40 to-amber-100/40 blur-3xl pointer-events-none -z-10" />
 
-      {/* =====================================================================
-          SECTION 1: HERO SECTION — AI MENTAL WELLNESS PLATFORM (DRIBBLE 27821075)
-          ===================================================================== */}
-      <section className="relative min-h-screen flex flex-col justify-between pt-28 sm:pt-36 pb-16 px-4 sm:px-8 overflow-hidden bg-[#F8FAFC]">
-        {/* Ambient Calming Background Glows */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[550px] bg-[radial-gradient(ellipse_at_center,rgba(43,76,222,0.12),rgba(220,231,254,0.3)_40%,rgba(248,250,252,0)_75%)] blur-2xl" />
-          <div className="absolute top-1/3 left-10 w-96 h-96 bg-[radial-gradient(circle,rgba(56,189,248,0.12),transparent_70%)] blur-3xl" />
-          <div className="absolute top-1/2 right-10 w-96 h-96 bg-[radial-gradient(circle,rgba(139,92,246,0.10),transparent_70%)] blur-3xl" />
-        </div>
-
-        {/* Optional High-Res Hero Video Background with Gentle Soft-Light Overlay */}
-        <div className="absolute inset-0 opacity-[0.07] pointer-events-none overflow-hidden mix-blend-multiply">
-          <video
-            ref={heroVideoRef}
-            className="w-full h-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-          >
-            <source src="/videos/hero-background.mp4" type="video/mp4" />
-            <source
-              src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260511_230229_7c9bc431-46cf-489a-948d-e8144d8eb5d4.mp4"
-              type="video/mp4"
-            />
-          </video>
-        </div>
-
-        <div className="relative z-10 max-w-6xl mx-auto w-full pt-4 sm:pt-8 text-center space-y-6">
-          {/* Eyebrow Pill Badge */}
-          <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-[#EEF4FF] border border-[#DCE7FE] text-[#2B4CDE] text-[12.5px] font-semibold shadow-xs">
-            <Sparkles className="w-3.5 h-3.5 text-[#2B4CDE]" />
-            <span>AI-Driven Mental Health &bull; Personalized Wellness Sanctuary</span>
-          </div>
-
-          {/* Clean Sans Hero Headline with Royal Blue Gradient Accent */}
-          <h1 className="text-4xl sm:text-6xl lg:text-[72px] font-bold text-[#0F172A] tracking-tight leading-[1.06] max-w-4xl mx-auto">
-            Empower your mind with{" "}
-            <span className="text-[#2B4CDE] block mt-1">
-              AI-driven emotional clarity.
-            </span>
-          </h1>
-
-          {/* Subtitle */}
-          <p className="text-[17px] sm:text-[19px] text-[#475569] max-w-2xl mx-auto leading-relaxed">
-            Talk naturally with your empathetic voice companion, track your daily mood shifts, navigate life transitions, and discover science-backed serenity—all in a private, encrypted sanctuary.
-          </p>
-
-          {/* Centered Pill Buttons */}
-          <div className="pt-2 flex flex-wrap items-center justify-center gap-3.5">
-            <Link
-              href="/onboarding"
-              onClick={() =>
-                trackMarketingEvent("cta_start_journey_click", {
-                  location: "hero",
-                })
-              }
-              className="inline-flex items-center space-x-2.5 px-7 py-3.5 rounded-full bg-[#2B4CDE] hover:bg-[#1E3A8A] text-white text-[14.5px] font-semibold transition-all shadow-[0_8px_24px_rgba(43,76,222,0.28)] hover:shadow-[0_12px_32px_rgba(43,76,222,0.38)] group"
-            >
-              <span>{localeConfig.ctaStart}</span>
-              <span className="w-6 h-6 rounded-full bg-white/20 text-white flex items-center justify-center group-hover:translate-x-0.5 transition-transform">
-                <ArrowRight className="w-3.5 h-3.5" />
-              </span>
-            </Link>
-
-            <Link
-              href="/companion/voice"
-              onClick={() =>
-                trackMarketingEvent("cta_open_app_click", { location: "hero" })
-              }
-              className="inline-flex items-center space-x-2 px-6 py-3.5 rounded-full bg-white hover:bg-[#EEF4FF] text-[#0F172A] hover:text-[#2B4CDE] border border-[#DCE7FE] text-[14.5px] font-semibold transition-all shadow-xs"
-            >
-              <Mic className="w-4 h-4 text-[#2B4CDE]" />
-              <span>Explore Voice Companion</span>
-            </Link>
-          </div>
-
-          {/* Trust / Privacy Proof Strip */}
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-2 text-[12.5px] text-[#64748B]">
-            <span className="flex items-center gap-1.5 font-medium">
-              <span className="text-[#F59E0B]">★</span> 4.9/5 from 15,000+ mindful members
-            </span>
-            <span>&bull;</span>
-            <span className="flex items-center gap-1.5 font-medium">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#059669]" />
-              100% HIPAA &amp; GDPR Private
-            </span>
-            <span>&bull;</span>
-            <span className="flex items-center gap-1.5 font-medium">
-              <Lock className="w-3.5 h-3.5 text-[#2B4CDE]" />
-              Zero Model Retraining
-            </span>
-          </div>
-        </div>
-
-        {/* Centerpiece Floating AI Wellness Mockup Bento (Matches Imran Hossen Dribbble Shot) */}
-        <div className="relative z-10 max-w-7xl mx-auto w-full mt-12 grid lg:grid-cols-12 gap-6 items-center">
-          {/* Left Card: Emotional Balance & Wave Analytics */}
-          <div className="lg:col-span-3 rounded-[32px] bg-white border border-[#DCE7FE] p-6 shadow-[0_12px_36px_rgba(43,76,222,0.06)] space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-[12px] uppercase tracking-wider font-semibold text-[#64748B]">
-                Equilibrium Rhythm
-              </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] text-[11px] font-bold border border-[#A7F3D0]">
-                +14% Steady
-              </span>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-[#0F172A]">96.4%</div>
-              <div className="text-[12.5px] text-[#64748B]">
-                Emotional Balance Index
-              </div>
+          <div className="max-w-6xl mx-auto flex flex-col items-center text-center space-y-8">
+            {/* Top Pill Badge */}
+            <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-white border border-[#CBD5E1] shadow-xs text-xs font-semibold text-[#0F766E]">
+              <Sparkles className="w-4 h-4 text-[#0F766E]" />
+              <span>Weebly Youth &bull; Multilingual Developmental Learning for Ages 2–18</span>
             </div>
 
-            {/* Smooth SVG Wave Graph */}
-            <div className="h-24 bg-[#F8FAFC] rounded-2xl p-2.5 flex flex-col justify-end border border-[#E2E8F0] relative overflow-hidden">
-              <svg viewBox="0 0 200 60" className="w-full h-16 overflow-visible">
-                <defs>
-                  <linearGradient id="heroWaveGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#2B4CDE" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="#2B4CDE" stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-                <path
-                  d="M 0 45 Q 35 15, 70 30 T 140 15 T 200 35 L 200 60 L 0 60 Z"
-                  fill="url(#heroWaveGrad)"
-                />
-                <path
-                  d="M 0 45 Q 35 15, 70 30 T 140 15 T 200 35"
-                  fill="none"
-                  stroke="#2B4CDE"
-                  strokeWidth="2.5"
-                />
-                <circle cx="140" cy="15" r="4" fill="#FFFFFF" stroke="#2B4CDE" strokeWidth="2.5" />
-              </svg>
-            </div>
-            <div className="text-[12px] text-[#475569] leading-relaxed">
-              Consistently peaceful morning &amp; evening transitions recorded.
-            </div>
-          </div>
+            {/* Headline */}
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-[#0F172A] max-w-4xl leading-[1.1]">
+              Emotional intelligence, cognitive growth, and calm routines for every child.
+            </h1>
 
-          {/* Center Card: Live AI Mental Health Companion Chat Showcase */}
-          <div className="lg:col-span-6 rounded-[32px] bg-white border border-[#DCE7FE] p-7 shadow-[0_20px_50px_rgba(43,76,222,0.10)] space-y-5">
-            {/* Companion Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-2xl bg-[#2B4CDE] text-white flex items-center justify-center font-bold shadow-xs">
-                  <Sparkles className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <div className="text-[15px] font-bold text-[#0F172A] flex items-center space-x-2">
-                    <span>InnerOS Companion</span>
-                    <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
-                  </div>
-                  <div className="text-[12px] text-[#64748B]">
-                    Active Sanctuary &bull; 8 Languages Live
-                  </div>
-                </div>
-              </div>
-              <span className="px-3 py-1 rounded-full bg-[#EEF4FF] text-[#2B4CDE] text-[12px] font-semibold border border-[#DCE7FE]">
-                Just Listen Mode
-              </span>
-            </div>
-
-            {/* Conversation Bubbles */}
-            <div className="space-y-3.5">
-              {/* User Bubble */}
-              <div className="flex justify-end">
-                <div className="max-w-[85%] px-4 py-3 rounded-2xl rounded-br-sm bg-[#EEF4FF] border border-[#DCE7FE] text-[14.5px] text-[#0F172A] leading-relaxed">
-                  I&apos;ve been feeling quite overwhelmed with work deadlines this week and need a quiet space to reset...
-                </div>
-              </div>
-
-              {/* Companion Bubble */}
-              <div className="flex justify-start">
-                <div className="max-w-[90%] px-4 py-3 rounded-2xl rounded-bl-sm bg-[#F8FAFC] border border-[#E2E8F0] text-[14.5px] text-[#0F172A] leading-relaxed space-y-2">
-                  <p>
-                    I hear you completely. Carrying competing deadlines is exhausting, and you don&apos;t have to solve anything right now.
-                  </p>
-                  <p className="text-[#475569]">
-                    Let&apos;s take a slow breath together. Would you like to unpack what part of today felt the heaviest, or shall we do a 2-minute somatic reset?
-                  </p>
-                </div>
-              </div>
-
-              {/* Detected Emotion Chip */}
-              <div className="flex items-center justify-between pt-1 text-[12px]">
-                <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#ECFDF5] text-[#059669] font-semibold border border-[#A7F3D0]">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>Detected State: Work Strain &bull; Compassionate Pacing Active</span>
-                </span>
-                <span className="text-[#64748B]">Auto-detected</span>
-              </div>
-            </div>
-
-            {/* Simulated Voice Waveform Bar */}
-            <div className="pt-2 flex items-center justify-between p-3 rounded-2xl bg-[#EEF4FF]/70 border border-[#DCE7FE]">
-              <div className="flex items-center space-x-2.5">
-                <div className="w-8 h-8 rounded-full bg-[#2B4CDE] text-white flex items-center justify-center">
-                  <Mic className="w-4 h-4" />
-                </div>
-                <span className="text-[13px] font-semibold text-[#0F172A]">
-                  Natural Voice Turn-Taking
-                </span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <span className="w-1 h-3 rounded-full bg-[#2B4CDE]/60 animate-pulse" />
-                <span className="w-1 h-5 rounded-full bg-[#2B4CDE] animate-pulse" />
-                <span className="w-1 h-7 rounded-full bg-[#2B4CDE] animate-pulse" />
-                <span className="w-1 h-4 rounded-full bg-[#2B4CDE]/80 animate-pulse" />
-                <span className="w-1 h-2 rounded-full bg-[#2B4CDE]/40 animate-pulse" />
-              </div>
-            </div>
-          </div>
-
-          {/* Right Card: Mindful Somatic Reset & Sleep */}
-          <div className="lg:col-span-3 space-y-5">
-            {/* Top Right: Box Breathing Somatic Cue */}
-            <div className="rounded-[32px] bg-white border border-[#DCE7FE] p-6 shadow-[0_12px_36px_rgba(43,76,222,0.06)] space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-[12px] uppercase tracking-wider font-semibold text-[#64748B]">
-                  Somatic Reset
-                </span>
-                <span className="px-2.5 py-0.5 rounded-full bg-[#EEF4FF] text-[#2B4CDE] text-[11px] font-bold border border-[#DCE7FE]">
-                  Box Pacing
-                </span>
-              </div>
-
-              <div className="flex items-center space-x-4">
-                <div className="relative w-14 h-14 rounded-full border-4 border-[#2B4CDE]/20 flex items-center justify-center shrink-0">
-                  <div className="w-10 h-10 rounded-full bg-[#EEF4FF] flex items-center justify-center text-[#2B4CDE] font-bold text-xs animate-breathe">
-                    4s
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[14px] font-bold text-[#0F172A]">
-                    4-4-4-4 Breathwork
-                  </div>
-                  <div className="text-[12px] text-[#64748B]">
-                    Settles vagus nerve in 60s
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Right: Sleep & Circadian Rhythm */}
-            <div className="rounded-[32px] bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white p-6 shadow-[0_12px_36px_rgba(15,23,42,0.12)] space-y-4">
-              <div className="flex items-center justify-between text-[12px] text-slate-300">
-                <span>Rest &amp; Circadian Rhythm</span>
-                <span className="px-2 py-0.5 rounded-full bg-white/10 text-[#38BDF8] font-medium text-[11px]">
-                  Protected
-                </span>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-white">8h 12m</div>
-                <div className="text-[12.5px] text-slate-400">
-                  Rest Window &bull; Quiet Hours active
-                </div>
-              </div>
-              <div className="text-[12px] text-slate-300 leading-relaxed pt-1 border-t border-slate-700">
-                Non-urgent prompts automatically paused between 22:00 and 08:00.
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================================
-          SECTION 2: TRUST & CLINICAL CREDIBILITY METRICS BAR
-          ===================================================================== */}
-      <section className="py-12 px-4 sm:px-8 bg-white border-y border-[#DCE7FE]/60">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div className="space-y-1">
-            <div className="text-3xl sm:text-4xl font-extrabold text-[#2B4CDE]">
-              120,000+
-            </div>
-            <div className="text-[13.5px] font-medium text-[#475569]">
-              Mindful Reflections Supported
-            </div>
-          </div>
-          <div className="space-y-1">
-            <div className="text-3xl sm:text-4xl font-extrabold text-[#059669]">
-              96.4%
-            </div>
-            <div className="text-[13.5px] font-medium text-[#475569]">
-              Reported Emotional Calm
-            </div>
-          </div>
-          <div className="space-y-1">
-            <div className="text-3xl sm:text-4xl font-extrabold text-[#7C3AED]">
-              17 Departments
-            </div>
-            <div className="text-[13.5px] font-medium text-[#475569]">
-              Evidence-Graded Psychology
-            </div>
-          </div>
-          <div className="space-y-1">
-            <div className="text-3xl sm:text-4xl font-extrabold text-[#0F172A]">
-              100% Private
-            </div>
-            <div className="text-[13.5px] font-medium text-[#475569]">
-              HIPAA &amp; GDPR Data Ownership
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================================
-          SECTION 3: ABOUT US / EMPOWER YOUR INNER STRENGTH (DRIBBLE AESTHETIC)
-          ===================================================================== */}
-      <section className="relative py-24 sm:py-32 px-4 sm:px-8 bg-[#F0F5FF] text-[#0F172A] overflow-hidden">
-        <div className="max-w-4xl mx-auto text-center space-y-6 relative z-10">
-          <span className="inline-flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-[#EEF4FF] text-[#2B4CDE] border border-[#DCE7FE] text-[12px] font-bold uppercase tracking-wider">
-            <span>Our Philosophy</span>
-          </span>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.08] text-[#0F172A]">
-            Awareness is your <br />
-            <span className="text-[#2B4CDE] font-semibold">
-              greatest inner strength.
-            </span>
-          </h2>
-          <p className="text-[17px] sm:text-[19px] text-[#475569] leading-relaxed max-w-2xl mx-auto">
-            Most wellbeing tools track rigid streaks and numbers. Few help you understand what drives how you feel. InnerOS turns everyday conversations, voice reflections, and somatic check-ins into gentle self-awareness—revealing the connections behind your energy, boundaries, and calm.
-          </p>
-          <div className="pt-3">
-            <Link
-              href="/about"
-              className="inline-flex items-center space-x-2 px-7 py-3.5 rounded-full bg-[#2B4CDE] text-white hover:bg-[#1E3A8A] text-[14.5px] font-semibold transition-all shadow-md"
-            >
-              <span>Read Our Philosophy</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================================
-          SECTION 4: OPERATE WITH INTENT — 3 WELLNESS ANALYTICS CARDS
-          ===================================================================== */}
-      <section className="relative py-24 px-4 sm:px-8 bg-[#F8FAFC] text-[#0F172A] overflow-hidden">
-        <div className="max-w-7xl mx-auto space-y-14 relative z-10">
-          <div className="text-center max-w-3xl mx-auto space-y-4">
-            <span className="inline-flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-[#EEF4FF] text-[#2B4CDE] border border-[#DCE7FE] text-[12px] font-bold uppercase tracking-wider">
-              <span>Reflect With Intent</span>
-            </span>
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight leading-[1.1] text-[#0F172A]">
-              Notice your emotional shifts <br />
-              <span className="text-[#2B4CDE]">
-                before burnout reaches you.
-              </span>
-            </h2>
-            <p className="text-[17px] text-[#475569] leading-relaxed">
-              Instead of reacting after exhaustion sets in, InnerOS connects your daily check-ins, journal reflections, and sleep-friendly quiet hours so you can rest with intention.
+            {/* Multilingual Sub-headline */}
+            <p className="text-lg sm:text-xl text-[#475569] max-w-2xl leading-relaxed">
+              Safe, non-addictive AI learning companions in English, Urdu, and Pakistani Punjabi. Designed with pediatric psychologists and grounded in CASEL evidence.
             </p>
-          </div>
 
-          {/* 3 Crisp Wellness Cards (Dribbble 27821075) */}
-          <div className="grid md:grid-cols-3 gap-7">
-            {/* Card 1: Emotional Clarity Index (Bar Chart) */}
-            <div className="rounded-[32px] bg-white border border-[#DCE7FE] p-7 flex flex-col justify-between space-y-8 shadow-[0_12px_36px_rgba(43,76,222,0.06)] hover:border-[#2B4CDE]/50 transition-all">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between text-[13px] text-[#64748B]">
-                  <span className="font-medium">Equilibrium Rhythm</span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-[#EEF4FF] text-[#2B4CDE] font-bold text-[11.5px] border border-[#DCE7FE]">
-                    +14% Steady
-                  </span>
-                </div>
-                <div className="text-4xl font-extrabold text-[#0F172A]">4.6 / 5</div>
-
-                {/* Vertical Rounded Bar Chart in Royal Blue & Cyan */}
-                <div className="h-36 flex items-end justify-between gap-2.5 pt-6 px-2 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0]">
-                  {[45, 58, 52, 70, 66, 82, 92, 88].map((h, i) => (
-                    <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
-                      <div
-                        className={`w-full rounded-t-lg transition-all ${
-                          i >= 6
-                            ? "bg-[#2B4CDE]"
-                            : i >= 4
-                              ? "bg-[#38BDF8]"
-                              : "bg-[#DCE7FE]"
-                        }`}
-                        style={{ height: `${h}%` }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-1.5 pt-4 border-t border-[#E2E8F0]">
-                <h3 className="text-xl font-bold text-[#0F172A]">
-                  Emotional Clarity
-                </h3>
-                <p className="text-[13.5px] text-[#475569] leading-relaxed">
-                  Shows how consistent check-ins and unhurried journaling support your week-to-week calm.
-                </p>
-              </div>
+            {/* Primary Action Buttons */}
+            <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
+              <Link
+                href="/kids"
+                className="px-8 py-4 rounded-full bg-[#0F766E] text-white font-bold text-base hover:bg-[#115E59] shadow-lg hover:shadow-xl transition-all inline-flex items-center space-x-2.5"
+              >
+                <span>Explore Weebly Kids</span>
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+              <Link
+                href="/caregiver/dashboard"
+                className="px-8 py-4 rounded-full bg-white text-[#0F766E] font-bold text-base hover:bg-[#F8FAFC] border-2 border-[#CBD5E1] shadow-xs transition-all inline-flex items-center space-x-2"
+              >
+                <Users className="w-5 h-5" />
+                <span>Create Parent Account</span>
+              </Link>
             </div>
 
-            {/* Card 2: Next Energy Drop (SVG Wave) */}
-            <div className="rounded-[32px] bg-white text-[#0F172A] p-7 flex flex-col justify-between space-y-8 shadow-[0_12px_36px_rgba(43,76,222,0.06)] border border-[#DCE7FE]">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between text-[13px] text-[#64748B]">
-                  <span className="font-medium">Rest Window Forecast</span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] font-bold text-[11.5px] border border-[#A7F3D0]">
-                    77% &rarr; 24% Tension
-                  </span>
-                </div>
-
-                {/* Smooth SVG Curve with Callout */}
-                <div className="relative h-44 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0] p-4 flex flex-col justify-between overflow-hidden">
-                  <div className="text-center">
-                    <span className="text-3xl font-extrabold text-[#0F172A]">24%</span>
-                    <span className="block text-[11.5px] text-[#64748B]">
-                      Afternoon Shoulder &amp; Jaw Tension
-                    </span>
-                  </div>
-                  <svg viewBox="0 0 240 70" className="w-full h-20 overflow-visible">
-                    <path
-                      d="M 0 55 Q 40 15, 85 35 T 165 20 T 240 45"
-                      fill="none"
-                      stroke="#2B4CDE"
-                      strokeWidth="3"
-                    />
-                    <circle cx="165" cy="20" r="5" fill="#FFFFFF" stroke="#2B4CDE" strokeWidth="3" />
-                  </svg>
-                  <div className="text-[11.5px] text-center text-[#475569]">
-                    Gentle 2-minute breathwork pause suggested at 15:30
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-1.5 pt-4 border-t border-[#E2E8F0]">
-                <h3 className="text-xl font-bold text-[#0F172A]">
-                  Somatic Pacing Cue
-                </h3>
-                <p className="text-[13.5px] text-[#475569] leading-relaxed">
-                  Anticipates afternoon cognitive fatigue and prepares buffer time around busy schedules.
-                </p>
-              </div>
-            </div>
-
-            {/* Card 3: Routine Stability Readout */}
-            <div className="rounded-[32px] bg-white border border-[#DCE7FE] p-7 flex flex-col justify-between space-y-8 shadow-[0_12px_36px_rgba(43,76,222,0.06)] hover:border-[#2B4CDE]/50 transition-all">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between text-[13px] text-[#64748B]">
-                  <span className="font-medium">Sanctuary Rhythm</span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-[#EEF4FF] text-[#2B4CDE] font-bold text-[11.5px] border border-[#DCE7FE]">
-                    ACTIVE
-                  </span>
-                </div>
-                <div className="text-4xl font-extrabold text-[#0F172A]">79%</div>
-
-                <div className="space-y-2.5 pt-2">
-                  {[
-                    { label: "Morning Breath & Grounding", checked: false },
-                    { label: "Afternoon Boundary Buffer", checked: false },
-                    { label: "Evening Sanctuary Reflection", checked: true },
-                    { label: "Circadian Quiet Hours (22:00)", checked: true },
-                  ].map((item) => (
-                    <div
-                      key={item.label}
-                      className={`px-3.5 py-2.5 rounded-xl border text-[13px] flex items-center space-x-2.5 ${
-                        item.checked
-                          ? "bg-[#EEF4FF] border-[#DCE7FE] text-[#0F172A] font-semibold"
-                          : "bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B]"
-                      }`}
-                    >
-                      <CheckCircle2
-                        className={`w-4 h-4 shrink-0 ${
-                          item.checked ? "text-[#2B4CDE]" : "text-[#94A3B8]"
-                        }`}
-                      />
-                      <span>{item.label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-1.5 pt-4 border-t border-[#E2E8F0]">
-                <h3 className="text-xl font-bold text-[#0F172A]">
-                  Stability Readout
-                </h3>
-                <p className="text-[13.5px] text-[#475569] leading-relaxed">
-                  Celebrates your gentle daily rhythms with zero streak shaming or guilt if you miss a day.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      {/* =====================================================================
-          SECTION 5: AI WELLNESS DASHBOARD BENTO PREVIEW (DRIBBLE 27821075)
-          ===================================================================== */}
-      <section className="py-24 px-4 sm:px-8 bg-[#F0F5FF] text-[#0F172A]">
-        <div className="max-w-7xl mx-auto space-y-12">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-            <div className="space-y-3 max-w-2xl">
-              <span className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-[#EEF4FF] text-[#2B4CDE] border border-[#DCE7FE] text-[12px] font-bold uppercase tracking-wider">
-                <span>Sanctuary Workspace Preview</span>
-              </span>
-              <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#0F172A] leading-[1.1]">
-                Wellbeing Management,{" "}
-                <span className="text-[#2B4CDE]">
-                  designed for calm clarity.
-                </span>
-              </h2>
-              <p className="text-[17px] text-[#475569] leading-relaxed">
-                Step inside a bright, serene personal workspace where your reflections, emotional balance, daily rhythm, and growth intentions live in one harmonious Bento view.
+            {/* Interactive Mascot Spotlight */}
+            <div className="pt-6 flex flex-col items-center space-y-3">
+              <LumiMascot size="lg" state="celebrating" interactive label="Lumi the calm companion" />
+              <p className="text-xs font-semibold text-[#64748B] flex items-center space-x-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Meet Lumi &bull; Non-human, non-prescriptive AI companion</span>
               </p>
             </div>
-            <Link
-              href="/dashboard"
-              className="inline-flex items-center space-x-2 px-7 py-3.5 rounded-full bg-[#2B4CDE] text-white hover:bg-[#1E3A8A] text-[14.5px] font-semibold transition-all self-start lg:self-auto shadow-md"
-            >
-              <span>Open Live Dashboard</span>
-              <ArrowUpRight className="w-4 h-4" />
-            </Link>
           </div>
+        </section>
 
-          {/* Dribbble 3-Column Bento Grid Preview */}
-          <div className="p-6 sm:p-8 rounded-[36px] bg-white border border-[#DCE7FE] shadow-[0_20px_60px_rgba(43,76,222,0.06)]">
-            <div className="grid lg:grid-cols-12 gap-5 items-stretch">
-              {/* Left Column: 3 Metric Cards */}
-              <div className="lg:col-span-3 flex flex-col justify-between gap-5">
-                {/* Card A: Semi-Circular Periwinkle Gauge */}
-                <div className="rounded-[28px] bg-[#F8FAFC] border border-[#DCE7FE] p-6 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[15px] font-bold text-[#0F172A]">
-                      Saved Memories
-                    </span>
-                    <span className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#2B4CDE] border border-[#DCE7FE]">
-                      <Bookmark className="w-4 h-4" />
-                    </span>
-                  </div>
-                  <div className="flex items-end justify-between pt-2">
-                    <div>
-                      <span className="text-[12px] text-[#64748B] block font-medium">
-                        User-Verified
-                      </span>
-                      <span className="text-3xl font-extrabold text-[#0F172A]">
-                        148
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="w-24 h-12 rounded-t-full border-[10px] border-[#2B4CDE] border-b-0 flex items-end justify-center pb-0.5">
-                        <span className="text-[11px] font-bold text-[#2B4CDE]">
-                          +12% &uarr;
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Card B: Mint-Cyan Vertical Bars */}
-                <div className="rounded-[28px] bg-[#F8FAFC] border border-[#DCE7FE] p-6 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[15px] font-bold text-[#0F172A]">
-                      Present Today
-                    </span>
-                    <span className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#059669] border border-[#A7F3D0]">
-                      <CheckCircle2 className="w-4 h-4" />
-                    </span>
-                  </div>
-                  <div className="flex items-end justify-between pt-2">
-                    <div>
-                      <span className="text-[12px] text-[#64748B] block font-medium">
-                        Mindful Minutes
-                      </span>
-                      <span className="text-3xl font-extrabold text-[#0F172A]">
-                        42m
-                      </span>
-                    </div>
-                    <div className="flex items-end space-x-2 h-14">
-                      <div className="w-4 h-7 rounded-t-md bg-[#DCE7FE]" />
-                      <div className="w-4 h-10 rounded-t-md bg-[#38BDF8]" />
-                      <div className="w-4 h-14 rounded-t-md bg-[#059669]" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Card C: Soft Lavender-Rose Smooth Wave */}
-                <div className="rounded-[28px] bg-[#F8FAFC] border border-[#DCE7FE] p-6 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[15px] font-bold text-[#0F172A]">
-                      Active Intentions
-                    </span>
-                    <span className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#7C3AED] border border-[#DDD6FE]">
-                      <Sprout className="w-4 h-4" />
-                    </span>
-                  </div>
-                  <div className="flex items-end justify-between pt-2">
-                    <div>
-                      <span className="text-[12px] text-[#64748B] block font-medium">
-                        This Month
-                      </span>
-                      <span className="text-3xl font-extrabold text-[#0F172A]">
-                        18+
-                      </span>
-                    </div>
-                    <div className="w-28 h-12 rounded-xl bg-gradient-to-t from-[#F5F3FF] to-transparent flex items-start justify-center pt-1 border-b-2 border-[#7C3AED]">
-                      <span className="px-2 py-0.5 rounded-full bg-[#7C3AED] text-white text-[10.5px] font-bold">
-                        Calm Pace
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Center Column: Portrait + Trajectory Chart */}
-              <div className="lg:col-span-5 flex flex-col justify-between gap-5">
-                <div className="relative rounded-[28px] overflow-hidden h-64 sm:h-72 bg-[#EEF4FF] flex items-center justify-center border border-[#DCE7FE]">
-                  <img
-                    src="/images/dashboard-portrait.jpg"
-                    alt="InnerOS Mindful Companion Presence"
-                    className="w-full h-full object-cover object-center"
-                  />
-                  <div className="absolute bottom-3 left-3 right-3 px-4 py-2.5 rounded-2xl bg-white/90 backdrop-blur-md flex items-center justify-between text-[12.5px] border border-white">
-                    <span className="font-bold text-[#0F172A]">
-                      Living Voice &amp; Text Presence
-                    </span>
-                    <span className="px-2.5 py-0.5 rounded-full bg-[#EEF4FF] text-[#2B4CDE] font-bold border border-[#DCE7FE]">
-                      8 Voices Ready
-                    </span>
-                  </div>
-                </div>
-
-                {/* Bottom Center Card: Trajectory Chart */}
-                <div className="rounded-[28px] bg-[#F8FAFC] border border-[#DCE7FE] p-6 space-y-4 flex-1 flex flex-col justify-between">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-[16px] font-bold text-[#0F172A]">
-                        Wellbeing &amp; Clarity Trajectory
-                      </h3>
-                      <div className="flex items-center space-x-3 text-[11.5px] text-[#64748B] mt-1 font-medium">
-                        <span className="inline-flex items-center space-x-1">
-                          <span className="w-2 h-2 rounded-full bg-[#2B4CDE]" />
-                          <span>Clarity</span>
-                        </span>
-                        <span className="inline-flex items-center space-x-1">
-                          <span className="w-2 h-2 rounded-full bg-[#059669]" />
-                          <span>Energy</span>
-                        </span>
-                        <span className="inline-flex items-center space-x-1">
-                          <span className="w-2 h-2 rounded-full bg-[#7C3AED]" />
-                          <span>Rest</span>
-                        </span>
-                      </div>
-                    </div>
-                    <span className="px-3 py-1 rounded-full bg-white border border-[#DCE7FE] text-[12px] font-semibold text-[#0F172A]">
-                      Recent Weeks
-                    </span>
-                  </div>
-
-                  <div className="relative h-28 rounded-2xl bg-white border border-[#DCE7FE] p-3 flex items-center justify-center">
-                    <div className="px-4 py-1.5 rounded-full bg-[#EEF4FF] border border-[#DCE7FE] text-[#2B4CDE] text-[13px] font-bold shadow-xs">
-                      94.2% Steady &bull; Emotionally Grounded
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between text-[11.5px] text-[#64748B] pt-1 font-medium">
-                    <span>Mon</span>
-                    <span>Tue</span>
-                    <span>Wed</span>
-                    <span>Thu</span>
-                    <span className="font-bold text-[#2B4CDE]">Fri</span>
-                    <span>Sat</span>
-                    <span>Sun</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Column: Emotional Balance & Daily Schedule */}
-              <div className="lg:col-span-4 flex flex-col justify-between gap-5">
-                {/* Top Right Card: 96.4% Balance */}
-                <div className="rounded-[28px] bg-[#F8FAFC] border border-[#DCE7FE] p-6 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[15px] font-bold text-[#0F172A]">
-                      Emotional Balance
-                    </span>
-                    <ArrowUpRight className="w-4 h-4 text-[#2B4CDE]" />
-                  </div>
-                  <div className="flex items-baseline space-x-2">
-                    <span className="text-3xl font-extrabold text-[#0F172A]">
-                      96.4%
-                    </span>
-                    <span className="text-[12.5px] text-[#059669] font-bold">
-                      Steady &amp; Grounded
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-3 gap-2 pt-1 text-[11.5px]">
-                    <div className="space-y-1.5">
-                      <span className="text-[#64748B] block font-medium">Grounded</span>
-                      <span className="font-bold text-[#0F172A] block">
-                        24 Days
-                      </span>
-                      <div className="h-4 rounded-md bg-[#EEF4FF] border border-[#DCE7FE]" />
-                    </div>
-                    <div className="space-y-1.5">
-                      <span className="text-[#64748B] block font-medium">Reflective</span>
-                      <span className="font-bold text-[#0F172A] block">
-                        5 Days
-                      </span>
-                      <div className="h-4 rounded-md bg-[#ECFDF5] border border-[#A7F3D0]" />
-                    </div>
-                    <div className="space-y-1.5">
-                      <span className="text-[#64748B] block font-medium">Rested</span>
-                      <span className="font-bold text-[#0F172A] block">
-                        10 Hrs
-                      </span>
-                      <div className="h-4 rounded-md bg-[#F5F3FF] border border-[#DDD6FE]" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bottom Right Card: Gentle Daily Schedule */}
-                <div className="rounded-[28px] bg-[#F8FAFC] border border-[#DCE7FE] p-6 space-y-4 flex-1 flex flex-col justify-between">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[15px] font-bold text-[#0F172A]">
-                      Gentle Schedule
-                    </span>
-                    <span className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#2B4CDE] border border-[#DCE7FE]">
-                      <Calendar className="w-3.5 h-3.5" />
-                    </span>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-3">
-                      <span className="px-2.5 py-1 rounded-full bg-[#EEF4FF] text-[#2B4CDE] text-[11.5px] font-bold border border-[#DCE7FE]">
-                        08:30
-                      </span>
-                      <div className="flex-1 p-3 rounded-2xl bg-white border border-[#DCE7FE] flex items-center justify-between">
-                        <div>
-                          <span className="text-[13px] font-bold text-[#0F172A] block">
-                            Morning Breath &amp; Check-In
-                          </span>
-                          <span className="text-[11.5px] text-[#64748B]">
-                            3 slow physical sensations
-                          </span>
-                        </div>
-                        <span className="px-2 py-0.5 rounded-full bg-[#ECFDF5] text-[11px] font-bold text-[#059669]">
-                          Done
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center space-x-3">
-                      <span className="px-2.5 py-1 rounded-full bg-[#ECFDF5] text-[#059669] text-[11.5px] font-bold border border-[#A7F3D0]">
-                        15:30
-                      </span>
-                      <div className="flex-1 p-3 rounded-2xl bg-white border border-[#DCE7FE] flex items-center justify-between">
-                        <div>
-                          <span className="text-[13px] font-bold text-[#0F172A] block">
-                            Afternoon Boundary Buffer
-                          </span>
-                          <span className="text-[11.5px] text-[#64748B]">
-                            15m quiet transition pause
-                          </span>
-                        </div>
-                        <span className="px-2 py-0.5 rounded-full bg-[#EEF4FF] text-[11px] font-bold text-[#2B4CDE]">
-                          Synced
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center space-x-3">
-                      <span className="px-2.5 py-1 rounded-full bg-[#F5F3FF] text-[#7C3AED] text-[11.5px] font-bold border border-[#DDD6FE]">
-                        21:15
-                      </span>
-                      <div className="flex-1 p-3 rounded-2xl bg-white border border-[#DCE7FE] flex items-center justify-between">
-                        <div>
-                          <span className="text-[13px] font-bold text-[#0F172A] block">
-                            Evening Sanctuary Reflection
-                          </span>
-                          <span className="text-[11.5px] text-[#64748B]">
-                            Quiet hours begin at 22:00
-                          </span>
-                        </div>
-                        <span className="px-2 py-0.5 rounded-full bg-[#F5F3FF] text-[11px] font-bold text-[#7C3AED]">
-                          Protected
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================================
-          SECTION 6: INTERACTIVE LIVE PRODUCT SANDBOX (VOICE, CHAT & MEMORY)
-          ===================================================================== */}
-      <section className="py-24 px-4 sm:px-8 bg-[#F8FAFC] text-[#0F172A] border-t border-[#DCE7FE]/60">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-5 space-y-6">
-            <span className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-[#EEF4FF] text-[#2B4CDE] border border-[#DCE7FE] text-[12px] font-bold uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Interactive Companion Sandbox</span>
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#0F172A] leading-[1.12]">
-              Experience Voice, Text &amp;{" "}
-              <span className="text-[#2B4CDE]">
-                User-Approved Memory.
-              </span>
+        {/* ========================================================================= */}
+        {/* SECTION 2 — WHO IT IS FOR: Interactive 4 Age-Band Experience Cards        */}
+        {/* ========================================================================= */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+          <div className="text-center space-y-3 mb-12">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#0F766E]">Developmental Spectrum</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F172A]">
+              Three tailored experiences, matched to real child development
             </h2>
-            <p className="text-[17px] text-[#475569] leading-relaxed">
-              Test how InnerOS responds in real time. Switch between the Voice Room, Text Conversation modes, and transparent Memory approval right here before creating your account.
+            <p className="text-base text-[#64748B] max-w-xl mx-auto">
+              We never treat a 3-year-old like a teenager. Explore how Weebly adapts to each age bracket.
             </p>
-            <div className="space-y-3 pt-2">
-              <div className="flex items-center space-x-3 text-[14.5px] text-[#0F172A]">
-                <span className="w-6 h-6 rounded-full bg-[#EEF4FF] text-[#2B4CDE] border border-[#DCE7FE] flex items-center justify-center font-bold text-xs">
-                  1
-                </span>
-                <span>Recalls your Journal, Growth Goals &amp; Daily Check-Ins</span>
-              </div>
-              <div className="flex items-center space-x-3 text-[14.5px] text-[#0F172A]">
-                <span className="w-6 h-6 rounded-full bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0] flex items-center justify-center font-bold text-xs">
-                  2
-                </span>
-                <span>Separates tentative AI hypotheses from verified facts</span>
-              </div>
-              <div className="flex items-center space-x-3 text-[14.5px] text-[#0F172A]">
-                <span className="w-6 h-6 rounded-full bg-[#F5F3FF] text-[#7C3AED] border border-[#DDD6FE] flex items-center justify-center font-bold text-xs">
-                  3
-                </span>
-                <span>Built-in Tier-1 &amp; Tier-2 crisis safety circuit breakers</span>
-              </div>
-            </div>
-          </div>
 
-          <div className="lg:col-span-7">
-            <InteractiveHeroPreview />
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================================
-          SECTION 6: THE MIND BEHIND INNEROS — BIOLUMINESCENT LIFE GRAPH (PYKO 00:22)
-      {/* =====================================================================
-          SECTION 7: THE MIND BEHIND INNEROS — VISUAL LIFE GRAPH
-          ===================================================================== */}
-      <section id="life-graph" className="relative py-28 px-4 sm:px-8 bg-[#0F172A] text-white overflow-hidden">
-        {/* High-Resolution Bioluminescent Life Graph Looping Background Video */}
-        <video
-          ref={lifeGraphVideoRef}
-          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none opacity-40 mix-blend-screen"
-          autoPlay
-          muted
-          loop
-          playsInline
-          style={{
-            imageRendering: "-webkit-optimize-contrast",
-            WebkitBackfaceVisibility: "hidden",
-            transform: "translateZ(0)",
-          }}
-        >
-          <source src="/videos/lifegraph-sphere.mp4" type="video/mp4" />
-          <source
-            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260702_102608_5fa1187d-9ac6-44fb-82ab-54376200abc0.mp4"
-            type="video/mp4"
-          />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0F172A] via-transparent to-[#0F172A] pointer-events-none" />
-
-        <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
-          <span className="inline-flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-slate-800 text-[#38BDF8] border border-slate-700 text-[12px] font-bold uppercase tracking-wider">
-            <span>The Memory Engine Behind InnerOS</span>
-          </span>
-          <h2 className="text-4xl sm:text-6xl font-bold tracking-tight leading-[1.08]">
-            Life Graph understands <br />
-            <span className="text-[#38BDF8]">
-              what truly matters to you.
-            </span>
-          </h2>
-
-          {/* Floating Orbital Node Tags around the Sphere */}
-          <div className="py-16 sm:py-24 relative flex items-center justify-center">
-            <div className="flex flex-wrap items-center justify-center gap-3 max-w-2xl">
-              {[
-                "PERSONAL GOALS",
-                "COPING PREFERENCES",
-                "RELATIONSHIPS",
-                "HABITS & ROUTINES",
-                "WORK CONTEXT",
-                "EXPLICIT CONSENT",
-              ].map((tag, idx) => (
-                <span
-                  key={tag}
-                  className={`px-4 py-2 rounded-full text-[12px] font-bold tracking-wider backdrop-blur-xl border ${
-                    idx % 2 === 0
-                      ? "bg-[#2B4CDE]/40 border-[#38BDF8]/60 text-white"
-                      : "bg-slate-800/80 border-slate-700 text-slate-200"
+            {/* Age Band Selector Buttons */}
+            <div className="flex flex-wrap justify-center gap-2 pt-4">
+              {(["2-5", "6-9", "10-12", "13-18"] as const).map((band) => (
+                <button
+                  key={band}
+                  type="button"
+                  onClick={() => setSelectedAgeBand(band)}
+                  className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all ${
+                    selectedAgeBand === band
+                      ? "bg-[#0F766E] text-white shadow-md scale-105"
+                      : "bg-white text-[#475569] border border-[#CBD5E1] hover:bg-[#F1F5F9]"
                   }`}
                 >
-                  {tag}
-                </span>
+                  Ages {band}
+                </button>
               ))}
             </div>
           </div>
 
-          <p className="text-[17px] text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            InnerOS connects your approved memories, journal reflections, and personal intentions into an inspectable visual Life Graph. Every node is transparent, editable, and erasable with a single click.
-          </p>
-
-          <div>
-            <Link
-              href="/memory"
-              className="inline-flex items-center space-x-2 px-7 py-3.5 rounded-full bg-[#2B4CDE] text-white hover:bg-[#1E3A8A] text-[14.5px] font-semibold transition-all shadow-md"
-            >
-              <span>Explore Life Graph</span>
-              <ArrowUpRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================================
-          SECTION 8: SMARTER WAY TO TRACK YOUR PROGRESS (DRIBBLE 27821075)
-          ===================================================================== */}
-      <section className="relative py-24 px-4 sm:px-8 bg-[#F8FAFC] text-[#0F172A] border-t border-[#DCE7FE]/60">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-8 items-center">
-          {/* Left Card */}
-          <div className="lg:col-span-4 rounded-[32px] bg-white border border-[#DCE7FE] p-7 space-y-5 shadow-[0_12px_36px_rgba(43,76,222,0.06)]">
-            <div className="w-10 h-10 rounded-2xl bg-[#EEF4FF] border border-[#DCE7FE] flex items-center justify-center text-[#2B4CDE]">
-              <Activity className="w-5 h-5" />
-            </div>
-            <h3 className="text-xl font-bold text-[#0F172A]">
-              Real-Time Context Recall
-            </h3>
-            <p className="text-[14.5px] text-[#475569] leading-relaxed">
-              Ask your companion about what you wrote in your journal, your active growth steps, or your recent energy check-ins—and receive grounded, context-aware reflections immediately.
-            </p>
-          </div>
-
-          {/* Center Headline */}
-          <div className="lg:col-span-4 text-center space-y-4 px-2">
-            <span className="inline-flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-[#EEF4FF] text-[#2B4CDE] border border-[#DCE7FE] text-[12px] font-bold uppercase tracking-wider">
-              <span>Awareness Dashboard</span>
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-bold tracking-tight leading-[1.1] text-[#0F172A]">
-              Smarter way to <br />
-              <span className="text-[#2B4CDE]">
-                honour your growth
-              </span>
-            </h2>
-            <p className="text-[15px] text-[#475569] leading-relaxed">
-              See the gentle patterns behind your mood, energy, and boundaries without rigid productivity scores.
-            </p>
-          </div>
-
-          {/* Right Card */}
-          <div className="lg:col-span-4 rounded-[32px] bg-white border border-[#DCE7FE] p-7 space-y-5 shadow-[0_12px_36px_rgba(43,76,222,0.06)]">
-            <div className="w-10 h-10 rounded-2xl bg-[#EEF4FF] border border-[#DCE7FE] flex items-center justify-center text-[#2B4CDE]">
-              <Sliders className="w-5 h-5" />
-            </div>
-            <h3 className="text-xl font-bold text-[#0F172A]">
-              Somatic &amp; Energy Pacing
-            </h3>
-            <p className="text-[14.5px] text-[#475569] leading-relaxed">
-              Measures how restorative your daily routines feel and automatically silences non-urgent prompts during your circadian quiet hours.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================================
-          SECTION 9: THE COMPANION ENGINE THAT ADAPTS TO HOW YOU FEEL
-          ===================================================================== */}
-      <section className="relative py-28 px-4 sm:px-8 bg-[#EEF4FF]/70 text-[#0F172A] overflow-hidden border-t border-[#DCE7FE]/60">
-        <div className="max-w-6xl mx-auto space-y-12 relative z-10">
-          <div className="text-center max-w-3xl mx-auto space-y-4">
-            <span className="inline-flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-white text-[#2B4CDE] border border-[#DCE7FE] text-[12px] font-bold uppercase tracking-wider shadow-xs">
-              <span>Multimodal Companion Engine</span>
-            </span>
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight leading-[1.1] text-[#0F172A]">
-              The companion that adapts <br />
-              <span className="text-[#2B4CDE]">
-                to how you feel.
-              </span>
-            </h2>
-            <p className="text-[17px] text-[#475569] leading-relaxed">
-              InnerOS adjusts its warmth, directness, and conversational mode around your emotional state—whether you want quiet listening, gentle perspective, or structured problem-solving.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Left Card: Semi-Circular Adaptive Dial */}
-            <div className="rounded-[32px] bg-white border border-[#DCE7FE] p-8 flex flex-col justify-between space-y-8 shadow-[0_12px_36px_rgba(43,76,222,0.06)]">
-              <div className="flex flex-col items-center justify-center pt-4">
-                <div className="w-56 h-28 rounded-t-full border-[8px] border-[#2B4CDE] border-b-0 relative flex items-end justify-center pb-2 bg-[#F8FAFC]">
-                  <div className="text-center">
-                    <span className="text-[11px] uppercase tracking-widest text-[#2B4CDE] font-bold block">
-                      Active Mode
-                    </span>
-                    <span className="text-xl font-bold text-[#0F172A]">
-                      {modes[activeModeIdx].name}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex flex-wrap justify-center gap-2 mt-5">
-                  {modes.map((m, idx) => (
-                    <button
-                      key={m.name}
-                      type="button"
-                      onClick={() => setActiveModeIdx(idx)}
-                      className={`px-4 py-2 rounded-full text-[13px] font-semibold transition-all ${
-                        activeModeIdx === idx
-                          ? "bg-[#2B4CDE] text-white shadow-xs"
-                          : "bg-[#F8FAFC] border border-[#DCE7FE] text-[#475569] hover:bg-[#EEF4FF] hover:text-[#2B4CDE]"
-                      }`}
-                    >
-                      {m.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="text-center space-y-2 pt-2 border-t border-[#E2E8F0]">
-                <h3 className="text-xl font-bold text-[#0F172A]">
-                  Adaptive Companion Modes
-                </h3>
-                <p className="text-[14.5px] text-[#475569] leading-relaxed">
-                  {modes[activeModeIdx].desc}
-                </p>
-              </div>
-            </div>
-
-            {/* Right Card: 4-Stage Reflection Cycle */}
-            <div className="rounded-[32px] bg-white border border-[#DCE7FE] p-8 flex flex-col justify-between space-y-8 shadow-[0_12px_36px_rgba(43,76,222,0.06)]">
-              <div className="flex items-center justify-center py-4">
-                <div className="relative w-48 h-48 rounded-full border-2 border-[#DCE7FE] flex items-center justify-center bg-[#F8FAFC]">
-                  <span className="px-3.5 py-1.5 rounded-full bg-[#EEF4FF] text-[12px] font-bold text-[#2B4CDE] border border-[#DCE7FE]">
-                    Voice &amp; Text Loop
-                  </span>
-                  <span className="absolute -top-3 px-3 py-1 rounded-full bg-white border border-[#DCE7FE] text-[11.5px] font-semibold text-[#0F172A]">
-                    Express
-                  </span>
-                  <span className="absolute -bottom-3 px-3 py-1 rounded-full bg-white border border-[#DCE7FE] text-[11.5px] font-semibold text-[#0F172A]">
-                    Integrate
-                  </span>
-                  <span className="absolute -left-6 px-3 py-1 rounded-full bg-white border border-[#DCE7FE] text-[11.5px] font-semibold text-[#0F172A]">
-                    Settle
-                  </span>
-                  <span className="absolute -right-6 px-3 py-1 rounded-full bg-[#2B4CDE] text-white font-bold text-[11.5px] shadow-xs">
-                    Reflect
-                  </span>
-                </div>
-              </div>
-
-              <div className="text-center space-y-2 pt-2 border-t border-[#E2E8F0]">
-                <h3 className="text-xl font-bold text-[#0F172A]">
-                  Seamless Voice &amp; Text Continuity
-                </h3>
-                <p className="text-[14.5px] text-[#475569] leading-relaxed">
-                  Start speaking out loud on an evening walk and continue in written chat or your private journal without losing context.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================================
-          SECTION 10: INNEROS EVOLVES WITH YOU + 5-STEP RHYTHM
-          ===================================================================== */}
-      <section className="py-24 px-4 sm:px-8 bg-[#F8FAFC] text-[#0F172A] border-t border-[#DCE7FE]/60">
-        <div className="max-w-7xl mx-auto space-y-16">
-          {/* Display Header */}
-          <div className="border-b border-[#DCE7FE] pb-10">
-            <div className="text-4xl sm:text-6xl lg:text-[76px] font-bold tracking-tight text-[#0F172A] leading-tight">
-              InnerOS <span className="text-[#2B4CDE]">evolves</span>{" "}
-              <span className="text-[#94A3B8] font-light">&mdash;</span> at your own rhythm.
-            </div>
-          </div>
-
-          <div className="grid lg:grid-cols-12 gap-12 items-start">
-            <div className="lg:col-span-5 space-y-6">
-              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-[#EEF4FF] text-[#2B4CDE] text-[12px] font-semibold border border-[#DCE7FE]">
-                Adaptive Sanctuary
-              </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#0F172A] leading-[1.15]">
-                A platform that <br />
-                <span className="text-[#2B4CDE]">
-                  adapts to you.
+          {/* Active Age Band Detailed Card */}
+          <div className={`p-8 sm:p-12 rounded-3xl bg-gradient-to-br ${currentAgeInfo.color} border shadow-sm space-y-6 transition-all`}>
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-black/10 pb-6">
+              <div>
+                <span className="px-3.5 py-1 rounded-full text-xs font-bold bg-white/80 border border-black/10">
+                  {currentAgeInfo.badge}
                 </span>
-              </h2>
-              <p className="text-[15.5px] text-[#475569] leading-relaxed">
-                InnerOS continuously honours your boundaries, preferred conversational tone, and personal intentions—transforming into a calmer, more relevant space without ever using manipulative gamification or streak pressure.
-              </p>
-              <ul className="space-y-3.5 text-[14.5px] text-[#334155] pt-2">
-                <li className="flex items-center space-x-3">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#2B4CDE] shrink-0" />
-                  <span>Learns your preferred conversational warmth and directness</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#2B4CDE] shrink-0" />
-                  <span>Connects journal reflections and growth steps into chat</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#2B4CDE] shrink-0" />
-                  <span>Respects circadian quiet hours and lock-screen privacy</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* 5-Step Journey Cards */}
-            <div className="lg:col-span-7 grid sm:grid-cols-2 gap-4">
-              {HOW_IT_WORKS_PREVIEW.map((item) => (
-                <div
-                  key={item.step}
-                  className="p-6 rounded-[24px] bg-white border border-[#DCE7FE] shadow-[0_4px_20px_rgba(43,76,222,0.04)] space-y-3 flex flex-col justify-between hover:shadow-[0_8px_30px_rgba(43,76,222,0.08)] transition-all"
-                >
-                  <div className="flex items-center justify-between">
-                    <span
-                      className={`px-3 py-1 rounded-full text-[12px] font-bold ${item.accent}`}
-                    >
-                      Step {item.step}
-                    </span>
-                    <ArrowUpRight className="w-4 h-4 text-[#94A3B8]" />
-                  </div>
-                  <h3 className="text-lg font-bold text-[#0F172A]">
-                    {item.title}
-                  </h3>
-                  <p className="text-[13.5px] text-[#64748B] leading-relaxed">
-                    {item.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================================
-          SECTION 11: 17-DEPARTMENT EVIDENCE-GRADED PSYCHOLOGY LIBRARY
-          ===================================================================== */}
-      <section className="py-24 px-4 sm:px-8 bg-[#F0F5FF] text-[#0F172A]">
-        <div className="max-w-7xl mx-auto space-y-12">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="space-y-3 max-w-2xl">
-              <span className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-[#EEF4FF] text-[#2B4CDE] text-[12px] font-semibold border border-[#DCE7FE]">
-                <Compass className="w-3.5 h-3.5" />
-                <span>17 Psychology Departments</span>
-              </span>
-              <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#0F172A] leading-[1.12]">
-                Peer-reviewed wisdom,{" "}
-                <span className="text-[#2B4CDE]">
-                  never pop-psychology.
-                </span>
-              </h2>
-              <p className="text-[16px] text-[#475569] leading-relaxed">
-                Every educational guide and grounding exercise in InnerOS is graded by evidence quality, cited with APA provenance, and separated from unverified trade literature.
-              </p>
-            </div>
-            <Link
-              href="/knowledge"
-              className="inline-flex items-center space-x-2 px-6 py-3 rounded-full bg-[#2B4CDE] text-white hover:bg-[#1E3A8A] text-[14px] font-semibold shadow-sm hover:shadow-md transition-all self-start md:self-auto"
-            >
-              <span>Browse Psychology Library</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {PSYCHOLOGY_PILLARS.map((item) => (
-              <div
-                key={item.dept}
-                className="bg-white rounded-[24px] p-6 border border-[#DCE7FE] shadow-[0_4px_20px_rgba(43,76,222,0.04)] hover:shadow-[0_8px_30px_rgba(43,76,222,0.08)] transition-all flex flex-col justify-between space-y-6"
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] mt-2">
+                  {currentAgeInfo.title}
+                </h3>
+              </div>
+              <Link
+                href={currentAgeInfo.ctaLink}
+                className="px-6 py-3 rounded-full bg-[#0F172A] text-white text-xs font-bold hover:bg-slate-800 transition-colors inline-flex items-center space-x-1.5"
               >
-                <div className="space-y-3">
-                  <span
-                    className={`inline-block px-3 py-1 rounded-full text-[11.5px] font-bold ${item.pillBg}`}
-                  >
-                    {item.tier}
-                  </span>
-                  <h3 className="text-lg font-bold text-[#0F172A]">
-                    {item.dept}
-                  </h3>
-                  <p className="text-[14px] text-[#64748B] leading-relaxed">
-                    {item.summary}
-                  </p>
+                <span>{currentAgeInfo.ctaText}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            <p className="text-base sm:text-lg text-[#334155] leading-relaxed max-w-3xl">
+              {currentAgeInfo.desc}
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+              {currentAgeInfo.features.map((feat, idx) => (
+                <div key={idx} className="p-4 rounded-2xl bg-white/90 border border-black/5 shadow-xs flex items-center space-x-2 text-xs font-bold text-[#0F172A]">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>{feat}</span>
                 </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* SECTION 3 — HOW IT WORKS: 4-Step Animated Journey                         */}
+        {/* ========================================================================= */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white border-y border-[#E2E8F0]">
+          <div className="max-w-6xl mx-auto space-y-12">
+            <div className="text-center space-y-3">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#0F766E]">Journey to Calm</span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F172A]">
+                How Weebly works for your family in 4 simple steps
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              {[
+                {
+                  step: "01",
+                  title: "Caregiver Setup & Consent",
+                  desc: "Parent authenticates their account and configures verified age-appropriate preferences, screen-time caps, and language settings."
+                },
+                {
+                  step: "02",
+                  title: "Gentle Feeling Check-in",
+                  desc: "Child taps the Feelings Wheel or talks with Lumi in English or Urdu to name what they feel inside their body."
+                },
+                {
+                  step: "03",
+                  title: "Evidence-Based Activity",
+                  desc: "Engage in a 5-minute somatic breathing exercise, visual First/Then routine task, or narrated social story."
+                },
+                {
+                  step: "04",
+                  title: "Warm Offline Wind-Down",
+                  desc: "After 15 turns, Lumi guides the child to take an eye break and do an offline family drawing or outdoor play challenge."
+                }
+              ].map((st, idx) => (
+                <div key={idx} className="p-6 rounded-3xl bg-[#FAF8F5] border border-[#CBD5E1] space-y-3 relative">
+                  <div className="w-10 h-10 rounded-2xl bg-[#0F766E] text-white flex items-center justify-center font-extrabold text-sm">
+                    {st.step}
+                  </div>
+                  <h3 className="text-base font-bold text-[#0F172A]">{st.title}</h3>
+                  <p className="text-xs text-[#475569] leading-relaxed">{st.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* SECTION 4 — DEVELOPMENTAL AREAS: 6 Interactive Focus Areas                */}
+        {/* ========================================================================= */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-12">
+          <div className="text-center space-y-3">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#0F766E]">Curriculum Pillars</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F172A]">
+              Comprehensive developmental scaffolding across 6 core domains
+            </h2>
+            <p className="text-base text-[#64748B] max-w-xl mx-auto">
+              Original educational activities grounded in CASEL, WHO, and Harvard Center on the Developing Child research.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {DEVELOPMENTAL_AREAS.map((area, idx) => {
+              const Icon = area.icon;
+              return (
                 <Link
-                  href="/knowledge"
-                  className="inline-flex items-center space-x-1.5 text-[13.5px] font-semibold text-[#2B4CDE] hover:text-[#1E3A8A]"
+                  key={idx}
+                  href={area.link}
+                  className="p-8 rounded-3xl bg-white border border-[#CBD5E1] shadow-xs hover:shadow-md hover:-translate-y-1 transition-all space-y-4 group"
                 >
-                  <span>Read guide</span>
+                  <div className={`w-12 h-12 rounded-2xl border flex items-center justify-center ${area.accent}`}>
+                    <Icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-bold text-[#0F172A] group-hover:text-[#0F766E] transition-colors flex items-center justify-between">
+                    <span>{area.title}</span>
+                    <ArrowRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#0F766E] transition-colors" />
+                  </h3>
+                  <p className="text-xs text-[#475569] leading-relaxed">{area.desc}</p>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* SECTION 5 — INCLUSIVE LEARNING: ADHD, Autism & Sensory Accommodations     */}
+        {/* ========================================================================= */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-[#F0FDFA] border-t border-[#E2E8F0]">
+          <div className="max-w-6xl mx-auto space-y-12">
+            <div className="text-center space-y-3">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#0D9488]">Neurodiversity-Affirming Space</span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F172A]">
+                Inclusive learning designed for diverse attention and sensory needs
+              </h2>
+              <p className="text-sm sm:text-base text-[#64748B] max-w-2xl mx-auto">
+                No pathology labels, no forced eye contact, and no coercive compliance. Real accommodations for executive function and sensory differences.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="p-8 rounded-3xl bg-white border border-teal-200 shadow-xs space-y-4">
+                <div className="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold">
+                  <Zap className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-bold text-[#0F172A]">ADHD Task Chunking</h3>
+                <p className="text-xs text-[#475569] leading-relaxed">
+                  First/Then boards and 3-step micro-tasks break down overwhelming homework into bite-sized actions with positive reinforcement.
+                </p>
+                <Link href="/adhd-support" className="inline-flex items-center space-x-1 text-xs font-bold text-teal-700 hover:underline">
+                  <span>Explore ADHD Tools</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* =====================================================================
-          SECTION 12: CONNECTED ARCHIVES & MULTILINGUAL FLUENCY
-          ===================================================================== */}
-      <section className="py-24 px-4 sm:px-8 bg-[#F8FAFC] text-[#0F172A] border-t border-[#DCE7FE]/60">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8">
-          {/* Card 1: 8-Step PII-Scrubbed Context Hub */}
-          <div className="bg-white rounded-[32px] p-8 sm:p-10 border border-[#DCE7FE] shadow-[0_8px_30px_rgba(43,76,222,0.05)] space-y-6 flex flex-col justify-between">
-            <div className="space-y-3">
-              <span className="inline-block px-3.5 py-1 rounded-full bg-[#ECFDF5] text-[#059669] text-[12px] font-bold border border-[#A7F3D0]">
-                User-Controlled Integrations
-              </span>
-              <h3 className="text-2xl sm:text-3xl font-bold text-[#0F172A]">
-                Bring your past reflections{" "}
-                <span className="text-[#2B4CDE]">
-                  with full PII scrubbing.
-                </span>
-              </h3>
-              <p className="text-[15px] text-[#475569] leading-relaxed">
-                Import ChatGPT or Claude archives, Markdown journals, or read-only Google Calendar events. InnerOS automatically redacts emails, phone numbers, and street addresses, disarms prompt injections, and stages candidate memories for your review.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2 pt-2">
-              {[
-                "ChatGPT JSON",
-                "Claude Export",
-                "Markdown / TXT",
-                "Google Calendar OAuth 2.0",
-                "GDPR Art. 17 Revocation",
-              ].map((tag) => (
-                <span
-                  key={tag}
-                  className="px-3 py-1.5 rounded-full bg-[#F0F5FF] border border-[#DCE7FE] text-[12.5px] font-medium text-[#1E293B]"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-            <div>
-              <Link
-                href="/integrations"
-                className="inline-flex items-center space-x-2 text-[14px] font-semibold text-[#2B4CDE] hover:text-[#1E3A8A] underline underline-offset-4"
-              >
-                <span>Open Connected Archives</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Card 2: 30-Language Readiness & Cultural Empathy */}
-          <div className="bg-white rounded-[32px] p-8 sm:p-10 border border-[#DCE7FE] shadow-[0_8px_30px_rgba(43,76,222,0.05)] space-y-6 flex flex-col justify-between">
-            <div className="space-y-3">
-              <span className="inline-block px-3.5 py-1 rounded-full bg-[#EEF4FF] text-[#2B4CDE] text-[12px] font-bold border border-[#DCE7FE]">
-                Global Multilingual Architecture
-              </span>
-              <h3 className="text-2xl sm:text-3xl font-bold text-[#0F172A]">
-                Express yourself in the{" "}
-                <span className="text-[#2B4CDE]">
-                  language of your home.
-                </span>
-              </h3>
-              <p className="text-[15px] text-[#475569] leading-relaxed">
-                Built with native-level cultural nuance, full RTL layout support for Arabic and Urdu, and localized crisis support routing across 8 priority languages and 30 voice locales.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2">
-              {[
-                "English (EN)",
-                "Español (ES)",
-                "Français (FR)",
-                "Deutsch (DE)",
-                "Български (BG)",
-                "العربية (AR)",
-                "اردو (UR)",
-                "हिन्दी (HI)",
-              ].map((lang) => (
-                <div
-                  key={lang}
-                  className="px-3 py-2 rounded-xl bg-[#F0F5FF] text-[12.5px] font-semibold text-[#1E293B] text-center border border-[#DCE7FE]/60"
-                >
-                  {lang}
+              <div className="p-8 rounded-3xl bg-white border border-teal-200 shadow-xs space-y-4">
+                <div className="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold">
+                  <Layers className="w-6 h-6" />
                 </div>
-              ))}
-            </div>
-            <div>
-              <Link
-                href="/companion/voice"
-                className="inline-flex items-center space-x-2 text-[14px] font-semibold text-[#2B4CDE] hover:text-[#1E3A8A] underline underline-offset-4"
-              >
-                <span>Explore Multilingual Voice Room</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =====================================================================
-          SECTION 13: YOU ARE NOT LIKE EVERYONE ELSE + TRANSPARENT PRICING
-          ===================================================================== */}
-      <section className="relative py-28 px-4 sm:px-8 bg-[#F0F5FF] text-[#0F172A] overflow-hidden border-t border-[#DCE7FE]/70">
-        <div className="relative z-10 max-w-6xl mx-auto space-y-20">
-          {/* Statement Block */}
-          <div className="text-center max-w-3xl mx-auto space-y-6">
-            <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white text-[#2B4CDE] text-[12px] font-semibold border border-[#DCE7FE] shadow-xs">
-              InnerOS Honours Your Autonomy
-            </span>
-            <h2 className="text-4xl sm:text-6xl font-bold tracking-tight text-[#0F172A] leading-[1.1]">
-              You are not like everyone else.{" "}
-              <span className="text-[#2B4CDE] block mt-1">
-                Your companion should not be either.
-              </span>
-            </h2>
-            <p className="text-[16.5px] text-[#475569] leading-relaxed max-w-xl mx-auto">
-              Start with a private sanctuary that respects your consent, never sells or trains on your personal reflections, and keeps 24/7 crisis support free for everyone.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-              <Link
-                href="/signup"
-                className="inline-flex items-center space-x-2 px-7 py-3.5 rounded-full bg-[#2B4CDE] text-white hover:bg-[#1E3A8A] text-[14px] font-semibold shadow-[0_8px_20px_rgba(43,76,222,0.25)] hover:shadow-[0_12px_28px_rgba(43,76,222,0.35)] transition-all"
-              >
-                <span>Enter InnerOS Free</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </Link>
-              <button
-                type="button"
-                onClick={openCrisisModal}
-                className="inline-flex items-center space-x-2 px-6 py-3.5 rounded-full bg-white hover:bg-[#F8FAFC] border border-[#DCE7FE] text-[#0F172A] text-[14px] font-medium shadow-xs transition-all"
-              >
-                <LifeBuoy className="w-4 h-4 text-[#E11D48]" />
-                <span>24/7 Crisis Helplines</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Pricing Cards */}
-          <div className="space-y-8">
-            <div className="flex justify-center">
-              <div className="inline-flex items-center p-1.5 rounded-full bg-white border border-[#DCE7FE] shadow-xs">
-                <button
-                  type="button"
-                  onClick={() => setBillingAnnual(true)}
-                  className={`px-5 py-2 rounded-full text-[13px] font-semibold transition-all ${
-                    billingAnnual
-                      ? "bg-[#2B4CDE] text-white shadow-xs"
-                      : "text-[#64748B] hover:text-[#0F172A]"
-                  }`}
-                >
-                  Annual (Save 20%)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setBillingAnnual(false)}
-                  className={`px-5 py-2 rounded-full text-[13px] font-semibold transition-all ${
-                    !billingAnnual
-                      ? "bg-[#2B4CDE] text-white shadow-xs"
-                      : "text-[#64748B] hover:text-[#0F172A]"
-                  }`}
-                >
-                  Monthly
-                </button>
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto items-stretch">
-              {/* Card 1: Core Sanctuary */}
-              <div className="rounded-[32px] bg-white p-8 sm:p-10 flex flex-col justify-between space-y-8 border border-[#DCE7FE] shadow-[0_8px_30px_rgba(43,76,222,0.05)]">
-                <div className="space-y-5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xl font-bold text-[#0F172A] block">
-                      Core Sanctuary
-                    </span>
-                    <span className="px-3 py-1 rounded-full bg-[#ECFDF5] text-[#059669] text-[12px] font-bold border border-[#A7F3D0]">
-                      Free Forever
-                    </span>
-                  </div>
-                  <div className="flex items-baseline space-x-1">
-                    <span className="text-5xl font-bold text-[#0F172A]">
-                      $0.00
-                    </span>
-                    <span className="text-[14px] text-[#64748B]">/forever</span>
-                  </div>
-                  <ul className="space-y-3 text-[14.5px] text-[#334155] pt-2">
-                    <li className="flex items-center space-x-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-[#059669] shrink-0" />
-                      <span>Daily check-ins, private journal &amp; growth goals</span>
-                    </li>
-                    <li className="flex items-center space-x-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-[#059669] shrink-0" />
-                      <span>5-Mode Text Companion &amp; Crisis Support Directory</span>
-                    </li>
-                    <li className="flex items-center space-x-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-[#059669] shrink-0" />
-                      <span>Full GDPR data export &amp; one-click memory deletion</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="space-y-3 pt-6 border-t border-[#EEF2F6]">
-                  <p className="text-[12.5px] text-[#64748B]">
-                    Safety tools and privacy controls are never paywalled.
-                  </p>
-                  <Link
-                    href="/signup"
-                    className="inline-flex items-center justify-center space-x-2 w-full py-3 rounded-full bg-[#EEF4FF] hover:bg-[#2B4CDE] text-[#2B4CDE] hover:text-white text-[13.5px] font-semibold transition-all"
-                  >
-                    <span>Start with Core</span>
-                    <ArrowUpRight className="w-4 h-4" />
-                  </Link>
-                </div>
+                <h3 className="text-lg font-bold text-[#0F172A]">Autism-Friendly AAC Symbols</h3>
+                <p className="text-xs text-[#475569] leading-relaxed">
+                  High-contrast picture communication tiles in Urdu and English for non-speaking children or times of verbal fatigue.
+                </p>
+                <Link href="/autism-support" className="inline-flex items-center space-x-1 text-xs font-bold text-teal-700 hover:underline">
+                  <span>Explore AAC Board</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
               </div>
 
-              {/* Card 2: Full Adaptive Sanctuary */}
-              <div className="rounded-[32px] bg-gradient-to-br from-[#2B4CDE] to-[#1E3A8A] text-white p-8 sm:p-10 flex flex-col justify-between space-y-8 shadow-[0_20px_50px_rgba(43,76,222,0.25)] border border-[#2B4CDE]">
-                <div className="space-y-5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xl font-bold text-white block">
-                      Full Adaptive Sanctuary
-                    </span>
-                    <span className="px-3 py-1 rounded-full bg-white/20 text-white text-[11px] font-bold backdrop-blur-sm border border-white/20">
-                      Most Popular
-                    </span>
-                  </div>
-                  <div className="flex items-baseline space-x-1">
-                    <span className="text-5xl font-bold text-white">
-                      {billingAnnual ? "$12.30" : "$15.00"}
-                    </span>
-                    <span className="text-[14px] text-white/80">/month</span>
-                  </div>
-                  <ul className="space-y-3 text-[14.5px] text-white/90 pt-2">
-                    <li className="flex items-center space-x-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-[#38BDF8] shrink-0" />
-                      <span>Unlimited Real-Time Voice Companion in 30 languages</span>
-                    </li>
-                    <li className="flex items-center space-x-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-[#38BDF8] shrink-0" />
-                      <span>Interactive Visual Life Graph &amp; Archive Imports</span>
-                    </li>
-                    <li className="flex items-center space-x-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-[#38BDF8] shrink-0" />
-                      <span>17-Department Peer-Reviewed Psychology Library</span>
-                    </li>
-                  </ul>
+              <div className="p-8 rounded-3xl bg-white border border-teal-200 shadow-xs space-y-4">
+                <div className="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold">
+                  <VolumeX className="w-6 h-6" />
                 </div>
-
-                <div className="space-y-3 pt-6 border-t border-white/20">
-                  <p className="text-[12.5px] text-white/75">
-                    Cancel anytime with one click &bull; Zero lock-in
-                  </p>
-                  <Link
-                    href="/pricing"
-                    className="inline-flex items-center justify-center space-x-2 w-full py-3 rounded-full bg-white text-[#2B4CDE] hover:bg-[#EEF4FF] text-[13.5px] font-semibold shadow-md transition-all"
-                  >
-                    <span>Explore Full Suite</span>
-                    <ArrowUpRight className="w-4 h-4" />
-                  </Link>
-                </div>
+                <h3 className="text-lg font-bold text-[#0F172A]">Low Sensory Stimulation Mode</h3>
+                <p className="text-xs text-[#475569] leading-relaxed">
+                  One-tap setting softens bright saturation, suppresses kinetic animations, and mutes non-essential audio.
+                </p>
+                <Link href="/youth/accessibility" className="inline-flex items-center space-x-1 text-xs font-bold text-teal-700 hover:underline">
+                  <span>Accessibility Preferences</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* =====================================================================
-          SECTION 14: FREQUENTLY ASKED QUESTIONS + CLOSING CTA BANNER
-          ===================================================================== */}
-      <section className="py-24 px-4 sm:px-8 bg-[#F8FAFC] text-[#0F172A] border-t border-[#DCE7FE]/60">
-        <div className="max-w-4xl mx-auto space-y-16">
+        {/* ========================================================================= */}
+        {/* SECTION 6 — MULTILINGUAL EXPERIENCE: English, Urdu & Punjabi Previews     */}
+        {/* ========================================================================= */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-8">
           <div className="text-center space-y-3">
-            <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-[#EEF4FF] text-[#2B4CDE] text-[12px] font-semibold border border-[#DCE7FE]">
-              Common Questions
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#0F172A]">
-              Frequently Asked Questions
+            <span className="text-xs font-bold uppercase tracking-widest text-[#0F766E]">Culturally Grounded AI</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F172A]">
+              Speaks the languages of South Asian homes
             </h2>
-            <p className="text-[15.5px] text-[#64748B] max-w-xl mx-auto">
-              Clear, transparent answers about how InnerOS operates, keeps your reflections private, and handles clinical boundaries.
+            <p className="text-sm text-[#64748B]">
+              True bi-directional Nastaliq script for Urdu, Shahmukhi Punjabi, Roman Urdu, and English.
             </p>
+
+            {/* Dialect Buttons */}
+            <div className="flex flex-wrap justify-center gap-2 pt-2">
+              {(["ur", "pa", "ur-Latn", "en"] as const).map((d) => (
+                <button
+                  key={d}
+                  type="button"
+                  onClick={() => setPreviewDialect(d)}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                    previewDialect === d
+                      ? "bg-[#0F766E] text-white shadow-xs"
+                      : "bg-white text-[#475569] border border-[#CBD5E1] hover:bg-[#F1F5F9]"
+                  }`}
+                >
+                  {MULTILINGUAL_DATA[d].lang}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div className="space-y-3">
-            {FAQS.map((faq, idx) => {
-              const isOpen = openFaq === idx;
-              return (
-                <div
-                  key={faq.q}
-                  className="bg-white rounded-[20px] border border-[#DCE7FE] overflow-hidden transition-all shadow-xs"
+          {/* Interactive Dialogue Container */}
+          <div className="p-8 sm:p-10 rounded-3xl bg-white border border-[#CBD5E1] shadow-xs space-y-4" dir={currentLangInfo.direction}>
+            <div className="p-4 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-1">
+              <span className="text-xs font-bold text-[#64748B]">Child:</span>
+              <p className="text-base font-semibold text-[#0F172A]">{currentLangInfo.child}</p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#F0FDF4] border border-[#BBF7D0] space-y-1">
+              <span className="text-xs font-bold text-[#15803D]">Lumi (Learning Companion):</span>
+              <p className="text-base text-[#166534] leading-relaxed">{currentLangInfo.ai}</p>
+            </div>
+
+            <div className="pt-2 flex items-center justify-between text-xs text-[#64748B] border-t border-[#F1F5F9]" dir="ltr">
+              <span className="font-semibold text-emerald-700">{currentLangInfo.note}</span>
+              <Link href="/languages" className="font-bold text-[#0F766E] hover:underline inline-flex items-center space-x-1">
+                <span>View Full Language Architecture</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* SECTION 7 — INTERACTIVE PRODUCT PREVIEW: Real Feelings Wheel Demonstration */}
+        {/* ========================================================================= */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white border-y border-[#E2E8F0]">
+          <div className="max-w-4xl mx-auto space-y-8 text-center">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#0F766E]">Live Product Demo</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F172A]">
+              Try a Feelings Check-In Right Now
+            </h2>
+            <p className="text-sm text-[#64748B] max-w-xl mx-auto">
+              Tap an emotion tile to see how Lumi responds with non-judgmental affective grounding.
+            </p>
+
+            <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 pt-4">
+              {[
+                { label: "Happy", emoji: "😊", color: "bg-amber-50 border-amber-300 text-amber-900" },
+                { label: "Calm", emoji: "🌿", color: "bg-emerald-50 border-emerald-300 text-emerald-900" },
+                { label: "Frustrated", emoji: "😤", color: "bg-rose-50 border-rose-300 text-rose-900" },
+                { label: "Worried", emoji: "🌧️", color: "bg-sky-50 border-sky-300 text-sky-900" },
+                { label: "Tired", emoji: "🥱", color: "bg-purple-50 border-purple-300 text-purple-900" },
+                { label: "Curious", emoji: "✨", color: "bg-indigo-50 border-indigo-300 text-indigo-900" }
+              ].map((em) => (
+                <button
+                  key={em.label}
+                  type="button"
+                  onClick={() => setSelectedFeeling(em.label)}
+                  className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 ${
+                    selectedFeeling === em.label
+                      ? `${em.color} shadow-md scale-105 font-bold`
+                      : "bg-[#FAF8F5] border-[#CBD5E1] text-[#475569] hover:bg-white"
+                  }`}
                 >
+                  <span className="text-2xl">{em.emoji}</span>
+                  <span className="text-xs font-semibold">{em.label}</span>
+                </button>
+              ))}
+            </div>
+
+            {selectedFeeling && (
+              <div className="p-6 rounded-3xl bg-[#FAF8F5] border border-[#CBD5E1] max-w-2xl mx-auto text-left space-y-2">
+                <span className="text-xs font-bold text-[#0F766E] uppercase">Lumi&apos;s Thoughtful Reflection:</span>
+                <p className="text-sm text-[#0F172A] leading-relaxed">
+                  {selectedFeeling === "Frustrated" && "It is completely okay to feel frustrated. Frustration is just your body telling you that something matters to you. Would you like to do a 3-breath volcano reset with me?"}
+                  {selectedFeeling === "Calm" && "Feeling calm is a wonderful place to be. Your body is relaxed and ready to learn, create, or listen to a story!"}
+                  {selectedFeeling === "Worried" && "When worries visit our minds, they feel heavy. But you don't have to carry them alone. Would you like to share your worry with a caregiver or draw it on paper?"}
+                  {selectedFeeling === "Happy" && "Joy is infectious! What was your favorite moment of today that brought this smile to your face?"}
+                  {selectedFeeling === "Tired" && "Rest is productive! Your brain does its most important memory organizing while you sleep. Time to settle down with a calm audio story."}
+                  {selectedFeeling === "Curious" && "Curiosity is the superpower of every great scientist and artist! What question is sparkling in your mind today?"}
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* SECTION 8 — CAREGIVERS AND SCHOOLS: Portals & Shared Growth              */}
+        {/* ========================================================================= */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-12">
+          <div className="text-center space-y-3">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#0F766E]">Family &amp; Classroom Ecosystem</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F172A]">
+              Connecting the adults who nurture young minds
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="p-8 sm:p-10 rounded-3xl bg-white border border-[#CBD5E1] shadow-xs space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
+                <Users className="w-6 h-6" />
+              </div>
+              <h3 className="text-2xl font-bold text-[#0F172A]">For Parents &amp; Guardians</h3>
+              <p className="text-sm text-[#475569] leading-relaxed">
+                View your child&apos;s active learning milestones, set daily screen-time turn boundaries, practice shared dinner conversation cards, and manage verified consent.
+              </p>
+              <div className="pt-2">
+                <Link href="/parents" className="px-6 py-2.5 rounded-full bg-[#0F766E] text-white text-xs font-bold hover:bg-[#115E59] transition-colors inline-flex items-center space-x-1.5">
+                  <span>Caregiver Portal Details</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="p-8 sm:p-10 rounded-3xl bg-white border border-[#CBD5E1] shadow-xs space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-800 flex items-center justify-center">
+                <School className="w-6 h-6" />
+              </div>
+              <h3 className="text-2xl font-bold text-[#0F172A]">For Educators &amp; Classrooms</h3>
+              <p className="text-sm text-[#475569] leading-relaxed">
+                Actionable lesson plans for homeroom advisory, ADHD classroom accommodation templates, and zero-PII student privacy protections for districts.
+              </p>
+              <div className="pt-2">
+                <Link href="/schools" className="px-6 py-2.5 rounded-full bg-[#4F46E5] text-white text-xs font-bold hover:bg-[#4338CA] transition-colors inline-flex items-center space-x-1.5">
+                  <span>Institutional School Programme</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* SECTION 9 — TRUST, RESEARCH AND SAFETY: Safeguarding & Ethical Boundaries */}
+        {/* ========================================================================= */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900 text-white">
+          <div className="max-w-5xl mx-auto space-y-12">
+            <div className="text-center space-y-3">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#38BDF8]">Safety By Design</span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white">
+                Child protection is not an afterthought. It is our core architecture.
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-slate-300">
+              <div className="p-6 rounded-3xl bg-slate-800/80 border border-slate-700 space-y-3">
+                <Lock className="w-6 h-6 text-[#38BDF8]" />
+                <h3 className="text-base font-bold text-white">Zero Adult Data Cross-Contamination</h3>
+                <p className="text-xs leading-relaxed">
+                  Adult Weebly mental health check-ins and journals are strictly segregated. Child sessions exist in a 24-hour auto-expiring ephemeral store.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-3xl bg-slate-800/80 border border-slate-700 space-y-3">
+                <ShieldCheck className="w-6 h-6 text-[#38BDF8]" />
+                <h3 className="text-base font-bold text-white">The Secrecy Refusal Invariant</h3>
+                <p className="text-xs leading-relaxed">
+                  Lumi refuses any request to hide disclosures from parents and directs children to talk with trusted adults whenever big things happen.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-3xl bg-slate-800/80 border border-slate-700 space-y-3">
+                <AlertCircle className="w-6 h-6 text-[#38BDF8]" />
+                <h3 className="text-base font-bold text-white">24/7 Human Emergency Helplines</h3>
+                <p className="text-xs leading-relaxed">
+                  Severe disclosures immediately suppress synthesized voice and display verified emergency lifelines (Pakistan 1121, 1122, and US 988).
+                </p>
+              </div>
+            </div>
+
+            <div className="text-center pt-4">
+              <Link
+                href="/child-safety"
+                className="inline-flex items-center space-x-2 text-xs font-bold text-[#38BDF8] hover:underline"
+              >
+                <span>Read Full Child Safeguarding &amp; Escalation Policy</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* SECTION 10 — PRICING, FAQ AND FINAL CTA                                   */}
+        {/* ========================================================================= */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-16">
+          {/* FAQ Accordion */}
+          <div className="space-y-6">
+            <div className="text-center space-y-2">
+              <h2 className="text-3xl font-extrabold text-[#0F172A]">Frequently Asked Questions</h2>
+              <p className="text-sm text-[#64748B]">Transparent answers about how Weebly operates.</p>
+            </div>
+
+            <div className="space-y-3">
+              {HOMEPAGE_FAQS.map((faq, idx) => (
+                <div key={idx} className="rounded-2xl bg-white border border-[#CBD5E1] overflow-hidden">
                   <button
                     type="button"
-                    onClick={() => setOpenFaq(isOpen ? null : idx)}
-                    className="w-full px-6 py-5 flex items-center justify-between text-left space-x-4 hover:bg-[#F8FAFC] transition-colors"
+                    onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                    className="w-full p-5 text-left flex items-center justify-between font-bold text-sm text-[#0F172A]"
                   >
-                    <span className="font-semibold text-[16px] text-[#0F172A]">
-                      {faq.q}
-                    </span>
+                    <span>{faq.q}</span>
                     <ChevronDown
-                      className={`w-5 h-5 text-[#2B4CDE] shrink-0 transition-transform duration-200 ${
-                        isOpen ? "rotate-180" : ""
+                      className={`w-5 h-5 text-[#64748B] transition-transform ${
+                        openFaq === idx ? "rotate-180" : ""
                       }`}
                     />
                   </button>
-                  {isOpen && (
-                    <div className="px-6 pb-5 pt-1 text-[14.5px] text-[#475569] leading-relaxed border-t border-[#F1F5F9]">
+                  {openFaq === idx && (
+                    <div className="px-5 pb-5 text-sm text-[#475569] leading-relaxed border-t border-[#F1F5F9] pt-3">
                       {faq.a}
                     </div>
                   )}
                 </div>
-              );
-            })}
-          </div>
-
-          {/* High-Converting Sanctuary CTA Banner */}
-          <div className="relative rounded-[36px] bg-gradient-to-r from-[#2B4CDE] via-[#3B82F6] to-[#1E3A8A] text-white p-10 sm:p-14 shadow-[0_24px_60px_rgba(43,76,222,0.28)] overflow-hidden">
-            <div className="absolute -right-12 -top-12 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-            <div className="relative z-10 max-w-2xl space-y-6">
-              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-white/20 text-white text-[12px] font-semibold border border-white/30 backdrop-blur-sm">
-                Join 120,000+ Mindful Reflectors
-              </span>
-              <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight">
-                Begin your journey to emotional calm and clarity today.
-              </h3>
-              <p className="text-[16px] text-white/90 leading-relaxed">
-                Experience a companion that truly listens, understands your voice across 30 languages, and never judges your feelings.
-              </p>
-              <div className="flex flex-wrap items-center gap-3 pt-2">
-                <Link
-                  href="/signup"
-                  className="inline-flex items-center space-x-2 px-7 py-3.5 rounded-full bg-white text-[#2B4CDE] hover:bg-[#EEF4FF] text-[14.5px] font-bold shadow-lg transition-all"
-                >
-                  <span>Start Free Now</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-                <Link
-                  href="/companion/voice"
-                  className="inline-flex items-center space-x-2 px-7 py-3.5 rounded-full bg-white/15 hover:bg-white/25 border border-white/30 text-white text-[14.5px] font-semibold backdrop-blur-md transition-all"
-                >
-                  <Mic className="w-4 h-4 text-white" />
-                  <span>Try Voice Companion</span>
-                </Link>
-              </div>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
-    </div>
-  );
-}
 
-export default function MarketingHomePage() {
-  return (
-    <MarketingShell>
-      <MarketingHomeContent />
+          {/* Final Call to Action */}
+          <div className="p-10 sm:p-14 rounded-3xl bg-gradient-to-r from-[#0F766E] to-[#115E59] text-white text-center space-y-6 shadow-xl">
+            <h2 className="text-3xl sm:text-5xl font-extrabold leading-tight">
+              Give your child the gift of emotional confidence.
+            </h2>
+            <p className="text-base sm:text-lg text-emerald-100 max-w-xl mx-auto">
+              Start free with foundation emotion naming, visual schedules, and multilingual stories. Free for families.
+            </p>
+            <div className="pt-4 flex flex-wrap justify-center gap-4">
+              <Link
+                href="/signup?role=caregiver"
+                className="px-8 py-4 rounded-full bg-white text-[#0F766E] font-extrabold text-base hover:bg-emerald-50 shadow-md transition-all inline-flex items-center space-x-2"
+              >
+                <span>Create Free Caregiver Account</span>
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+              <Link
+                href="/kids"
+                className="px-8 py-4 rounded-full bg-emerald-800/80 text-white font-bold text-base hover:bg-emerald-800 border border-emerald-600 transition-all"
+              >
+                Launch Kids Sandbox
+              </Link>
+            </div>
+          </div>
+        </section>
+      </div>
     </MarketingShell>
   );
 }

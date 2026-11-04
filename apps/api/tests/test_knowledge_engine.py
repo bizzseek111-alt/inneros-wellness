@@ -184,8 +184,10 @@ def test_review_action_workflow():
             "notes": "Verified annual re-certification. Citations and non-clinical guardrails confirmed.",
             "next_review_months": 12,
         },
+        headers={"X-User-Role": "content_reviewer"},
     )
     assert res.status_code == 200
+
     data = res.json()
     assert data["review_status"] == "approved_for_companion"
     latest_review = data["review_history"][-1]

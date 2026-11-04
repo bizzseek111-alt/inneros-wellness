@@ -59,6 +59,7 @@ async def delete_journal_entry(
 # Personal Growth Endpoints
 # ---------------------------------------------------------
 @router.get("/growth", response_model=List[GrowthGoalResponse])
+@router.get("/growth/goals", response_model=List[GrowthGoalResponse])
 async def list_growth_goals(
     user: UserContext = Depends(get_current_user),
 ):
@@ -67,12 +68,14 @@ async def list_growth_goals(
 
 
 @router.post("/growth", response_model=GrowthGoalResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/growth/goals", response_model=GrowthGoalResponse, status_code=status.HTTP_201_CREATED)
 async def create_growth_goal(
     req: GrowthGoalCreateRequest,
     user: UserContext = Depends(get_current_user),
 ):
     """Creates a new personal growth goal with small, low-pressure milestone steps."""
     return wellbeing_service.create_growth_goal(user.user_id, req)
+
 
 
 @router.put("/growth/{goal_id}/steps/{step_id}", response_model=GrowthGoalResponse)

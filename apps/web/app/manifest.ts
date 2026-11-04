@@ -1,0 +1,79 @@
+import { MetadataRoute } from "next";
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: "Weebly — Emotional Wellbeing & Learning Sanctuary",
+    short_name: "Weebly",
+    description:
+      "Personal reflection, mindful routines, and neurodiversity-affirming developmental learning for all ages.",
+    start_url: "/?source=pwa",
+    scope: "/",
+    display: "standalone",
+    orientation: "portrait-primary",
+    background_color: "#F8FAFC",
+    theme_color: "#0D9488",
+    categories: ["education", "health", "lifestyle"],
+    icons: [
+      {
+        src: "/icons/icon-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: "/icons/icon-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: "/icons/icon-maskable-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "maskable",
+      },
+      {
+        src: "/icons/icon-maskable-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable",
+      },
+      {
+        src: "/icons/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+        purpose: "any",
+      },
+    ],
+    shortcuts: [
+      {
+        name: "Sanctuary",
+        short_name: "Sanctuary",
+        description: "Open your adult sanctuary companion and reflection journal",
+        url: "/dashboard?source=pwa_shortcut",
+        icons: [{ src: "/icons/icon-192x192.png", sizes: "192x192" }],
+      },
+      {
+        name: "Kids Academy",
+        short_name: "Kids",
+        description: "Safe, sensory-friendly developmental academy for ages 2–12",
+        url: "/youth/dashboard?source=pwa_shortcut",
+        icons: [{ src: "/icons/icon-192x192.png", sizes: "192x192" }],
+      },
+      {
+        name: "Teens Hub",
+        short_name: "Teens",
+        description: "Emotion regulation, executive function, and reflection for teens",
+        url: "/teens?source=pwa_shortcut",
+        icons: [{ src: "/icons/icon-192x192.png", sizes: "192x192" }],
+      },
+      {
+        name: "Daily Check-In",
+        short_name: "Check-In",
+        description: "Mindful emotional check-in and grounding",
+        url: "/check-in?source=pwa_shortcut",
+        icons: [{ src: "/icons/icon-192x192.png", sizes: "192x192" }],
+      },
+    ],
+  };
+}

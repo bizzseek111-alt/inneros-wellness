@@ -35,10 +35,10 @@ export const MARKETING_LOCALES: Record<SupportedMarketingLocale, LocaleConfig> =
     heroSubheadline:
       "Talk, reflect, and find your next step with an AI companion designed for everyday wellbeing and personal growth.",
     ctaStart: "Start Your Journey",
-    ctaExplore: "Explore InnerOS",
+    ctaExplore: "Explore Weebly",
     ctaOpenApp: "Open Companion",
     nonClinicalNotice:
-      "InnerOS is an AI companion for reflection and personal growth, not a replacement for licensed mental-health professionals.",
+      "Weebly is an AI companion for reflection and personal growth, not a replacement for licensed mental-health professionals.",
   },
   es: {
     code: "es",
@@ -51,10 +51,10 @@ export const MARKETING_LOCALES: Record<SupportedMarketingLocale, LocaleConfig> =
     heroSubheadline:
       "Habla, reflexiona y encuentra tu próximo paso con un compañero de IA diseñado para el bienestar cotidiano y el crecimiento personal.",
     ctaStart: "Comienza Tu Camino",
-    ctaExplore: "Explorar InnerOS",
+    ctaExplore: "Explorar Weebly",
     ctaOpenApp: "Abrir Aplicación",
     nonClinicalNotice:
-      "InnerOS es un compañero de IA para la reflexión y el bienestar, no un sustituto de profesionales de salud mental con licencia.",
+      "Weebly es un compañero de IA para la reflexión y el bienestar, no un sustituto de profesionales de salud mental con licencia.",
   },
   fr: {
     code: "fr",
@@ -67,10 +67,10 @@ export const MARKETING_LOCALES: Record<SupportedMarketingLocale, LocaleConfig> =
     heroSubheadline:
       "Parlez, réfléchissez et avancez à votre rythme avec un compagnon IA conçu pour le bien-être quotidien et le développement personnel.",
     ctaStart: "Commencer",
-    ctaExplore: "Découvrir InnerOS",
+    ctaExplore: "Découvrir Weebly",
     ctaOpenApp: "Ouvrir l’Application",
     nonClinicalNotice:
-      "InnerOS est un compagnon IA de réflexion personnelle et ne remplace pas un professionnel de santé mentale agréé.",
+      "Weebly est un compagnon IA de réflexion personnelle et ne remplace pas un professionnel de santé mentale agréé.",
   },
   de: {
     code: "de",
@@ -83,10 +83,10 @@ export const MARKETING_LOCALES: Record<SupportedMarketingLocale, LocaleConfig> =
     heroSubheadline:
       "Sprich, reflektiere und finde deinen nächsten Schritt mit einem KI-Begleiter für alltägliches Wohlbefinden und persönliches Wachstum.",
     ctaStart: "Jetzt Starten",
-    ctaExplore: "InnerOS Entdecken",
+    ctaExplore: "Weebly Entdecken",
     ctaOpenApp: "App Öffnen",
     nonClinicalNotice:
-      "InnerOS ist ein KI-Begleiter zur Selbstreflexion und kein Ersatz für approbierte Psychotherapeuten oder Ärzte.",
+      "Weebly ist ein KI-Begleiter zur Selbstreflexion und kein Ersatz für approbierte Psychotherapeuten oder Ärzte.",
   },
   bg: {
     code: "bg",
@@ -99,10 +99,10 @@ export const MARKETING_LOCALES: Record<SupportedMarketingLocale, LocaleConfig> =
     heroSubheadline:
       "Говори, размишлявай и открий следващата си стъпка с AI спътник, създаден за ежедневно благополучие и личностно израстване.",
     ctaStart: "Започни Своето Пътуване",
-    ctaExplore: "Разгледай InnerOS",
+    ctaExplore: "Разгледай Weebly",
     ctaOpenApp: "Отвори Приложението",
     nonClinicalNotice:
-      "InnerOS е AI спътник за размисъл и личностно развитие и не замества лицензирани специалисти по психично здраве.",
+      "Weebly е AI спътник за размисъл и личностно развитие и не замества лицензирани специалисти по психично здраве.",
   },
   ar: {
     code: "ar",
@@ -115,10 +115,10 @@ export const MARKETING_LOCALES: Record<SupportedMarketingLocale, LocaleConfig> =
     heroSubheadline:
       "تحدث وتأمل واكتشف خطوتك التالية مع مرافق ذكاء اصطناعي مصمم للرفاهية اليومية والنمو الشخصي.",
     ctaStart: "ابدأ رحلتك",
-    ctaExplore: "استكشف InnerOS",
+    ctaExplore: "استكشف Weebly",
     ctaOpenApp: "افتح التطبيق",
     nonClinicalNotice:
-      "InnerOS هو مرافق ذكاء اصطناعي للتأمل الشخصي، وليس بديلاً عن المختصين المرخصين في الصحة النفسية.",
+      "Weebly هو مرافق ذكاء اصطناعي للتأمل الشخصي، وليس بديلاً عن المختصين المرخصين في الصحة النفسية.",
   },
   ur: {
     code: "ur",
@@ -131,10 +131,10 @@ export const MARKETING_LOCALES: Record<SupportedMarketingLocale, LocaleConfig> =
     heroSubheadline:
       "روزمرہ فلاح و بہبود اور ذاتی ترقی کے لیے بنائے گئے AI ساتھی کے ساتھ بات کریں، غور کریں اور اپنا اگلا قدم تلاش کریں۔",
     ctaStart: "اپنا سفر شروع کریں",
-    ctaExplore: "InnerOS دیکھیں",
+    ctaExplore: "Weebly دیکھیں",
     ctaOpenApp: "ایپ کھولیں",
     nonClinicalNotice:
-      "InnerOS ذاتی غور و فکر کے لیے ایک AI ساتھی ہے، یہ لائسنس یافتہ ذہنی صحت کے ماہرین کا متبادل نہیں ہے۔",
+      "Weebly ذاتی غور و فکر کے لیے ایک AI ساتھی ہے، یہ لائسنس یافتہ ذہنی صحت کے ماہرین کا متبادل نہیں ہے۔",
   },
   hi: {
     code: "hi",
@@ -147,9 +147,9 @@ export const MARKETING_LOCALES: Record<SupportedMarketingLocale, LocaleConfig> =
     heroSubheadline:
       "दैनिक कल्याण और व्यक्तिगत विकास के लिए डिज़ाइन किए गए AI साथी के साथ बात करें, चिंतन करें और अपना अगला कदम खोजें।",
     ctaStart: "अपनी यात्रा शुरू करें",
-    ctaExplore: "InnerOS जानें",
+    ctaExplore: "Weebly जानें",
     ctaOpenApp: "ऐप खोलें",
     nonClinicalNotice:
-      "InnerOS आत्म-चिंतन और व्यक्तिगत विकास के लिए एक AI साथी है, यह लाइसेंस प्राप्त मानसिक स्वास्थ्य पेशेवरों का विकल्प नहीं है।",
+      "Weebly आत्म-चिंतन और व्यक्तिगत विकास के लिए एक AI साथी है, यह लाइसेंस प्राप्त मानसिक स्वास्थ्य पेशेवरों का विकल्प नहीं है।",
   },
 };

@@ -65,14 +65,14 @@ def test_integrations_domain_pii_scrubbing(client):
 
 
 def test_admin_domain_and_gdpr_export(client):
-    status_res = client.get("/api/v1/admin/status")
+    status_res = client.get("/api/v1/admin/status", headers={"X-User-Role": "admin"})
     assert status_res.status_code == 200
     assert status_res.json()["isolation_mode"] == "RowLevelSecurity"
 
-    logs_res = client.get("/api/v1/admin/audit-logs")
+    logs_res = client.get("/api/v1/admin/audit-logs", headers={"X-User-Role": "admin"})
     assert logs_res.status_code == 200
     assert len(logs_res.json()) >= 1
 
-    export_res = client.get("/api/v1/admin/compliance-export")
+    export_res = client.get("/api/v1/admin/compliance-export", headers={"X-User-Role": "admin"})
     assert export_res.status_code == 200
     assert "gdpr_article_15_access" in export_res.json()

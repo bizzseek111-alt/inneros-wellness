@@ -340,3 +340,76 @@ body {
   outline: none;
   box-shadow: var(--ring-focus);
 }
+
+/* ==========================================================================
+   INNEROS YOUTH DESIGN SYSTEM: SENSORY & NEURODIVERSITY CSS STYLES
+   ========================================================================== */
+
+/* Google Fonts for Youth & Nastaliq Typography */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+/* Low-Stimulation Sensory Theme */
+.low-stimulation-theme {
+  --bg-canvas: #F7F6F2 !important;
+  --bg-surface: #F0EFE9 !important;
+  --bg-card: #FFFFFF !important;
+  --accent-primary: #5A6D7C !important;
+  --text-primary: #2D3748 !important;
+  --text-secondary: #4A5568 !important;
+}
+
+.low-stimulation-theme * {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  border-color: #E2E0D8 !important;
+}
+
+/* High-Contrast Accessibility Theme (WCAG 2.2 AAA Ratio 14:1) */
+.high-contrast-theme {
+  --bg-canvas: #FFFFFF !important;
+  --bg-surface: #FFFFFF !important;
+  --bg-card: #FFFFFF !important;
+  --text-primary: #000000 !important;
+  --text-secondary: #000000 !important;
+  --border-medium: #000000 !important;
+}
+
+.high-contrast-theme * {
+  border-color: #000000 !important;
+  color: #000000 !important;
+}
+
+.high-contrast-theme button,
+.high-contrast-theme a {
+  outline: 2px solid #000000 !important;
+}
+
+/* Dyslexia-Friendly Typography */
+.font-dyslexic {
+  letter-spacing: 0.08em !important;
+  word-spacing: 0.16em !important;
+  line-height: 1.85 !important;
+}
+
+/* Reduced Motion Override Class */
+.reduce-motion-active *,
+.reduce-motion-active ::before,
+.reduce-motion-active ::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+/* RTL Nastaliq & Shahmukhi Typography Alignment */
+[dir="rtl"] {
+  font-family: "Noto Nastaliq Urdu", "Noto Sans Arabic", "Jameel Noori Nastaleeq", serif;
+  line-height: 2.1;
+  letter-spacing: 0.01em;
+}
+
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3 {
+  line-height: 1.9;
+}
+

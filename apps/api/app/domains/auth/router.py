@@ -11,6 +11,16 @@ from app.domains.auth.schemas import (
     LoginRequest,
     SignupRequest,
     UserProfileResponse,
+    VerifyEmailRequest,
+    VerifyEmailResponse,
+    SendVerificationEmailRequest,
+    ForgotPasswordRequest,
+    ForgotPasswordResponse,
+    ResetPasswordRequest,
+    ResetPasswordResponse,
+    UpdateAccountSettingsRequest,
+    DeleteAccountRequest,
+    DeleteAccountResponse,
 )
 from app.domains.auth.service import auth_service
 
@@ -102,5 +112,66 @@ async def get_authenticated_profile(
         locale="en-US",
         is_active=user.is_active,
         is_demo=user.is_synthetic_fallback,
+        email_verified=False,
         created_at=datetime.now(timezone.utc),
+    )
+
+
+@router.post("/verify-email", response_model=VerifyEmailResponse)
+async def verify_email_endpoint(req: VerifyEmailRequest):
+    """Verifies a user's email address using a secure token."""
+    success, email, msg = auth_service.verify_email(req.token)
+    return VerifyEmailResponse(success=success, email=email, message=msg)
+
+
+@router.post("/send-verification-email")
+async def send_verification_email_endpoint(req: SendVerificationEmailRequest):
+    """Dispatches a fresh email verification token to the user."""
+    token = auth_service.send_verification_email(req.email)
+    return {"success": True, "message": "Verification link sent.", "dev_token": token}
+
+
+@router.post("/forgot-password", response_model=ForgotPasswordResponse)
+async def forgot_password_endpoint(req: ForgotPasswordRequest):
+    """Initiates a secure password reset flow."""
+    success, token = auth_service.forgot_password(req.email)
+    return ForgotPasswordResponse(
+        success=success,
+        message="If this account exists, password reset instructions have been sent.",
+        reset_token=token,
+    )
+
+
+@router.post("/reset-password", response_model=ResetPasswordResponse)
+async def reset_password_endpoint(req: ResetPasswordRequest):
+    """Completes password reset and invalidates all existing sessions."""
+    success = auth_service.reset_password(req.token, req.new_password)
+    return ResetPasswordResponse(success=success, message="Password successfully reset. Please log in.")
+
+
+@router.put("/settings", response_model=UserProfileResponse)
+async def update_account_settings_endpoint(
+    req: UpdateAccountSettingsRequest,
+    user: UserContext = Depends(get_current_user),
+):
+    """Updates the authenticated user's profile settings (display name, language)."""
+    return auth_service.update_settings(
+        user_id=user.user_id, display_name=req.display_name, locale=req.locale
+    )
+
+
+@router.post("/delete-account", response_model=DeleteAccountResponse)
+async def delete_account_endpoint(
+    req: DeleteAccountRequest,
+    response: Response,
+    user: UserContext = Depends(get_current_user),
+):
+    """Executes account deletion and personal data purge under GDPR/COPPA."""
+    auth_service.delete_account(user_id=user.user_id, password=req.password, reason=req.reason)
+    response.delete_cookie(key=settings.SESSION_COOKIE_NAME, path="/")
+    response.delete_cookie(key="inneros_csrf", path="/")
+    return DeleteAccountResponse(
+        success=True,
+        message="Account and personal reflections permanently purged.",
+        deleted_user_id=user.user_id,
     )

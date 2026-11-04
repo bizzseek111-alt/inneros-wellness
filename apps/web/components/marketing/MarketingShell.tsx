@@ -45,14 +45,15 @@ const MarketingLocaleContext = createContext<MarketingLocaleContextValue>({
 export const useMarketingLocale = () => useContext(MarketingLocaleContext);
 
 const MARKETING_NAV_LINKS = [
-  { href: "/", label: "Home Page" },
-  { href: "/features", label: "Features" },
+  { href: "/", label: "Home" },
+  { href: "/kids", label: "Kids" },
+  { href: "/teens", label: "Teens" },
+  { href: "/parents", label: "Parents" },
+  { href: "/schools", label: "Schools" },
+  { href: "/adhd-support", label: "ADHD Support" },
+  { href: "/autism-support", label: "Autism Support" },
   { href: "/how-it-works", label: "How It Works" },
-  { href: "/about", label: "About" },
-  { href: "/privacy-trust", label: "Privacy" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/faq", label: "FAQ" },
-  { href: "/contact", label: "Contact" },
 ];
 
 export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
@@ -162,7 +163,7 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                 <Flower2 className="w-5 h-5" />
               </div>
               <span className="text-xl font-bold tracking-tight text-[#0F172A]">
-                InnerOS
+                Weebly
               </span>
             </Link>
 
@@ -327,7 +328,7 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                       <Flower2 className="w-5 h-5" />
                     </div>
                     <span className="text-xl font-bold tracking-tight text-white">
-                      InnerOS
+                      Weebly
                     </span>
                   </div>
 
@@ -362,79 +363,84 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                   </div>
                 </div>
 
-                {/* Column 2: Explore */}
+                {/* Column 2: Kids, Teens & Ecosystem */}
                 <div className="lg:col-span-2 space-y-3.5">
                   <h3 className="text-[12.5px] font-semibold uppercase tracking-widest text-slate-400">
-                    Explore
+                    Kids &amp; Teens
                   </h3>
                   <ul className="space-y-2.5 text-[14px] text-slate-300">
                     <li>
-                      <Link href="/" className="hover:text-[#38BDF8] transition-colors">
-                        Home Page
+                      <Link href="/kids" className="hover:text-[#38BDF8] transition-colors">
+                        Weebly Kids (2–12)
                       </Link>
                     </li>
                     <li>
-                      <Link href="/about" className="hover:text-[#38BDF8] transition-colors">
-                        About Us
+                      <Link href="/teens" className="hover:text-[#38BDF8] transition-colors">
+                        Weebly Teens (13–18)
                       </Link>
                     </li>
                     <li>
-                      <Link href="/features" className="hover:text-[#38BDF8] transition-colors">
-                        Features
+                      <Link href="/parents" className="hover:text-[#38BDF8] transition-colors">
+                        Caregiver Guidance
                       </Link>
                     </li>
                     <li>
-                      <Link href="/how-it-works" className="hover:text-[#38BDF8] transition-colors">
-                        How It Works
+                      <Link href="/schools" className="hover:text-[#38BDF8] transition-colors">
+                        Schools &amp; Teachers
                       </Link>
                     </li>
                     <li>
-                      <Link href="/pricing" className="hover:text-[#38BDF8] transition-colors">
-                        Pricing
+                      <Link href="/caregiver/dashboard" className="hover:text-[#38BDF8] transition-colors">
+                        Parent Dashboard
                       </Link>
                     </li>
                     <li>
-                      <Link href="/faq" className="hover:text-[#38BDF8] transition-colors">
-                        FAQ
+                      <Link href="/child-safety" className="hover:text-[#38BDF8] transition-colors">
+                        Child Safeguarding
                       </Link>
                     </li>
                   </ul>
                 </div>
 
-                {/* Column 3: Sanctuary Suite */}
+                {/* Column 3: Developmental Learning */}
                 <div className="lg:col-span-2 space-y-3.5">
                   <h3 className="text-[12.5px] font-semibold uppercase tracking-widest text-slate-400">
-                    Sanctuary Suite
+                    Development
                   </h3>
                   <ul className="space-y-2.5 text-[14px] text-slate-300">
                     <li>
-                      <Link href="/dashboard" className="hover:text-[#38BDF8] transition-colors">
-                        Dashboard
+                      <Link href="/emotional-intelligence" className="hover:text-[#38BDF8] transition-colors">
+                        Emotional Intelligence
                       </Link>
                     </li>
                     <li>
-                      <Link href="/companion/voice" className="hover:text-[#38BDF8] transition-colors">
-                        Voice Companion
+                      <Link href="/cognitive-development" className="hover:text-[#38BDF8] transition-colors">
+                        Cognitive Development
                       </Link>
                     </li>
                     <li>
-                      <Link href="/companion/chat" className="hover:text-[#38BDF8] transition-colors">
-                        Text Companion
+                      <Link href="/adhd-support" className="hover:text-[#38BDF8] transition-colors">
+                        ADHD Executive Hub
                       </Link>
                     </li>
                     <li>
-                      <Link href="/memory" className="hover:text-[#38BDF8] transition-colors">
-                        Life Graph &amp; Memory
+                      <Link href="/autism-support" className="hover:text-[#38BDF8] transition-colors">
+                        Autism &amp; Sensory
                       </Link>
                     </li>
                     <li>
-                      <Link href="/journal" className="hover:text-[#38BDF8] transition-colors">
-                        Journal &amp; Growth
+                      <Link href="/languages" className="hover:text-[#38BDF8] transition-colors">
+                        Multilingual AI
                       </Link>
                     </li>
                     <li>
-                      <Link href="/admin" className="hover:text-[#38BDF8] transition-colors">
-                        Admin Console
+                      <Link href="/research" className="hover:text-[#38BDF8] transition-colors">
+                        Research &amp; Evidence
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/accessibility" className="hover:text-[#38BDF8] transition-colors">
+                        WCAG 2.2 Accessibility
                       </Link>
                     </li>
                   </ul>

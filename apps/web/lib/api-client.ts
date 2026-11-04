@@ -1593,4 +1593,987 @@ export const api = {
     if (!res.ok) throw new Error("Failed to load audit logs");
     return res.json();
   },
+
+  // ---------------------------------------------------------------------------
+  // Commerce & Customer Portal Methods
+  // ---------------------------------------------------------------------------
+  async getCommerceCatalog(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/commerce/catalog`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch commerce catalog");
+    return res.json();
+  },
+
+  async createCheckoutSession(params: {
+    price_id: string;
+    payment_provider?: string;
+    success_url?: string;
+    cancel_url?: string;
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/commerce/checkout/session`, {
+      method: "POST",
+      headers: { ...this.getAuthHeaders(), "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(params),
+    });
+    if (!res.ok) throw new Error("Failed to create checkout session");
+    return res.json();
+  },
+
+  async getUserSubscriptions(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/commerce/subscriptions/me`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch user subscriptions");
+    return res.json();
+  },
+
+  async cancelUserSubscription(subscriptionId: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/commerce/subscriptions/${subscriptionId}/cancel`, {
+      method: "POST",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to cancel subscription");
+    return res.json();
+  },
+
+  async submitSupportTicket(payload: {
+    subject: string;
+    category?: string;
+    priority?: string;
+    message: string;
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/commerce/support/tickets`, {
+      method: "POST",
+      headers: { ...this.getAuthHeaders(), "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error("Failed to submit support ticket");
+    return res.json();
+  },
+
+  async getUserSupportTickets(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/commerce/support/tickets/me`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch user support tickets");
+    return res.json();
+  },
+
+  // ---------------------------------------------------------------------------
+  // Admin Console 23-Section APIs
+  // ---------------------------------------------------------------------------
+  async getAdminCustomers(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/customers`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return [];
+    return res.json();
+  },
+
+  async getAdminFamilies(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/families`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return [];
+    return res.json();
+  },
+
+  async getAdminChildProfiles(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/child-profiles`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return [];
+    return res.json();
+  },
+
+  async getAdminTeenProfiles(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/teen-profiles`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return [];
+    return res.json();
+  },
+
+  async getAdminSchools(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/schools`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return [];
+    return res.json();
+  },
+
+  async getAdminProducts(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/products`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return [];
+    return res.json();
+  },
+
+  async getAdminPricingPlans(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/pricing-plans`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return [];
+    return res.json();
+  },
+
+  async getAdminOrders(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/orders`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return [];
+    return res.json();
+  },
+
+  async processAdminRefund(orderId: string, reason?: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/orders/${orderId}/refund`, {
+      method: "POST",
+      headers: { ...this.getAuthHeaders(), "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ reason: reason || "Administrative refund" }),
+    });
+    if (!res.ok) throw new Error("Failed to process refund");
+    return res.json();
+  },
+
+  async getAdminSubscriptions(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/subscriptions`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return [];
+    return res.json();
+  },
+
+  async getAdminPayments(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/payments`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return [];
+    return res.json();
+  },
+
+  async getAdminSupportTickets(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/support-tickets`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return [];
+    return res.json();
+  },
+
+  async updateAdminSupportTicket(ticketId: string, patch: { status?: string; assigned_to?: string; resolution_notes?: string }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/support-tickets/${ticketId}`, {
+      method: "PATCH",
+      headers: { ...this.getAuthHeaders(), "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(patch),
+    });
+    if (!res.ok) throw new Error("Failed to update support ticket");
+    return res.json();
+  },
+
+  async getAdminBusinessReport(): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/reports/business`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return null;
+    return res.json();
+  },
+
+  async getAdminAiUsage(): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/ai-usage`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return null;
+    return res.json();
+  },
+
+  async getAdminVoiceProviders(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/voice-providers`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return [];
+    return res.json();
+  },
+
+  async getAdminCurriculum(): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/curriculum`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return null;
+    return res.json();
+  },
+
+  async getAdminActivities(): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/activities`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return null;
+    return res.json();
+  },
+
+  async getAdminTranslations(): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/translations`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return null;
+    return res.json();
+  },
+
+  async getAdminSettings(): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/settings`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return null;
+    return res.json();
+  },
+
+  async getAdminRolesPermissions(): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/roles-permissions`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return null;
+    return res.json();
+  },
+
+  async getAdminTeam(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/team`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return [];
+    return res.json();
+  },
+
+  async inviteAdminTeam(data: { email: string; display_name: string; role: string }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/team/invite`, {
+      method: "POST",
+      headers: { ...this.getAuthHeaders(), "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error("Failed to invite team member");
+    return res.json();
+  },
+
+  async updateAdminTeamRole(userId: string, data: { role: string; is_active?: boolean }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/team/${userId}/role`, {
+      method: "PATCH",
+      headers: { ...this.getAuthHeaders(), "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error("Failed to update staff role");
+    return res.json();
+  },
+
+  async createAdminProduct(data: any): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/products`, {
+      method: "POST",
+      headers: { ...this.getAuthHeaders(), "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error("Failed to create product");
+    return res.json();
+  },
+
+  async updateAdminProduct(productId: string, data: any): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/products/${productId}`, {
+      method: "PUT",
+      headers: { ...this.getAuthHeaders(), "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error("Failed to update product");
+    return res.json();
+  },
+
+  async createAdminPricingPlan(data: any): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/pricing-plans`, {
+      method: "POST",
+      headers: { ...this.getAuthHeaders(), "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error("Failed to create pricing plan");
+    return res.json();
+  },
+
+  async updateAdminPricingPlan(priceId: string, data: any): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/pricing-plans/${priceId}`, {
+      method: "PUT",
+      headers: { ...this.getAuthHeaders(), "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error("Failed to update pricing plan");
+    return res.json();
+  },
+
+  async getContentApprovalQueue(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/content-approval/queue`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return [];
+    return res.json();
+  },
+
+  async submitContentApprovalAction(data: { module_id: string; decision: string; reviewer_notes: string; reviewer_credentials?: string }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/content-approval/action`, {
+      method: "POST",
+      headers: { ...this.getAuthHeaders(), "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error("Failed to submit content approval");
+    return res.json();
+  },
+
+  async getAdminSafeguardingCases(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/safeguarding/cases`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return [];
+    return res.json();
+  },
+
+  async updateAdminSafeguardingCase(caseId: string, data: { resolution_status: string; resolution_notes: string }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/safeguarding/cases/${caseId}`, {
+      method: "PATCH",
+      headers: { ...this.getAuthHeaders(), "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error("Failed to update safeguarding case");
+    return res.json();
+  },
+
+  async toggleAdminVoiceProvider(providerName: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/voice-providers/${encodeURIComponent(providerName)}/toggle`, {
+      method: "PUT",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to toggle voice provider");
+    return res.json();
+  },
+
+  async updateAdminSettings(data: any): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/admin/settings`, {
+      method: "PUT",
+      headers: { ...this.getAuthHeaders(), "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error("Failed to update platform settings");
+    return res.json();
+  },
+
+  async getUserOrders(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/commerce/orders/me`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return [];
+    return res.json();
+  },
+
+  async getUserInvoices(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/commerce/invoices/me`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) return [];
+    return res.json();
+  },
+
+  async deleteChildProfile(childId: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/youth-governance/profiles/${childId}`, {
+      method: "DELETE",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to delete child profile");
+    return res.json();
+  },
+
+
+  // -------------------------------------------------------------
+  // InnerOS Youth Sanctuary & Child-Safe Multilingual API Methods
+  // -------------------------------------------------------------
+  async executeYouthTurn(payload: {
+    session_id: string;
+    user_utterance?: string;
+    audio_base64?: string;
+    language?: string;
+    age_tier?: string;
+    is_interruption?: boolean;
+    confidence_score?: number;
+    caregiver_present?: boolean;
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/youth-companion/turn`, {
+      method: "POST",
+      headers: {
+        ...this.getAuthHeaders(),
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Failed to process youth conversation turn");
+    }
+    return res.json();
+  },
+
+  async interruptYouthAudio(sessionId: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/youth-companion/interrupt`, {
+      method: "POST",
+      headers: {
+        ...this.getAuthHeaders(),
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ session_id: sessionId }),
+    });
+    if (!res.ok) throw new Error("Failed to interrupt youth audio");
+    return res.json();
+  },
+
+  async getYouthLanguages(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/youth-companion/languages`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch youth languages");
+    return res.json();
+  },
+
+  async getYouthBenchmarks(): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/youth-companion/benchmarks`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch youth speech benchmarks");
+    return res.json();
+  },
+
+  // -------------------------------------------------------------
+  // Educational Support & Neurodiversity-Affirming API Methods
+  // -------------------------------------------------------------
+  async getEducationalTasks(category?: string): Promise<any[]> {
+    const url = category
+      ? `${API_BASE}/api/v1/educational-support/tasks?category=${category}`
+      : `${API_BASE}/api/v1/educational-support/tasks`;
+    const res = await fetch(url, { headers: this.getAuthHeaders(), credentials: "include" });
+    if (!res.ok) throw new Error("Failed to load educational tasks");
+    return res.json();
+  },
+
+  async getAACSymbols(category?: string): Promise<any[]> {
+    const url = category
+      ? `${API_BASE}/api/v1/educational-support/aac-symbols?category=${category}`
+      : `${API_BASE}/api/v1/educational-support/aac-symbols`;
+    const res = await fetch(url, { headers: this.getAuthHeaders(), credentials: "include" });
+    if (!res.ok) throw new Error("Failed to load AAC symbols");
+    return res.json();
+  },
+
+  async getClassroomAccommodations(area?: string): Promise<any[]> {
+    const url = area
+      ? `${API_BASE}/api/v1/educational-support/accommodations?area=${area}`
+      : `${API_BASE}/api/v1/educational-support/accommodations`;
+    const res = await fetch(url, { headers: this.getAuthHeaders(), credentials: "include" });
+    if (!res.ok) throw new Error("Failed to load classroom accommodations");
+    return res.json();
+  },
+
+  async getCognitiveGames(domain?: string, specialInterest?: string): Promise<any[]> {
+    const params = new URLSearchParams();
+    if (domain) params.append("domain", domain);
+    if (specialInterest) params.append("special_interest", specialInterest);
+    const url = `${API_BASE}/api/v1/educational-support/games?${params.toString()}`;
+    const res = await fetch(url, { headers: this.getAuthHeaders(), credentials: "include" });
+    if (!res.ok) throw new Error("Failed to load cognitive games");
+    return res.json();
+  },
+
+  async getCaregiverGuidance(category?: string): Promise<any[]> {
+    const url = category
+      ? `${API_BASE}/api/v1/educational-support/guidance?category=${category}`
+      : `${API_BASE}/api/v1/educational-support/guidance`;
+    const res = await fetch(url, { headers: this.getAuthHeaders(), credentials: "include" });
+    if (!res.ok) throw new Error("Failed to load caregiver guidance");
+    return res.json();
+  },
+
+  async recordSkillMilestone(payload: {
+    child_id_hash: string;
+    skill_key: string;
+    skill_category: string;
+    notes?: string;
+  }): Promise<any> {
+    const params = new URLSearchParams({
+      child_id_hash: payload.child_id_hash,
+      skill_key: payload.skill_key,
+      skill_category: payload.skill_category,
+      notes: payload.notes || "",
+    });
+    const res = await fetch(`${API_BASE}/api/v1/educational-support/skill-milestone?${params.toString()}`, {
+      method: "POST",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Failed to record skill milestone");
+    }
+    return res.json();
+  },
+
+  async getDemonstratedSkills(childIdHash: string): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/educational-support/skills/${childIdHash}`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch demonstrated skills");
+    return res.json();
+  },
+
+  async getSensoryProfile(childIdHash: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/educational-support/sensory-profile/${childIdHash}`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch sensory profile");
+    return res.json();
+  },
+
+  async updateSensoryProfile(childIdHash: string, profile: any): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/educational-support/sensory-profile/${childIdHash}`, {
+      method: "PUT",
+      headers: {
+        ...this.getAuthHeaders(),
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(profile),
+    });
+    if (!res.ok) throw new Error("Failed to update sensory profile");
+    return res.json();
+  },
+
+  async getRegulatoryNotice(): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/educational-support/regulatory-notice`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch regulatory notice");
+    return res.json();
+  },
+
+  // ==========================================
+  // INNEROS KIDS DEVELOPMENT ACADEMY API
+  // ==========================================
+  async getAcademyDepartments(): Promise<DepartmentInfo[]> {
+    const res = await fetch(`${API_BASE}/api/v1/academy/departments`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch curriculum departments");
+    return res.json();
+  },
+
+  async getAcademyModules(params?: {
+    department_id?: string;
+    age_band?: string;
+    approval_status?: string;
+    is_reviewer?: boolean;
+  }): Promise<CurriculumModule[]> {
+    const query = new URLSearchParams();
+    if (params?.department_id) query.append("department_id", params.department_id);
+    if (params?.age_band) query.append("age_band", params.age_band);
+    if (params?.approval_status) query.append("approval_status", params.approval_status);
+    if (params?.is_reviewer !== undefined) query.append("is_reviewer", String(params.is_reviewer));
+
+    const url = `${API_BASE}/api/v1/academy/modules${query.toString() ? `?${query.toString()}` : ""}`;
+    const res = await fetch(url, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch curriculum modules");
+    return res.json();
+  },
+
+  async getAcademyModule(moduleId: string, is_reviewer: boolean = true): Promise<CurriculumModule> {
+    const res = await fetch(`${API_BASE}/api/v1/academy/modules/${moduleId}?is_reviewer=${is_reviewer}`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || `Failed to fetch curriculum module ${moduleId}`);
+    }
+    return res.json();
+  },
+
+  async createAcademyModule(data: any): Promise<CurriculumModule> {
+    const res = await fetch(`${API_BASE}/api/v1/academy/modules`, {
+      method: "POST",
+      headers: {
+        ...this.getAuthHeaders(),
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Failed to create curriculum module");
+    }
+    return res.json();
+  },
+
+  async updateAcademyModule(moduleId: string, data: any): Promise<CurriculumModule> {
+    const res = await fetch(`${API_BASE}/api/v1/academy/modules/${moduleId}`, {
+      method: "PUT",
+      headers: {
+        ...this.getAuthHeaders(),
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Failed to update curriculum module");
+    }
+    return res.json();
+  },
+
+  async approveAcademyModule(moduleId: string, action: ApprovalActionRequest): Promise<ApprovalActionResponse> {
+    const res = await fetch(`${API_BASE}/api/v1/academy/modules/${moduleId}/approve`, {
+      method: "POST",
+      headers: {
+        ...this.getAuthHeaders(),
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(action),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Failed to submit approval action");
+    }
+    return res.json();
+  },
+
+  async getAcademyRecommendations(
+    req: RecommendationRequest,
+    is_reviewer: boolean = true
+  ): Promise<RecommendationResponse> {
+    const res = await fetch(`${API_BASE}/api/v1/academy/recommendations?is_reviewer=${is_reviewer}`, {
+      method: "POST",
+      headers: {
+        ...this.getAuthHeaders(),
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(req),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Failed to fetch recommendations");
+    }
+    return res.json();
+  },
+
+  async publishAllDemonstrationLessons(): Promise<{ status: string; published_count: number }> {
+    const res = await fetch(`${API_BASE}/api/v1/academy/dev/publish-all`, {
+      method: "POST",
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to publish demonstration lessons");
+    return res.json();
+  },
+
+  // ==========================================
+  // YOUTH GOVERNANCE, SAFEGUARDING & PRIVACY
+  // ==========================================
+  async getParentDashboard(): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/youth-governance/parent-dashboard`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch parent dashboard");
+    return res.json();
+  },
+
+  async getAdminDashboard(): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/youth-governance/admin-dashboard`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch admin dashboard");
+    return res.json();
+  },
+
+  async createChildProfile(data: any): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/youth-governance/profiles`, {
+      method: "POST",
+      headers: {
+        ...this.getAuthHeaders(),
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Failed to create child profile");
+    }
+    return res.json();
+  },
+
+  async updateChildProfile(childId: string, data: any): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/youth-governance/profiles/${childId}`, {
+      method: "PUT",
+      headers: {
+        ...this.getAuthHeaders(),
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Failed to update child profile");
+    }
+    return res.json();
+  },
+
+  async requestChildDataDeletion(childId: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/youth-governance/retention/delete`, {
+      method: "POST",
+      headers: {
+        ...this.getAuthHeaders(),
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ target_id: childId, request_type: "child_account_deletion" }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Failed to execute data deletion");
+    }
+    return res.json();
+  },
+
+  async getReferrals(countryCode?: string): Promise<any[]> {
+    const url = countryCode
+      ? `${API_BASE}/api/v1/youth-governance/referrals?country_code=${countryCode}`
+      : `${API_BASE}/api/v1/youth-governance/referrals`;
+    const res = await fetch(url, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch referral directory");
+    return res.json();
+  },
+
+  async getYouthSafetyIncidents(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/youth-governance/safety-incidents`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch safety incidents");
+    return res.json();
+  },
+
+  async updateYouthSafetyIncident(incidentId: string, data: any): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/youth-governance/safety-incidents/${incidentId}`, {
+      method: "PUT",
+      headers: {
+        ...this.getAuthHeaders(),
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error("Failed to update safety incident");
+    return res.json();
+  },
 };
+
+export interface DepartmentInfo {
+  id: string;
+  name: string;
+  name_ur: string;
+  name_pa: string;
+  description: string;
+  competency_domain: string;
+  evidence_framework: string;
+  color_accent: string;
+}
+
+export interface InteractiveChoice {
+  choice_id: string;
+  text_en: string;
+  text_ur: string;
+  text_pa: string;
+  reflection_feedback: string;
+}
+
+export interface InteractiveStory {
+  title_en: string;
+  title_ur: string;
+  title_pa: string;
+  story_text_en: string;
+  story_text_ur: string;
+  story_text_pa: string;
+  character_name: string;
+  choices: InteractiveChoice[];
+}
+
+export interface VoiceActivity {
+  title: string;
+  audio_prompt_en: string;
+  audio_prompt_ur: string;
+  audio_prompt_pa: string;
+  guided_exercise_type: string;
+  pacing_seconds: number;
+}
+
+export interface TextActivity {
+  title: string;
+  prompt_en: string;
+  prompt_ur: string;
+  prompt_pa: string;
+  suggested_chips: string[];
+  reflective_guidance: string;
+}
+
+export interface OfflineActivity {
+  title: string;
+  instructions_en: string;
+  instructions_ur: string;
+  instructions_pa: string;
+  materials_needed: string[];
+  caregiver_or_peer_role: string;
+}
+
+export interface KnowledgeCheckOption {
+  id: string;
+  text: string;
+  is_helpful: string;
+}
+
+export interface KnowledgeCheck {
+  question_en: string;
+  question_ur: string;
+  question_pa: string;
+  options: KnowledgeCheckOption[];
+  affirmation_en: string;
+  affirmation_ur: string;
+  affirmation_pa: string;
+}
+
+export interface AccessibilityAdaptations {
+  visual: string;
+  auditory: string;
+  motor: string;
+  sensory: string;
+  cognitive: string;
+}
+
+export interface CurriculumModule {
+  module_id: string;
+  department_id: string;
+  title_en: string;
+  title_ur: string;
+  title_pa: string;
+  target_age_range: string;
+  difficulty: string;
+  developmental_objective: string;
+  research_references: string[];
+  evidence_strength: string;
+  reviewer_name: string;
+  approval_status: "draft" | "under_review" | "approved_pending_clinical_signoff" | "published" | "archived";
+  version: string;
+  recommended_session_duration_min: number;
+  accessibility_adaptations: AccessibilityAdaptations;
+  interactive_story: InteractiveStory;
+  voice_based_activity: VoiceActivity;
+  text_based_activity: TextActivity;
+  offline_activity: OfflineActivity;
+  knowledge_check: KnowledgeCheck;
+  non_diagnostic_progress_indicator: string;
+  safety_and_escalation?: Record<string, any>;
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RecommendationRequest {
+  age_range: string;
+  chosen_goals: string[];
+  completed_module_ids?: string[];
+  sensory_preference?: string;
+  language?: string;
+}
+
+export interface RecommendationResponse {
+  recommended_modules: CurriculumModule[];
+  primary_recommendation_reason: string;
+  age_band_display: string;
+}
+
+export interface ApprovalActionRequest {
+  module_id: string;
+  target_status: string;
+  reviewer_name: string;
+  reviewer_notes: string;
+  signed_clinical_disclaimer?: boolean;
+}
+
+export interface ApprovalActionResponse {
+  module_id: string;
+  previous_status: string;
+  new_status: string;
+  timestamp: string;
+  message: string;
+}
+
+export const apiClient = api;
+export default api;

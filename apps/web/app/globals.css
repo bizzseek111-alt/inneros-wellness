@@ -22,3 +22,57 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
 }
+
+/* PWA Mobile & Safe Area Utilities */
+:root {
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+}
+
+.pt-safe {
+  padding-top: max(0.75rem, var(--sat));
+}
+
+.pb-safe {
+  padding-bottom: max(0.75rem, var(--sab));
+}
+
+.pl-safe {
+  padding-left: max(0.75rem, var(--sal));
+}
+
+.pr-safe {
+  padding-right: max(0.75rem, var(--sar));
+}
+
+.mb-safe {
+  margin-bottom: var(--sab);
+}
+
+.h-screen-safe {
+  height: calc(100dvh - var(--sat) - var(--sab));
+}
+
+.min-h-screen-safe {
+  min-height: calc(100dvh - var(--sat) - var(--sab));
+}
+
+/* Touch manipulation to eliminate 300ms mobile tap delay */
+button, a, input, select, textarea {
+  touch-action: manipulation;
+}
+
+/* Minimum accessible touch target (44x44px) */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Standalone PWA adjustments */
+@media all and (display-mode: standalone) {
+  body {
+    -webkit-tap-highlight-color: transparent;
+  }
+}

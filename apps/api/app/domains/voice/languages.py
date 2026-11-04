@@ -70,6 +70,16 @@ ARCHITECTED_LANGUAGES: List[LanguageInfo] = [
         caveats="Nastaliq script orientation supported. Roman Urdu text fallback supported. Safety phrases calibrated for regional crisis lines (Umang, Rozan).",
     ),
     LanguageInfo(
+        code="pa",
+        name="Punjabi (Pakistani / Shahmukhi)",
+        native_name="پنجابی",
+        tier=LanguageReadinessTier.TIER_2_QUALIFIED_REGIONAL,
+        direction="rtl",
+        dialects=["pa-PK (Majhi / Lahore)", "pa-PK (Pothwari)", "Shahmukhi (Perso-Arabic script)", "Roman Punjabi"],
+        clinical_safety_reviewed=True,
+        caveats="Shahmukhi Perso-Arabic script supported. Roman Punjabi Latin fallback supported. Explicit notice: Never silently substitute Hindi or Indian Punjabi (Gurmukhi) for Pakistani Punjabi; text fallback in Shahmukhi is prioritized when native Pakistani Punjabi speech synthesis is unavailable.",
+    ),
+    LanguageInfo(
         code="bg",
         name="Bulgarian",
         native_name="Български",

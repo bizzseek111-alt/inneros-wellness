@@ -1,10 +1,24 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { PwaClientRegistrar } from "@/components/pwa/PwaClientRegistrar";
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#0D9488" },
+    { media: "(prefers-color-scheme: dark)", color: "#0F172A" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: "cover",
+  interactiveWidget: "resizes-content",
+};
 
 export const metadata: Metadata = {
   title: {
-    default: "InnerOS — A Little More Clarity. A Little More Calm.",
-    template: "%s | InnerOS",
+    default: "Weebly — A Little More Clarity. A Little More Calm.",
+    template: "%s | Weebly",
   },
   description:
     "Talk, reflect, and find your next step with a multilingual AI companion designed for everyday emotional wellbeing, personal growth, and mindful routines.",
@@ -15,15 +29,31 @@ export const metadata: Metadata = {
     "mindful journaling",
     "personal memory",
     "emotional clarity",
-    "InnerOS",
+    "Weebly",
   ],
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Weebly",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32" },
+      { url: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
   openGraph: {
-    title: "InnerOS — A Little More Clarity. A Little More Calm.",
+    title: "Weebly — A Little More Clarity. A Little More Calm.",
     description:
       "Talk, reflect, and find your next step with an AI companion designed for everyday wellbeing and personal growth.",
     type: "website",
     locale: "en_US",
-    siteName: "InnerOS",
+    siteName: "Weebly",
   },
   robots: {
     index: true,
@@ -42,7 +72,7 @@ export default function RootLayout({
       <body className="antialiased bg-[#F8FAFC] text-[#0F172A] selection:bg-[#EEF4FF] selection:text-[#2B4CDE]">
         <div className="fixed inset-0 pointer-events-none sanctuary-glow z-0" />
         <div className="relative z-10 min-h-screen flex flex-col">
-          {children}
+          <PwaClientRegistrar>{children}</PwaClientRegistrar>
         </div>
       </body>
     </html>

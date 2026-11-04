@@ -183,7 +183,133 @@ export const tokens = {
       breathCycle: 6000,
     },
   },
+
+  /**
+   * InnerOS Youth Design System
+   * Premium educational & developmental design tokens for Ages 2-5, 6-12, and 13-18.
+   */
+  youth: {
+    colors: {
+      // Gentle core pastels (calm, trustworthy, joyful)
+      cream: {
+        50: "#FFFDF9",
+        100: "#FDFBF4",
+        200: "#F9F5EA",
+        300: "#F2EBD7",
+        surface: "#FFFFFF",
+      },
+      lavender: {
+        50: "#FAF7FD",
+        100: "#F3EDFA",
+        200: "#E6D7F5",
+        300: "#D3B9ED",
+        400: "#B892DF",
+        500: "#9868CE",
+        text: "#43256A",
+      },
+      mint: {
+        50: "#F2FAF6",
+        100: "#E3F6EC",
+        200: "#C4EDD6",
+        300: "#98DEB8",
+        400: "#60C592",
+        500: "#36A871",
+        text: "#154D32",
+      },
+      sky: {
+        50: "#F0F8FF",
+        100: "#E0F1FE",
+        200: "#B9E2FE",
+        300: "#7DC7FC",
+        400: "#38A8F8",
+        500: "#0E87E3",
+        text: "#0C436F",
+      },
+      peach: {
+        50: "#FFF7F2",
+        100: "#FFEEE5",
+        200: "#FFD9C7",
+        300: "#FFB99D",
+        400: "#FF8E68",
+        500: "#F36437",
+        text: "#6B240E",
+      },
+      sunbeam: {
+        50: "#FEFCE8",
+        100: "#FEF9C3",
+        200: "#FEF08A",
+        300: "#FDE047",
+        400: "#EAB308",
+        500: "#CA8A04",
+        text: "#613E02",
+      },
+      // Ink hierarchy with WCAG 2.2 AA compliant contrast
+      ink: {
+        primary: "#1A202C",   // 13.8:1 on cream
+        secondary: "#4A5568", // 6.5:1 on cream
+        muted: "#718096",     // 4.6:1 on cream
+        border: "#E2E8F0",
+      },
+      // Low-stimulation mode palette (desaturated, warm gray base)
+      lowStimulation: {
+        canvas: "#F7F6F2",
+        card: "#FFFFFF",
+        accent: "#768692",
+        ink: "#2D3748",
+        border: "#E2E0D8",
+      },
+      // High-contrast accessibility palette
+      highContrast: {
+        canvas: "#FFFFFF",
+        card: "#FFFFFF",
+        ink: "#000000",
+        border: "#000000",
+        accent: "#0047AB",
+      },
+    },
+
+    // Developmental Age Tier Configurations
+    tiers: {
+      little: {
+        ageRange: "2-5",
+        label: "Little Explorers",
+        touchTargetMin: "56px",
+        cardRadius: "28px",
+        headingSize: "1.75rem",
+        primaryMode: "caregiver-mediated",
+        allowsDirectAI: false,
+      },
+      junior: {
+        ageRange: "6-12",
+        label: "Junior Adventurers",
+        touchTargetMin: "48px",
+        cardRadius: "24px",
+        headingSize: "1.5rem",
+        primaryMode: "guided-child",
+        allowsDirectAI: true,
+      },
+      teen: {
+        ageRange: "13-18",
+        label: "Youth Sanctuary",
+        touchTargetMin: "44px",
+        cardRadius: "18px",
+        headingSize: "1.375rem",
+        primaryMode: "independent-autonomous",
+        allowsDirectAI: true,
+      },
+    },
+
+    typography: {
+      fontFamilyLatin: '"Plus Jakarta Sans", "Fredoka", -apple-system, BlinkMacSystemFont, sans-serif',
+      fontFamilyUrdu: '"Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Noto Sans Arabic", serif',
+      fontFamilyPunjabi: '"Noto Sans Shahmukhi", "Noto Nastaliq Urdu", "Noto Sans Gurmukhi", sans-serif',
+      fontFamilyDyslexic: '"OpenDyslexic", "Comic Sans MS", "Plus Jakarta Sans", sans-serif',
+    },
+  },
 } as const;
 
 export type ThemeMode = "light" | "dark";
 export type DesignDirection = "serene-luxury" | "warm-futurism" | "minimal-eq";
+export type YouthAgeTier = "little" | "junior" | "teen";
+export type SupportedYouthLocale = "en" | "ur" | "pa" | "ur-Latn";
+
