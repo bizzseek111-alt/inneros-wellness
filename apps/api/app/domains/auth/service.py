@@ -118,13 +118,25 @@ class AuthService:
             pw_hash = _ph.hash(req.password)
             verif_token = f"verif_{secrets.token_urlsafe(24)}"
 
+            # Allow verified user roles from signup (caregiver, teacher, child, teen, user)
+            target_role = "user"
+            if req.role and req.role.lower() in ["caregiver", "teacher", "child", "teen", "user"]:
+                target_role = req.role.lower()
+
+            target_age_tier = "adult"
+            if req.age_tier and req.age_tier.lower() in ["little", "junior", "teen", "adult"]:
+                target_age_tier = req.age_tier.lower()
+            elif target_role in ["child", "teen"]:
+                target_age_tier = "junior" if target_role == "child" else "teen"
+
             user = UserModel(
                 id=user_id,
                 tenant_id=tenant_id,
                 email=email,
                 display_name=req.display_name.strip(),
                 password_hash=pw_hash,
-                role="user",
+                role=target_role,
+                age_tier=target_age_tier,
                 locale=req.locale or "en-US",
                 is_active=True,
                 is_demo=False,

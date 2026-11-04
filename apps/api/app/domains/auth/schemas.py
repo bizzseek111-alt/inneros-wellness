@@ -10,6 +10,8 @@ class SignupRequest(BaseModel):
     password: str = Field(..., min_length=8, max_length=128, description="Account password (min 8 chars)")
     display_name: str = Field(..., min_length=1, max_length=120, description="Preferred display name")
     locale: str = Field(default="en-US", max_length=16)
+    role: Optional[str] = Field(default="user", max_length=32, description="caregiver, teacher, child, teen, or user")
+    age_tier: Optional[str] = Field(default="adult", max_length=16, description="little, junior, teen, or adult")
 
 
 class LoginRequest(BaseModel):

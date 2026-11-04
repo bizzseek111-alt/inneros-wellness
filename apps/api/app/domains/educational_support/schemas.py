@@ -105,3 +105,71 @@ class EducationalSkillRecord(BaseModel):
     demonstrated_date: str
     notes: str = ""
     # STRICT INVARIANT: No medical probability scores or diagnostic tags allowed
+
+
+# =============================================================================
+# CLASSROOM & EDUCATOR SCHEMAS
+# =============================================================================
+
+class ClassroomCreateRequest(BaseModel):
+    name: str = Field(..., min_length=2, max_length=160, description="e.g. Grade 4 Willow Room")
+    grade_level: str = Field(default="Grade 4", max_length=32)
+    institution_name: str = Field(default="Weebly Community School", max_length=160)
+
+
+class ClassroomResponse(BaseModel):
+    id: str
+    teacher_id: str
+    name: str
+    grade_level: str
+    institution_name: str
+    join_code: str
+    student_count: int = 0
+    is_active: bool = True
+    created_at: str
+
+
+class ClassroomStudentEnrollRequest(BaseModel):
+    classroom_id: str
+    student_display_name: str = Field(..., min_length=1, max_length=120)
+
+
+class ClassroomStudentResponse(BaseModel):
+    id: str
+    classroom_id: str
+    student_id: str
+    student_display_name: str
+    status: str
+    enrolled_at: str
+
+
+class ClassroomAssignmentCreateRequest(BaseModel):
+    classroom_id: str
+    title: str = Field(..., min_length=3, max_length=255)
+    department_id: str = Field(default="emotional_intelligence", max_length=64)
+    activity_type: str = Field(default="feelings_wheel", max_length=64)
+    instructions: str = Field(default="", max_length=1000)
+    due_date: Optional[str] = None
+
+
+class ClassroomAssignmentResponse(BaseModel):
+    id: str
+    classroom_id: str
+    title: str
+    department_id: str
+    activity_type: str
+    instructions: str
+    due_date: Optional[str] = None
+    created_at: str
+
+
+class ClassroomClimateReport(BaseModel):
+    classroom_id: str
+    classroom_name: str
+    total_students: int
+    calm_percentage: int
+    restless_percentage: int
+    focus_percentage: int
+    active_assignments_count: int
+    privacy_notice: str = "Aggregated anonymous emotional climate. Strictly no private student journals or personal chat records are exposed to educators."
+

@@ -50,6 +50,8 @@ const MARKETING_NAV_LINKS = [
   { href: "/teens", label: "Teens" },
   { href: "/parents", label: "Parents" },
   { href: "/schools", label: "Schools" },
+  { href: "/teacher/dashboard", label: "Teacher Hub" },
+  { href: "/youth/dashboard", label: "Student Zone" },
   { href: "/adhd-support", label: "ADHD Support" },
   { href: "/autism-support", label: "Autism Support" },
   { href: "/how-it-works", label: "How It Works" },
@@ -121,32 +123,49 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
           Skip to main content
         </a>
 
-        {/* Subtle Non-Clinical & 24/7 Support Strip */}
+        {/* Subtle Brand & Multi-Portal Navigation Strip */}
         <div className="px-4 sm:px-8 py-2 text-[12.5px] border-b bg-[#EEF4FF] border-[#DCE7FE] text-[#334155] transition-colors">
           <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center space-x-2">
               <Sparkles className="w-3.5 h-3.5 text-[#2B4CDE] shrink-0" />
-              <span>{localeConfig.nonClinicalNotice}</span>
+              <span>Weebly: Safe, multilingual learning for children &amp; teens.</span>
             </div>
             <div className="flex items-center space-x-4">
+              <Link
+                href="/parent"
+                className="font-medium hover:text-[#2B4CDE] hover:underline"
+              >
+                Parent Portal
+              </Link>
+              <Link
+                href="/teacher/dashboard"
+                className="font-medium hover:text-[#2B4CDE] hover:underline"
+              >
+                Teacher Hub
+              </Link>
+              <Link
+                href="/youth/dashboard"
+                className="font-medium hover:text-[#2B4CDE] hover:underline"
+              >
+                Student Zone
+              </Link>
+              <span className="text-slate-300">|</span>
+              <Link
+                href="/dashboard"
+                title="Existing adult wellbeing sanctuary"
+                className="font-medium text-slate-500 hover:text-slate-700 hover:underline"
+              >
+                Adult Sanctuary (InnerOS)
+              </Link>
+              <span className="text-slate-300">|</span>
               <button
                 type="button"
                 onClick={() => setCrisisModalOpen(true)}
                 className="hover:underline font-semibold inline-flex items-center space-x-1 text-[#E11D48]"
               >
                 <LifeBuoy className="w-3.5 h-3.5" />
-                <span>24/7 Crisis Helplines</span>
+                <span>24/7 Crisis</span>
               </button>
-              <Link
-                href="/dashboard"
-                onClick={() =>
-                  trackMarketingEvent("cta_open_app_click", { location: "topbar" })
-                }
-                className="font-semibold hover:underline inline-flex items-center space-x-1 text-[#2B4CDE]"
-              >
-                <span>{localeConfig.ctaOpenApp}</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
             </div>
           </div>
         </div>
@@ -521,7 +540,7 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                 <div className="flex items-start sm:items-center space-x-3">
                   <HeartHandshake className="w-5 h-5 text-[#38BDF8] shrink-0 mt-0.5 sm:mt-0" />
                   <p className="text-[13px] text-slate-300 leading-relaxed">
-                    <strong>Non-Clinical Companion &amp; 24/7 Crisis Support:</strong> InnerOS is not a medical device or substitute for licensed psychotherapy. Free 24/7 crisis lines: <strong>988</strong> (US/Canada), <strong>116 123</strong> (UK), <strong>112</strong> / <strong>0800 88 001</strong> (EU/Bulgaria).
+                    <strong>Child Safety &amp; Non-Clinical Notice:</strong> Weebly provides supportive, developmental learning and emotional literacy scaffolding for children and teens. It is not medical treatment or psychotherapy. Existing adult users can access the <Link href="/dashboard" className="text-sky-300 underline font-medium">InnerOS Adult Sanctuary</Link>. Free 24/7 crisis lines: <strong>988</strong> (US/Canada), <strong>116 123</strong> (UK), <strong>112</strong> (EU).
                   </p>
                 </div>
                 <Link
@@ -535,9 +554,9 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
 
             {/* Bottom Copyright */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[12.5px] text-slate-400 px-2">
-              <p>&copy; {new Date().getFullYear()} InnerOS. AI Mental Wellness Platform &amp; Calming Sanctuary Architecture.</p>
+              <p>&copy; {new Date().getFullYear()} Weebly. Multilingual Developmental Learning &amp; Emotional Intelligence Platform.</p>
               <p>
-                Supporting English, Español, Français, Deutsch, Български, العربية, اردو &amp; हिन्दी.
+                Spoken &amp; Written Support in English, Urdu (اردو), and Pakistani Punjabi (پنجابی).
               </p>
             </div>
           </div>

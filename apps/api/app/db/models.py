@@ -411,3 +411,49 @@ class SupportTicketModel(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, onupdate=_utc_now, nullable=False)
 
+
+# =============================================================================
+# EDUCATOR, SCHOOLS & CLASSROOM MODELS
+# =============================================================================
+
+class ClassroomModel(Base):
+    """Educator classroom roster and cohort settings."""
+    __tablename__ = "classrooms"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    teacher_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(160), nullable=False)
+    grade_level: Mapped[str] = mapped_column(String(32), default="Grade 3", nullable=False)
+    institution_name: Mapped[str] = mapped_column(String(160), default="Weebly Elementary", nullable=False)
+    join_code: Mapped[str] = mapped_column(String(16), unique=True, index=True, nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, onupdate=_utc_now, nullable=False)
+
+
+class ClassroomEnrollmentModel(Base):
+    """Student membership in educator classrooms (strictly non-clinical)."""
+    __tablename__ = "classroom_enrollments"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    classroom_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    student_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    student_display_name: Mapped[str] = mapped_column(String(120), nullable=False)
+    status: Mapped[str] = mapped_column(String(32), default="enrolled", nullable=False)  # enrolled, pending, inactive
+    enrolled_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
+
+
+class ClassroomAssignmentModel(Base):
+    """SEL activity or developmental story assigned to a classroom."""
+    __tablename__ = "classroom_assignments"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    classroom_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    department_id: Mapped[str] = mapped_column(String(64), default="emotional_intelligence", nullable=False)
+    activity_type: Mapped[str] = mapped_column(String(64), default="feelings_wheel", nullable=False)
+    instructions: Mapped[str] = mapped_column(Text, default="", nullable=False)
+    due_date: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, nullable=False)
+
+

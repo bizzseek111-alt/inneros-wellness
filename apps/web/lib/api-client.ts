@@ -1338,6 +1338,8 @@ export const api = {
     password: string;
     display_name: string;
     locale?: string;
+    role?: string;
+    age_tier?: string;
   }): Promise<any> {
     const res = await fetch(`${API_BASE}/api/v1/auth/signup`, {
       method: "POST",
@@ -2199,6 +2201,85 @@ export const api = {
       credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to fetch regulatory notice");
+    return res.json();
+  },
+
+  // ==========================================
+  // EDUCATOR & CLASSROOM COHORT API
+  // ==========================================
+  async createClassroom(payload: { name: string; grade_level?: string; institution_name?: string }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/educational-support/classrooms`, {
+      method: "POST",
+      headers: { ...this.getAuthHeaders(), "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error("Failed to create classroom cohort");
+    return res.json();
+  },
+
+  async listClassrooms(teacherId: string = "usr_teacher_demo"): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/educational-support/classrooms?teacher_id=${encodeURIComponent(teacherId)}`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch educator classrooms");
+    return res.json();
+  },
+
+  async enrollClassroomStudent(payload: { classroom_id: string; student_display_name: string }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/educational-support/classrooms/enroll`, {
+      method: "POST",
+      headers: { ...this.getAuthHeaders(), "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error("Failed to enroll student");
+    return res.json();
+  },
+
+  async listClassroomStudents(classroomId: string): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/educational-support/classrooms/${encodeURIComponent(classroomId)}/students`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch classroom students");
+    return res.json();
+  },
+
+  async createClassroomAssignment(payload: {
+    classroom_id: string;
+    title: string;
+    department_id?: string;
+    activity_type?: string;
+    instructions?: string;
+    due_date?: string;
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/educational-support/classrooms/assignments`, {
+      method: "POST",
+      headers: { ...this.getAuthHeaders(), "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error("Failed to create classroom assignment");
+    return res.json();
+  },
+
+  async listClassroomAssignments(classroomId: string): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/api/v1/educational-support/classrooms/${encodeURIComponent(classroomId)}/assignments`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch classroom assignments");
+    return res.json();
+  },
+
+  async getClassroomClimate(classroomId: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/v1/educational-support/classrooms/${encodeURIComponent(classroomId)}/climate`, {
+      headers: this.getAuthHeaders(),
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Failed to fetch classroom climate");
     return res.json();
   },
 

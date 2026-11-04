@@ -12,6 +12,7 @@ export default function SignupPage() {
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [selectedRole, setSelectedRole] = useState<"caregiver" | "teacher" | "student" | "user">("caregiver");
   const [locale, setLocale] = useState("en-US");
   const [migrateLocalData, setMigrateLocalData] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,11 +28,14 @@ export default function SignupPage() {
 
     setIsLoading(true);
     try {
+      const backendRole = selectedRole === "student" ? "child" : selectedRole;
       await api.signup({
         display_name: displayName.trim(),
         email: email.trim(),
         password,
         locale,
+        role: backendRole,
+        age_tier: selectedRole === "student" ? "junior" : "adult",
       });
 
       if (migrateLocalData) {
@@ -62,7 +66,15 @@ export default function SignupPage() {
         }
       }
 
-      router.push("/dashboard");
+      if (selectedRole === "caregiver") {
+        router.push("/parent");
+      } else if (selectedRole === "teacher") {
+        router.push("/teacher/dashboard");
+      } else if (selectedRole === "student") {
+        router.push("/youth/dashboard");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err: any) {
       setErrorMessage(err.message || "Could not create your account. Please try again.");
     } finally {
@@ -125,6 +137,65 @@ export default function SignupPage() {
           )}
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+            <div>
+              <label className="block text-sm font-semibold text-[#0F172A] mb-2">
+                Select your account experience:
+              </label>
+              <div className="grid grid-cols-2 gap-2 text-xs font-semibold">
+                <button
+                  type="button"
+                  onClick={() => setSelectedRole("caregiver")}
+                  className={`p-3 rounded-2xl border text-left transition-all ${
+                    selectedRole === "caregiver"
+                      ? "bg-[#E3F6EC] border-[#16A34A] text-[#14532D] shadow-xs"
+                      : "bg-[#F8FAFC] border-slate-200 text-slate-600 hover:bg-slate-100"
+                  }`}
+                >
+                  <span className="block font-bold">👨‍👩‍👧 Parent / Caregiver</span>
+                  <span className="block text-[10.5px] text-slate-500 font-normal mt-0.5">Family &amp; consent portal</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedRole("teacher")}
+                  className={`p-3 rounded-2xl border text-left transition-all ${
+                    selectedRole === "teacher"
+                      ? "bg-[#EEF4FF] border-[#2B4CDE] text-[#1E3A8A] shadow-xs"
+                      : "bg-[#F8FAFC] border-slate-200 text-slate-600 hover:bg-slate-100"
+                  }`}
+                >
+                  <span className="block font-bold">👩‍🏫 Teacher / School</span>
+                  <span className="block text-[10.5px] text-slate-500 font-normal mt-0.5">Classroom cohorts &amp; SEL</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedRole("student")}
+                  className={`p-3 rounded-2xl border text-left transition-all ${
+                    selectedRole === "student"
+                      ? "bg-[#FEF3C7] border-amber-500 text-amber-900 shadow-xs"
+                      : "bg-[#F8FAFC] border-slate-200 text-slate-600 hover:bg-slate-100"
+                  }`}
+                >
+                  <span className="block font-bold">🌟 Student / Youth</span>
+                  <span className="block text-[10.5px] text-slate-500 font-normal mt-0.5">Spoken learning &amp; Lumi</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedRole("user")}
+                  className={`p-3 rounded-2xl border text-left transition-all ${
+                    selectedRole === "user"
+                      ? "bg-[#F5F3FF] border-[#7C3AED] text-[#5B21B6] shadow-xs"
+                      : "bg-[#F8FAFC] border-slate-200 text-slate-600 hover:bg-slate-100"
+                  }`}
+                >
+                  <span className="block font-bold">🌿 Adult Sanctuary</span>
+                  <span className="block text-[10.5px] text-slate-500 font-normal mt-0.5">Personal wellbeing (InnerOS)</span>
+                </button>
+              </div>
+            </div>
+
             <div>
               <label
                 htmlFor="signup-name"

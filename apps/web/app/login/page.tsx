@@ -55,6 +55,12 @@ export default function LoginPage() {
       await syncBrowserDataIfPresent();
       if (result.user?.role === "admin") {
         router.push("/admin");
+      } else if (result.user?.role === "caregiver") {
+        router.push("/parent");
+      } else if (result.user?.role === "teacher") {
+        router.push("/teacher/dashboard");
+      } else if (result.user?.role === "child" || result.user?.role === "teen") {
+        router.push("/youth/dashboard");
       } else {
         router.push("/dashboard");
       }
@@ -206,22 +212,68 @@ export default function LoginPage() {
                 disabled={isLoading}
                 onClick={() =>
                   handleQuickDemoSignIn(
+                    "parent@inneros.app",
+                    "FamilySanctuary2026!",
+                    "/parent"
+                  )
+                }
+                className="w-full text-left px-4 py-3 rounded-2xl bg-[#E3F6EC]/70 hover:bg-[#E3F6EC] border border-[#16A34A]/20 transition-colors flex items-center justify-between"
+              >
+                <div>
+                  <span className="block text-sm font-semibold text-[#0F172A]">
+                    👨‍👩‍👧 Caregiver / Parent Portal
+                  </span>
+                  <span className="block text-xs text-[#52625E]">
+                    Family overview, child profiles, COPPA consent & screen-time controls
+                  </span>
+                </div>
+                <ArrowRight className="w-4 h-4 text-[#16A34A]" />
+              </button>
+
+              <button
+                type="button"
+                disabled={isLoading}
+                onClick={() =>
+                  handleQuickDemoSignIn(
+                    "teacher@inneros.app",
+                    "TeacherSanctuary2026!",
+                    "/teacher/dashboard"
+                  )
+                }
+                className="w-full text-left px-4 py-3 rounded-2xl bg-[#EEF4FF]/70 hover:bg-[#EEF4FF] border border-[#2B4CDE]/20 transition-colors flex items-center justify-between"
+              >
+                <div>
+                  <span className="block text-sm font-semibold text-[#0F172A]">
+                    👩‍🏫 Educator &amp; Classroom Hub
+                  </span>
+                  <span className="block text-xs text-[#52625E]">
+                    Classroom cohorts, SEL assignment dispatch & smartboard co-regulation
+                  </span>
+                </div>
+                <ArrowRight className="w-4 h-4 text-[#2B4CDE]" />
+              </button>
+
+              <button
+                type="button"
+                disabled={isLoading}
+                onClick={() =>
+                  handleQuickDemoSignIn(
                     "elena.vance@inneros.app",
                     "InnerOS-Demo-2026!",
                     "/dashboard"
                   )
                 }
-                className="w-full text-left px-4 py-3 rounded-2xl bg-[#E5F1E8]/60 hover:bg-[#E5F1E8] border border-[#285B55]/20 transition-colors flex items-center justify-between"
+                className="w-full text-left px-4 py-3 rounded-2xl bg-[#F8FAFC] hover:bg-slate-100 border border-slate-200 transition-colors flex items-center justify-between"
               >
                 <div>
-                  <span className="block text-sm font-medium text-[#263330]">
-                    Continue as Elena Vance (User Sanctuary)
+                  <span className="block text-sm font-semibold text-[#0F172A]">
+                    🌿 Adult Sanctuary (InnerOS)
                   </span>
                   <span className="block text-xs text-[#52625E]">
-                    Includes seeded memories, Life Graph, journal, and growth goals
+                    Existing adult personal journal, growth horizons & somatic check-ins
                   </span>
                 </div>
-                <ArrowRight className="w-4 h-4 text-[#285B55]" />
+                <ArrowRight className="w-4 h-4 text-slate-600" />
               </button>
 
               <button
@@ -237,11 +289,11 @@ export default function LoginPage() {
                 className="w-full text-left px-4 py-3 rounded-2xl bg-[#EEE7FA]/70 hover:bg-[#EEE7FA] border border-[#6B519E]/20 transition-colors flex items-center justify-between"
               >
                 <div>
-                  <span className="block text-sm font-medium text-[#263330]">
-                    Continue as Dr. Clara Chen (Admin & Steward)
+                  <span className="block text-sm font-semibold text-[#0F172A]">
+                    🛡️ Platform Administrator &amp; CMS
                   </span>
                   <span className="block text-xs text-[#52625E]">
-                    Zero-knowledge operations console, feature flags & knowledge review
+                    Safeguarding audit logs, curriculum CMS & service catalog
                   </span>
                 </div>
                 <ArrowRight className="w-4 h-4 text-[#553E82]" />

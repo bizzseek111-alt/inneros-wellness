@@ -4,7 +4,15 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useYouth } from "./YouthContext";
 
-export type MascotState = "idle" | "listening" | "speaking" | "celebrating" | "calming";
+export type MascotState =
+  | "idle"
+  | "listening"
+  | "thinking"
+  | "speaking"
+  | "celebrating"
+  | "calming"
+  | "comforting"
+  | "guiding";
 
 interface LumiMascotProps {
   state?: MascotState;
@@ -36,9 +44,12 @@ export const LumiMascot: React.FC<LumiMascotProps> = ({
   const stateGradients = {
     idle: "from-[#B9E2FE] via-[#E6D7F5] to-[#FFD9C7]",
     listening: "from-[#98DEB8] via-[#B9E2FE] to-[#D3B9ED]",
+    thinking: "from-[#EDE9FE] via-[#E0F2FE] to-[#FEF3C7]",
     speaking: "from-[#FFB99D] via-[#FEF08A] to-[#B9E2FE]",
     celebrating: "from-[#FDE047] via-[#FFB99D] to-[#E6D7F5]",
     calming: "from-[#C4EDD6] via-[#B9E2FE] to-[#E6D7F5]",
+    comforting: "from-[#FED7AA] via-[#FBCFE8] to-[#E0E7FF]",
+    guiding: "from-[#BAE6FD] via-[#DDD6FE] to-[#FEF08A]",
   };
 
   const currentGradient = isLowStimulation
@@ -130,10 +141,39 @@ export const LumiMascot: React.FC<LumiMascotProps> = ({
           />
         </g>
 
+        {/* Expressive Features for Thinking / Guiding / Comforting */}
+        {state === "thinking" && !isReducedMotion && (
+          <g>
+            <circle cx="150" cy="40" r="5" fill="#FEF08A" opacity="0.8" />
+            <circle cx="165" cy="28" r="7" fill="#BAE6FD" opacity="0.85" />
+            <circle cx="180" cy="18" r="9" fill="#DDD6FE" opacity="0.9" />
+          </g>
+        )}
+
+        {state === "guiding" && (
+          <g>
+            <path
+              d="M 100,12 L 104,22 L 114,24 L 106,30 L 109,40 L 100,34 L 91,40 L 94,30 L 86,24 L 96,22 Z"
+              fill="#FEF08A"
+              opacity="0.9"
+            />
+          </g>
+        )}
+
+        {state === "comforting" && (
+          <g>
+            <path
+              d="M 100,24 C 95,16 82,16 82,27 C 82,36 100,48 100,48 C 100,48 118,36 118,27 C 118,16 105,16 100,24 Z"
+              fill="#F472B6"
+              opacity="0.85"
+            />
+          </g>
+        )}
+
         {/* Friendly Expressive Eyes (Gentle arcs, non-creepy, peaceful) */}
         <g fill="#2D3748">
           {/* Left Eye */}
-          {state === "calming" || state === "idle" ? (
+          {state === "calming" || state === "idle" || state === "comforting" ? (
             <path
               d="M 68,96 C 74,90 84,90 90,96"
               stroke="#2D3748"
@@ -141,12 +181,14 @@ export const LumiMascot: React.FC<LumiMascotProps> = ({
               strokeLinecap="round"
               fill="none"
             />
+          ) : state === "thinking" ? (
+            <ellipse cx="78" cy="90" rx="6" ry="7" />
           ) : (
             <ellipse cx="78" cy="94" rx="6" ry="8" />
           )}
 
           {/* Right Eye */}
-          {state === "calming" || state === "idle" ? (
+          {state === "calming" || state === "idle" || state === "comforting" ? (
             <path
               d="M 110,96 C 116,90 126,90 132,96"
               stroke="#2D3748"
@@ -154,15 +196,17 @@ export const LumiMascot: React.FC<LumiMascotProps> = ({
               strokeLinecap="round"
               fill="none"
             />
+          ) : state === "thinking" ? (
+            <ellipse cx="122" cy="90" rx="6" ry="7" />
           ) : (
             <ellipse cx="122" cy="94" rx="6" ry="8" />
           )}
 
           {/* Cheerful Eye Sparkles if Open */}
-          {state !== "calming" && state !== "idle" && (
+          {state !== "calming" && state !== "idle" && state !== "comforting" && (
             <>
-              <circle cx="76" cy="91" r="2" fill="#FFFFFF" />
-              <circle cx="120" cy="91" r="2" fill="#FFFFFF" />
+              <circle cx="76" cy={state === "thinking" ? 87 : 91} r="2" fill="#FFFFFF" />
+              <circle cx="120" cy={state === "thinking" ? 87 : 91} r="2" fill="#FFFFFF" />
             </>
           )}
 
@@ -177,6 +221,10 @@ export const LumiMascot: React.FC<LumiMascotProps> = ({
                 ? "M 88,112 Q 100,126 112,112"
                 : state === "speaking"
                 ? "M 92,114 Q 100,124 108,114"
+                : state === "comforting"
+                ? "M 89,112 Q 100,122 111,112"
+                : state === "thinking"
+                ? "M 93,114 Q 100,118 107,114"
                 : "M 90,112 Q 100,120 110,112"
             }
             stroke="#2D3748"
