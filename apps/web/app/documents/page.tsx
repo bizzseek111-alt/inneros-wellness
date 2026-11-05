@@ -294,8 +294,8 @@ The Weebly Demo Center (\`/demos\`) provides immediate, self-guided or escorted 
 - **Key Observation:** Verify strict tenant isolation and $k \\ge 5$ differential privacy protection.
 
 ### Demo 5: Professional Support Review
-- **Action:** Review authorized specialist Dr. Sarah Jenkins' intake queue and clinical boundary banner.
-- **Key Observation:** Test Caregiver Harm Exception Protocol and zero-knowledge access audit logging.
+- **Action:** Review authorized specialist Dr. Sarah Jenkins (simulated demonstration profile) and synthetic case queue.
+- **Key Observation:** Test Caregiver Harm Exception Protocol, zero-knowledge access audit logging, and strict non-clinical boundary.
 
 ### Demo 6: Platform Administration
 - **Action:** Inspect the 3,000-question library, RAG registry, and voice provider circuit breaker status.

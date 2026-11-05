@@ -3,7 +3,7 @@
 import React, { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Smile, Sparkles, Wind, Heart, Shield, RefreshCw, Compass } from "lucide-react";
-import { YouthShell } from "@/components/youth/YouthShell";
+import { ChildNavigationShell } from "@/components/youth/ChildNavigationShell";
 import { FeelingsWheel } from "@/components/youth/FeelingsWheel";
 import { LumiMascot } from "@/components/youth/LumiMascot";
 import { LifeSkillsMissions } from "@/components/youth/LifeSkillsMissions";
@@ -60,15 +60,22 @@ function EmotionLearningCenterContent() {
   ];
 
   return (
-    <YouthShell
-      activeScreen="emotions"
-      title="Calm Corner &amp; Life Skills"
-      subtitle="Discovering what our feelings tell us, finding calm, and completing kind real-world missions."
-    >
+    <ChildNavigationShell activeTab="play">
       <div className="max-w-4xl mx-auto space-y-8">
+        {/* Child-friendly header */}
+        <div className="text-center space-y-1.5">
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            Calm Corner &amp; Life Skills
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-lg mx-auto">
+            Discovering what our feelings tell us, finding calm, and completing kind real-world missions.
+          </p>
+        </div>
+
         {/* Navigation Tabs */}
         <div className="flex items-center justify-center p-1.5 rounded-2xl bg-slate-200 max-w-md mx-auto shadow-inner">
           <button
+            type="button"
             onClick={() => setActiveTab("feelings")}
             className={`flex-1 py-2.5 rounded-xl font-black text-xs transition-all flex items-center justify-center space-x-2 ${
               activeTab === "feelings"
@@ -81,6 +88,7 @@ function EmotionLearningCenterContent() {
           </button>
 
           <button
+            type="button"
             onClick={() => setActiveTab("missions")}
             className={`flex-1 py-2.5 rounded-xl font-black text-xs transition-all flex items-center justify-center space-x-2 ${
               activeTab === "missions"
@@ -105,9 +113,9 @@ function EmotionLearningCenterContent() {
             {/* Coping Strategies Deck */}
             <div className="p-6 sm:p-8 rounded-[32px] bg-white border border-[#E2E8F0] shadow-sm space-y-6">
               <div className="space-y-1">
-                <h3 className="text-xl font-extrabold text-[#0F172A]">
+                <h2 className="text-xl font-extrabold text-[#0F172A]">
                   Somatic Coping Flashcards
-                </h3>
+                </h2>
                 <p className="text-sm text-[#718096]">
                   Simple exercises children can do in school, at home, or before bed.
                 </p>
@@ -125,7 +133,7 @@ function EmotionLearningCenterContent() {
                     <div className="flex items-center space-x-3 mb-2">
                       <span className="text-3xl">{strat.icon}</span>
                       <div>
-                        <h4 className="font-extrabold text-base text-[#0F172A]">{strat.title}</h4>
+                        <h3 className="font-extrabold text-base text-[#0F172A]">{strat.title}</h3>
                         <span className="text-xs font-semibold text-[#718096]" dir="rtl">
                           {strat.urduTitle}
                         </span>
@@ -141,7 +149,7 @@ function EmotionLearningCenterContent() {
           </div>
         )}
       </div>
-    </YouthShell>
+    </ChildNavigationShell>
   );
 }
 
@@ -149,15 +157,11 @@ export default function EmotionLearningCenterPage() {
   return (
     <Suspense
       fallback={
-        <YouthShell
-          activeScreen="emotions"
-          title="Calm Corner &amp; Life Skills"
-          subtitle="Loading calm corner..."
-        >
+        <ChildNavigationShell activeTab="play">
           <div className="min-h-[50vh] flex items-center justify-center text-slate-500 font-bold">
             Loading Calm Corner &amp; Life Skills...
           </div>
-        </YouthShell>
+        </ChildNavigationShell>
       }
     >
       <EmotionLearningCenterContent />

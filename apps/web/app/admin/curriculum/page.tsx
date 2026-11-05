@@ -68,6 +68,14 @@ export default function AdminCurriculumCMSPage() {
     loadCurriculum();
   }, [loadCurriculum]);
 
+  const [isDemoReviewer, setIsDemoReviewer] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsDemoReviewer(!apiClient.getStoredSessionToken());
+    }
+  }, []);
+
   const handleOpenEdit = (mod: CurriculumModule) => {
     setEditingModule(mod);
     setEditTitleEn(mod.title_en);
@@ -80,6 +88,26 @@ export default function AdminCurriculumCMSPage() {
   const handleSaveEdit = async () => {
     if (!editingModule) return;
     setSaving(true);
+    if (isDemoReviewer) {
+      setModules((prev) =>
+        prev.map((m) =>
+          m.module_id === editingModule.module_id
+            ? {
+                ...m,
+                title_en: editTitleEn,
+                title_ur: editTitleUr,
+                title_pa: editTitlePa,
+                developmental_objective: editObjective,
+                recommended_session_duration_min: editDuration,
+              }
+            : m
+        )
+      );
+      setMessage(`[Demo Sandbox] Simulated update for ${editingModule.module_id} (in-memory demo preview).`);
+      setEditingModule(null);
+      setSaving(false);
+      return;
+    }
     try {
       await apiClient.updateAcademyModule(editingModule.module_id, {
         title_en: editTitleEn,
@@ -98,8 +126,18 @@ export default function AdminCurriculumCMSPage() {
     }
   };
 
-  const handleActionTransition = async (targetStatus: string) => {
+  const handleActionTransition = async (targetStatus: CurriculumModule["approval_status"]) => {
     if (!approvingModule) return;
+    if (isDemoReviewer) {
+      setModules((prev) =>
+        prev.map((m) =>
+          m.module_id === approvingModule.module_id ? { ...m, approval_status: targetStatus } : m
+        )
+      );
+      setMessage(`[Demo Sandbox] Simulated transition to '${targetStatus}' for ${approvingModule.module_id}.`);
+      setApprovingModule(null);
+      return;
+    }
     try {
       const payload: ApprovalActionRequest = {
         module_id: approvingModule.module_id,
@@ -118,6 +156,11 @@ export default function AdminCurriculumCMSPage() {
   };
 
   const handlePublishAll = async () => {
+    if (isDemoReviewer) {
+      setModules((prev) => prev.map((m) => ({ ...m, approval_status: "published" })));
+      setMessage(`[Demo Sandbox] Simulated publish of all ${modules.length} lessons in memory. Real database mutations are restricted to authenticated system administrators.`);
+      return;
+    }
     try {
       const res = await apiClient.publishAllDemonstrationLessons();
       setMessage(`Published all ${res.published_count} demonstration lessons!`);
@@ -200,6 +243,24 @@ export default function AdminCurriculumCMSPage() {
             <button onClick={() => setMessage(null)} className="text-muted-foreground hover:text-foreground">
               <X className="w-4 h-4" />
             </button>
+          </div>
+        )}
+
+        {/* Demo / Sandbox Visitor Notice */}
+        {isDemoReviewer && (
+          <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-xs text-blue-900 dark:text-blue-200 flex items-start justify-between gap-3">
+            <div className="flex items-start gap-2.5">
+              <ShieldCheck className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+              <div>
+                <span className="font-bold">Reviewer Demonstration Sandbox: </span>
+                <span>
+                  You are exploring the curriculum CMS in isolated guest reviewer mode. All publish and approval actions simulate updates in memory to protect live production curriculum records.
+                </span>
+              </div>
+            </div>
+            <span className="px-2.5 py-1 rounded-full bg-blue-100 text-blue-800 text-[11px] font-black shrink-0 uppercase tracking-wider">
+              Guest Sandbox
+            </span>
           </div>
         )}
 

@@ -373,7 +373,7 @@ export default function PunjabSchoolPilotPage() {
               5. Curriculum Alignment: 3,000 Questions Mapped to PCTB SLOs
             </h2>
             <p className="text-slate-600 leading-relaxed text-base">
-              Every question in the Weebly repository is tied directly to published Student Learning Outcomes (SLOs) from the Punjab Curriculum and Textbook Board. The curriculum spans 4 core disciplines across Grade 1 through Grade 8.
+              Every question in the 3,000-question Weebly repository is tied directly to published Student Learning Outcomes (SLOs) from the Punjab Curriculum and Textbook Board. The repository integrates 4 core academic school disciplines (spanning Grade 1 through Grade 8) with 9 whole-child developmental domains (including emotional vocabulary, cognitive reasoning, and life skills). Active school pilot questions feature 126 published lessons, 369 expert-reviewed modules, and 2,505 drafted questions in the authoring pipeline.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
               <div className="p-5 rounded-2xl bg-blue-50/60 border border-blue-200 text-center space-y-1">

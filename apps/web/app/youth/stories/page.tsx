@@ -3,7 +3,7 @@
 import React, { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { BookOpen, Play, Pause, RotateCcw, Volume2, Sparkles, Moon, Sun, ArrowLeft, Film } from "lucide-react";
-import { YouthShell } from "@/components/youth/YouthShell";
+import { ChildNavigationShell } from "@/components/youth/ChildNavigationShell";
 import { LumiMascot } from "@/components/youth/LumiMascot";
 import { useYouth } from "@/components/youth/YouthContext";
 import { InteractiveCartoonPlayer } from "@/components/youth/InteractiveCartoonPlayer";
@@ -124,12 +124,16 @@ function StoryLibraryContent() {
   };
 
   return (
-    <YouthShell
-      activeScreen="stories"
-      title="Calm Story &amp; Cartoon Theater"
-      subtitle="Interactive moral cartoons, soothing bedtime fables, and real science adventures."
-    >
+    <ChildNavigationShell activeTab="play">
       <div className="max-w-4xl mx-auto space-y-6">
+        <div className="text-center space-y-1.5">
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            Calm Story &amp; Cartoon Theater
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-600 font-medium">
+            Interactive moral cartoons, soothing bedtime fables, and real science adventures.
+          </p>
+        </div>
         {showCartoon ? (
           <div className="space-y-4">
             <button
@@ -271,7 +275,7 @@ function StoryLibraryContent() {
           </div>
         )}
       </div>
-    </YouthShell>
+    </ChildNavigationShell>
   );
 }
 
@@ -279,15 +283,11 @@ export default function StoryLibraryPage() {
   return (
     <Suspense
       fallback={
-        <YouthShell
-          activeScreen="stories"
-          title="Story Library"
-          subtitle="Loading stories..."
-        >
+        <ChildNavigationShell activeTab="play">
           <div className="min-h-[50vh] flex items-center justify-center text-slate-500 font-bold">
             Loading Stories &amp; Cartoon Theater...
           </div>
-        </YouthShell>
+        </ChildNavigationShell>
       }
     >
       <StoryLibraryContent />

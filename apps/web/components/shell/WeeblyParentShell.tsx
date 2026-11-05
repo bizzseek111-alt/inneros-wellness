@@ -132,9 +132,6 @@ export const WeeblyParentShell: React.FC<WeeblyParentShellProps> = ({ children }
             <Link href="/contact" className="hover:text-emerald-700 transition-colors">
               Contact Family Support
             </Link>
-            <Link href="/inneros/dashboard" className="text-slate-400 hover:text-slate-600 transition-colors">
-              Adult Sanctuary &rarr;
-            </Link>
           </div>
         </div>
       </footer>

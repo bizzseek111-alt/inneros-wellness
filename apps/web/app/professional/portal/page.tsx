@@ -120,7 +120,7 @@ export default function ProfessionalSupportPortal() {
                 </span>
               </div>
               <p className="text-xs text-slate-500 font-medium">
-                Dr. Sarah Jenkins, Ph.D. &bull; License: PPA #88291-PK &bull; Punjab Healthcare Commission
+                Dr. Sarah Jenkins, Ph.D. <span className="text-teal-700 font-bold">(Simulated Clinician Profile)</span> &bull; Fictional Demo License: PPA #88291-PK &bull; Punjab Healthcare Commission Sandbox
               </p>
             </div>
           </div>
@@ -154,13 +154,11 @@ export default function ProfessionalSupportPortal() {
           <div className="flex items-center space-x-2">
             <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
             <span>
-              <strong>Professional Clinical Boundary (Module 8 &amp; 12):</strong> All clinical judgments, accommodations,
-              and developmental evaluations belong exclusively to qualified human specialists. Weebly AI companions NEVER generate
-              psychiatric diagnoses, ADHD/autism labels, or pathology scores.
+              <strong>Professional Clinical Boundary (Simulated Demonstration Environment):</strong> All patient records, clinician credentials, and case studies shown here are synthetic demonstration fixtures for stakeholder review. In production, clinical judgments and developmental evaluations belong exclusively to licensed human practitioners. Weebly AI companions NEVER generate psychiatric diagnoses or clinical pathology scores.
             </span>
           </div>
           <span className="text-[11px] text-emerald-300 uppercase font-black tracking-wider shrink-0">
-            Case-Level Encryption Active
+            Simulated Sandbox Mode
           </span>
         </div>
       </div>

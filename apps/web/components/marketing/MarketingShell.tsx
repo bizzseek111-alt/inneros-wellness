@@ -523,7 +523,7 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                 <div className="flex items-start sm:items-center space-x-3">
                   <HeartHandshake className="w-5 h-5 text-[#38BDF8] shrink-0 mt-0.5 sm:mt-0" />
                   <p className="text-[13px] text-slate-300 leading-relaxed">
-                    <strong>Child Safety &amp; Non-Clinical Notice:</strong> Weebly provides supportive, developmental learning and emotional literacy scaffolding for children and teens. It is not medical treatment or psychotherapy. Existing adult users can access the <Link href="/inneros/dashboard" className="text-sky-300 underline font-medium">InnerOS Adult Sanctuary</Link>. Free 24/7 crisis lines: <strong>988</strong> (US/Canada), <strong>116 123</strong> (UK), <strong>112</strong> (EU).
+                    <strong>Child Safety &amp; Non-Clinical Notice:</strong> Weebly provides supportive, developmental learning and emotional literacy scaffolding for children and teens. It is not medical treatment or psychotherapy. Free 24/7 crisis lines: <strong>988</strong> (US/Canada), <strong>116 123</strong> (UK), <strong>112</strong> (EU).
                   </p>
                 </div>
                 <Link
