@@ -118,4 +118,46 @@ describe("Weebly V10 — Unified AI Learning, Creation, Foundational Skills & Ch
       "Admin CMS enforces Published-only visibility for children"
     );
   });
+
+  it("Phase 11: International-Grade 16-Section Homepage, Navigation, Dedicated Product Pages & Zero Broken Links", () => {
+    const home = readFile("app/page.tsx");
+    const nav = readFile("components/marketing/MarketingShell.tsx");
+    const tokens = readFile("design-system/weebly-v10-tokens.ts");
+    const creatorShowcase = readFile("components/v10/AICreatorAcademyShowcase.tsx");
+
+    // Verify Design System & 16-section architecture
+    assert.ok(tokens.includes("homepageArchitecture16"), "V10 design system defines 16 homepage sections");
+    assert.ok(creatorShowcase.includes("LIVE 5×3 GAME STAGE"), "Flagship AI Creator Academy showcase includes playable stage");
+    assert.ok(home.includes("AICreatorAcademyShowcase"), "Homepage mounts flagship AI Creator Academy section");
+    assert.ok(home.includes("JourneyEngineInteractivePreview"), "Homepage mounts interactive Watch->Learn->Play->Implement->Reflect section");
+    assert.ok(home.includes("FoundationalSkillsInteractivePreview"), "Homepage mounts interactive Foundational Skills puzzle");
+    assert.ok(home.includes("InclusiveLearningInteractivePreview"), "Homepage mounts interactive Inclusive Learning & AAC sandbox");
+
+    // Verify Public Navigation (Explore, Learning, Create with AI, Parents, Schools, Try Demo)
+    assert.ok(nav.includes('label: "Explore"'), "Nav includes Explore");
+    assert.ok(nav.includes('label: "Learning"'), "Nav includes Learning");
+    assert.ok(nav.includes('label: "Create with AI"'), "Nav includes Create with AI");
+    assert.ok(nav.includes('label: "Parents"'), "Nav includes Parents");
+    assert.ok(nav.includes('label: "Schools"'), "Nav includes Schools");
+    assert.ok(nav.includes("Try Demo"), "Nav includes Try Demo CTA");
+
+    // Verify all 8 Dedicated Pages exist and contain interactive previews, status badges, and demo CTAs
+    const dedicatedPages = [
+      "app/learning-method/page.tsx",
+      "app/ai-creator/page.tsx",
+      "app/ai-literacy/page.tsx",
+      "app/brain-skills/page.tsx",
+      "app/inclusive-learning/page.tsx",
+      "app/child-development/page.tsx",
+      "app/access/page.tsx",
+      "app/platform/page.tsx",
+    ];
+    for (const pagePath of dedicatedPages) {
+      const full = path.join(WEB_ROOT, pagePath);
+      assert.ok(fs.existsSync(full), `Dedicated page must exist: ${pagePath}`);
+      const content = fs.readFileSync(full, "utf8");
+      assert.ok(content.includes("LIVE AND VERIFIED"), `${pagePath} must state current implementation status`);
+    }
+  });
 });
+

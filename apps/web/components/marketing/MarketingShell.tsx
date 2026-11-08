@@ -46,9 +46,19 @@ export const useMarketingLocale = () => useContext(MarketingLocaleContext);
 
 const MARKETING_NAV_LINKS = [
   { href: "/platform", label: "Explore" },
-  { href: "/how-it-works", label: "How It Works" },
+  { href: "/learning-method", label: "Learning" },
+  { href: "/ai-creator", label: "Create with AI" },
   { href: "/parents", label: "Parents" },
   { href: "/schools", label: "Schools" },
+];
+
+const V10_DEDICATED_PRODUCT_LINKS = [
+  { href: "/how-it-works", label: "How It Works" },
+  { href: "/ai-literacy", label: "AI Literacy" },
+  { href: "/brain-skills", label: "Foundational Skills" },
+  { href: "/inclusive-learning", label: "Inclusive Learning" },
+  { href: "/child-development", label: "Child Wellbeing" },
+  { href: "/access", label: "Safety & Access" },
   { href: "/research", label: "Research" },
   { href: "/login", label: "Sign In" },
 ];
@@ -298,6 +308,23 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                   );
                 })}
               </nav>
+
+              <div className="pt-2 border-t border-slate-100">
+                <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-2 px-1">
+                  Product Deep Dives
+                </div>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {V10_DEDICATED_PRODUCT_LINKS.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-700"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
 
               <div className="pt-2 flex flex-col gap-2.5">
                 <Link

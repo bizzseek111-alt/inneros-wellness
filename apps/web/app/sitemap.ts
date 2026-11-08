@@ -24,9 +24,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/demos",
     "/documents",
     "/creative-studio",
+    "/learning-method",
+    "/ai-creator",
+    "/ai-creator-academy",
+    "/ai-literacy",
+    "/brain-skills",
+    "/inclusive-learning",
+    "/child-development",
+    "/access",
     "/youth/dashboard",
     "/youth/friends",
     "/youth/play",
+    "/youth/journeys",
+    "/youth/creator",
+    "/youth/skills-lab",
+    "/youth/passport",
   ];
 
   return routes.map((route) => ({

@@ -4,9 +4,14 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { MarketingShell } from "@/components/marketing/MarketingShell";
 import { CompanionPortrait, CompanionId } from "@/components/v9/CompanionPortrait";
+import { WEEBLY_V9_LEARNING_WORLDS } from "@/design-system/weebly-v9-tokens";
+import { WEEBLY_V10_DESIGN_SYSTEM } from "@/design-system/weebly-v10-tokens";
+import { AICreatorAcademyShowcase } from "@/components/v10/AICreatorAcademyShowcase";
 import {
-  WEEBLY_V9_LEARNING_WORLDS,
-} from "@/design-system/weebly-v9-tokens";
+  JourneyEngineInteractivePreview,
+  FoundationalSkillsInteractivePreview,
+  InclusiveLearningInteractivePreview,
+} from "@/components/v10/HomepageInteractiveSections";
 import { voiceSynthesizer } from "@/lib/voice-synthesizer";
 import {
   Sparkles,
@@ -16,15 +21,17 @@ import {
   School,
   Play,
   BookOpen,
-  Palette,
-  Activity,
   CheckCircle2,
-  Users,
   Lock,
-  Globe,
   Send,
   Compass,
   HeartHandshake,
+  Brain,
+  SearchCheck,
+  WifiOff,
+  Smartphone,
+  Globe,
+  Users,
 } from "lucide-react";
 
 const COMPANIONS = [
@@ -102,13 +109,52 @@ const COMPANIONS = [
   },
 ];
 
+const AGE_AI_PATHWAYS = [
+  {
+    age: "Age 5",
+    focus: "Picture Storytelling & Spotting Silly AI Mistakes",
+    exampleCreation: "3-panel narrated picture story about a friendly mango tree (Caregiver-guided).",
+    skills: "Understand that AI is software on a computer, not a real person with feelings.",
+  },
+  {
+    age: "Age 6",
+    focus: "Visual Block Games & Character Movement",
+    exampleCreation: "Playable 5×5 Star Collector game using Move Right, Jump Up, and Touching Star blocks.",
+    skills: "Sequencing step-by-step instructions (algorithms) and predicting character motion.",
+  },
+  {
+    age: "Ages 7–9",
+    focus: "Branching Cartoons & AI Detective Fact-Checking",
+    exampleCreation: "Interactive 3-scene moral cartoon where characters choose how to share playground equipment.",
+    skills: "Spotting AI hallucinations, checking trusted sources, and keeping family info private.",
+  },
+  {
+    age: "Ages 10–12",
+    focus: "Multi-Rule Game Debugging & Dataset Fairness",
+    exampleCreation: "Custom block game with repeat loops, collision scoring, and a tested fairness checklist.",
+    skills: "Inspecting why incomplete training examples lead to biased guesses and debugging logic.",
+  },
+  {
+    age: "Ages 13–15",
+    focus: "Structured Logic, Study Habits & Co-Creation",
+    exampleCreation: "Interactive science explainer project with cited textbook sources and reflection notes.",
+    skills: "Using AI companions for Socratic brainstorming without outsourcing critical thinking.",
+  },
+  {
+    age: "Ages 16–18",
+    focus: "Advanced Logic, Data Concepts & Verification Rubrics",
+    exampleCreation: "Parent/teacher-approved capstone portfolio analyzing model boundaries and community impact.",
+    skills: "Evaluating AI accuracy, attribution, privacy governance, and real-world problem solving.",
+  },
+];
+
 const SIX_ROLE_DEMOS = [
   {
     id: "child",
     number: "01",
     role: "Child Experience (Ages 3–12)",
     title: "Voice Companion & Learning World",
-    summary: "Talk with Kai or Mia, solve an interactive quest, and earn a skill badge.",
+    summary: "Talk with Kai or Mia, solve an interactive quest, and build a block game.",
     href: "/demos?demo=child",
     directHref: "/youth/dashboard",
     accent: "bg-sky-50 border-sky-200 text-sky-900",
@@ -116,9 +162,9 @@ const SIX_ROLE_DEMOS = [
   {
     id: "teen",
     number: "02",
-    role: "Teen Experience (Ages 13–16)",
+    role: "Teen Experience (Ages 13–18)",
     title: "Study Habits, Coding & Calm Reflection",
-    summary: "Age-appropriate academic problem-solving, digital literacy, and calm focus tools.",
+    summary: "Age-appropriate academic problem-solving, AI literacy, and calm focus tools.",
     href: "/demos?demo=teen",
     directHref: "/youth/friends?friend=zayn",
     accent: "bg-indigo-50 border-indigo-200 text-indigo-900",
@@ -127,8 +173,8 @@ const SIX_ROLE_DEMOS = [
     id: "parent",
     number: "03",
     role: "Parent & Caregiver Center",
-    title: "Developmental Insights & Home Routines",
-    summary: "Review learning milestones, language preferences, and record home observations.",
+    title: "Skills Passport & Home Routines",
+    summary: "Review learning milestones, approve portfolio creations, and log home observations.",
     href: "/demos?demo=parent",
     directHref: "/parent",
     accent: "bg-emerald-50 border-emerald-200 text-emerald-900",
@@ -138,7 +184,7 @@ const SIX_ROLE_DEMOS = [
     number: "04",
     role: "Teacher Studio",
     title: "Classroom Quests & Curriculum Alignment",
-    summary: "Assign bilingual learning worlds to a class and track participation by skill domain.",
+    summary: "Assign bilingual learning journeys to a class and track participation by skill domain.",
     href: "/demos?demo=teacher",
     directHref: "/teacher/dashboard",
     accent: "bg-amber-50 border-amber-200 text-amber-900",
@@ -147,7 +193,7 @@ const SIX_ROLE_DEMOS = [
     id: "school",
     number: "05",
     role: "School Leadership Portal",
-    title: "Cohort Overview & Safeguarding Governance",
+    title: "Cohort Overview & Pilot Governance",
     summary: "Monitor grade-level engagement, teacher adoption, and school-wide safety protocols.",
     href: "/demos?demo=school",
     directHref: "/school/portal",
@@ -165,12 +211,14 @@ const SIX_ROLE_DEMOS = [
   },
 ];
 
-export default function WeeblyV9HomePage() {
+export default function WeeblyV10HomePage() {
   const [selectedCompanion, setSelectedCompanion] = useState<CompanionId>("kai");
   const [previewLang, setPreviewLang] = useState<"en" | "ur" | "pa">("en");
   const [speakingCompanion, setSpeakingCompanion] = useState<CompanionId | null>(null);
+  const [selectedAgePathway, setSelectedAgePathway] = useState<number>(1); // Age 6 default
+  const [detectiveAnswer, setDetectiveAnswer] = useState<"fact" | "hallucination" | null>(null);
 
-  // Live Interactive Product Demo State (Section 3)
+  // Live Interactive Turn State
   const [demoInput, setDemoInput] = useState("");
   const [demoLoading, setDemoLoading] = useState(false);
   const [demoHistory, setDemoHistory] = useState<
@@ -180,14 +228,12 @@ export default function WeeblyV9HomePage() {
       text: string;
       actionLabel?: string;
       actionRoute?: string;
-      provider?: string;
     }>
   >([
     {
       role: "companion",
       speaker: "Kai",
-      text: "Assalam-o-Alaikum! Hi friend! Pick a question below or type your own to see how I guide learning and open activities.",
-      provider: "ready",
+      text: "Assalam-o-Alaikum! Hi friend! Pick a question or ask me to open a 5-stage Learning Journey or Block Game!",
     },
   ]);
 
@@ -206,13 +252,9 @@ export default function WeeblyV9HomePage() {
   const handleRunLiveTurn = async (promptText: string) => {
     const clean = promptText.trim();
     if (!clean || demoLoading) return;
-
     setDemoLoading(true);
     setDemoInput("");
-    setDemoHistory((prev) => [
-      ...prev,
-      { role: "child", speaker: "Child", text: clean },
-    ]);
+    setDemoHistory((prev) => [...prev, { role: "child", speaker: "Child", text: clean }]);
 
     try {
       const res = await fetch("/api/youth/friends/turn", {
@@ -227,8 +269,7 @@ export default function WeeblyV9HomePage() {
       });
       const data = await res.json();
       const replyText =
-        data.reply ||
-        "Let's explore that together! Tap below to open our learning activity.";
+        data.reply || "Let's explore that together! Tap below to open our learning activity.";
       setDemoHistory((prev) => [
         ...prev,
         {
@@ -237,7 +278,6 @@ export default function WeeblyV9HomePage() {
           text: replyText,
           actionLabel: data.action?.label,
           actionRoute: data.action?.route,
-          provider: data.ai_provider || "template-fallback",
         },
       ]);
       handlePlaySample(selectedCompanion, replyText, previewLang);
@@ -247,7 +287,7 @@ export default function WeeblyV9HomePage() {
         {
           role: "companion",
           speaker: activeCompanion.name,
-          text: "I'm ready to help! Let's step into Learning Quest together.",
+          text: "I'm ready to help! Let's step into a Learning Journey together.",
         },
       ]);
     } finally {
@@ -259,70 +299,82 @@ export default function WeeblyV9HomePage() {
     <MarketingShell>
       <div className="bg-[#FAF7F2] text-[#0F172A] min-h-screen">
         {/* ===================================================================== */}
-        {/* SECTION 1: CINEMATIC HERO & INTERACTIVE COMPANION STAGE               */}
+        {/* 01. HERO: LEARN. CREATE. THINK. GROW.                                 */}
         {/* ===================================================================== */}
-        <section className="relative pt-10 pb-20 sm:pt-16 sm:pb-24 px-4 sm:px-6 lg:px-8 border-b border-[#E7E0D6] overflow-hidden">
+        <section className="relative pt-10 pb-20 sm:pt-14 sm:pb-24 px-4 sm:px-6 lg:px-8 border-b border-[#E7E0D6] overflow-hidden">
           <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            {/* Left Editorial Column */}
             <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#E7E0D6] shadow-2xs text-xs font-bold text-slate-800">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#E7E0D6] shadow-2xs text-xs font-extrabold text-slate-900">
                 <Sparkles className="w-4 h-4 text-amber-500" />
-                <span>Ages 3–16 • Voice-First Learning, Creativity &amp; Child Development</span>
+                <span>WEEBLY — LEARN. CREATE. THINK. GROW. • {WEEBLY_V10_DESIGN_SYSTEM.brand.ageRange}</span>
               </div>
 
-              <h1 className="text-4xl sm:text-6xl lg:text-[64px] font-extrabold tracking-tight text-[#0F172A] leading-[1.06]">
-                Learning begins with{" "}
+              <h1 className="text-4xl sm:text-6xl lg:text-[62px] font-black tracking-tight text-[#0F172A] leading-[1.05]">
+                Learn. Create.{" "}
                 <span className="text-indigo-600 underline decoration-amber-400 decoration-wavy decoration-2 underline-offset-8">
-                  a conversation.
+                  Think. Grow.
                 </span>
               </h1>
 
-              <p className="text-lg sm:text-xl text-[#334155] leading-relaxed max-w-2xl">
-                Weebly is a calm, joyful digital world where children talk with four caring AI companions, explore six interactive learning worlds, and build academic, creative, and everyday life skills—connected with parents and teachers in{" "}
+              <p className="text-base sm:text-xl text-[#334155] leading-relaxed max-w-2xl">
+                Learning begins with a conversation. Weebly is an international-grade AI learning, creation, and child-development ecosystem where children talk with four caring AI companions, build their own stories and block games, practice foundational thinking skills, and grow with parent and teacher support in{" "}
                 <strong className="text-slate-900">English, Urdu (اردو), and Punjabi (پنجابی)</strong>.
               </p>
+
+              {/* 4 Connected Pillar Quick-Jump Pills */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
+                <Link
+                  href="/learning-method"
+                  className="p-3 rounded-2xl bg-teal-50/90 border border-teal-300 hover:border-teal-600 transition"
+                >
+                  <div className="text-[10px] font-black uppercase text-teal-800">Pillar 01 · Learn with AI</div>
+                  <div className="text-xs font-black text-slate-900 mt-0.5">5-Stage Journeys →</div>
+                </Link>
+                <Link
+                  href="/ai-creator"
+                  className="p-3 rounded-2xl bg-amber-50/90 border border-amber-300 hover:border-amber-600 transition"
+                >
+                  <div className="text-[10px] font-black uppercase text-amber-900">Pillar 02 · Create with AI</div>
+                  <div className="text-xs font-black text-slate-900 mt-0.5">Creator Academy →</div>
+                </Link>
+                <Link
+                  href="/brain-skills"
+                  className="p-3 rounded-2xl bg-indigo-50/90 border border-indigo-300 hover:border-indigo-600 transition"
+                >
+                  <div className="text-[10px] font-black uppercase text-indigo-900">Pillar 03 · Build Foundational Skills</div>
+                  <div className="text-xs font-black text-slate-900 mt-0.5">10 Thinking Games →</div>
+                </Link>
+                <Link
+                  href="/inclusive-learning"
+                  className="p-3 rounded-2xl bg-rose-50/90 border border-rose-300 hover:border-rose-600 transition"
+                >
+                  <div className="text-[10px] font-black uppercase text-rose-900">Pillar 04 · Grow with Support</div>
+                  <div className="text-xs font-black text-slate-900 mt-0.5">Inclusive &amp; Passport →</div>
+                </Link>
+              </div>
 
               <div className="flex flex-wrap items-center gap-3.5 pt-2">
                 <Link
                   href="/demos"
-                  className="px-7 py-4 rounded-2xl bg-[#0F172A] text-white font-bold text-base hover:bg-slate-800 transition shadow-sm inline-flex items-center gap-2.5"
+                  className="px-7 py-4 rounded-2xl bg-[#0F172A] text-white font-black text-base hover:bg-slate-800 transition shadow-sm inline-flex items-center gap-2.5"
                 >
                   <Sparkles className="w-5 h-5 text-amber-300" />
                   <span>Try Interactive Demo</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
-
                 <Link
                   href="/youth/dashboard"
-                  className="px-7 py-4 rounded-2xl bg-white border-2 border-[#0F172A] text-[#0F172A] font-bold text-base hover:bg-amber-50 transition inline-flex items-center gap-2"
+                  className="px-6 py-4 rounded-2xl bg-white border-2 border-[#0F172A] text-[#0F172A] font-black text-base hover:bg-amber-50 transition inline-flex items-center gap-2"
                 >
                   <Play className="w-4 h-4 fill-current" />
                   <span>Enter Kids World</span>
                 </Link>
-
                 <Link
-                  href="/schools"
-                  className="px-5 py-4 rounded-2xl text-slate-700 hover:text-slate-900 font-semibold text-sm inline-flex items-center gap-1.5 underline underline-offset-4"
+                  href="/youth/creator"
+                  className="px-5 py-4 rounded-2xl bg-amber-400 text-slate-950 font-black text-sm hover:bg-amber-300 transition inline-flex items-center gap-1.5"
                 >
-                  <School className="w-4 h-4 text-indigo-600" />
-                  <span>For Schools &amp; Pilots</span>
+                  <span>Launch AI Creator Academy</span>
                 </Link>
-              </div>
-
-              {/* Key Trust Pills */}
-              <div className="pt-4 grid grid-cols-3 gap-3 max-w-xl border-t border-[#E7E0D6]">
-                <div>
-                  <div className="text-lg font-extrabold text-slate-900">4 Companions</div>
-                  <div className="text-xs text-slate-600">Kai, Mia, Lumi &amp; Zayn</div>
-                </div>
-                <div>
-                  <div className="text-lg font-extrabold text-slate-900">6 Worlds</div>
-                  <div className="text-xs text-slate-600">3,000+ Guided Prompts</div>
-                </div>
-                <div>
-                  <div className="text-lg font-extrabold text-slate-900">Safety First</div>
-                  <div className="text-xs text-slate-600">Non-clinical • 1121 Guardrails</div>
-                </div>
               </div>
             </div>
 
@@ -331,7 +383,7 @@ export default function WeeblyV9HomePage() {
               <div className="rounded-[32px] bg-white border-2 border-[#0F172A] p-6 sm:p-7 shadow-[10px_10px_0px_0px_rgba(15,23,42,1)] space-y-5">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
-                    Live Companion Voice Stage
+                    Animated Companion Voice Stage
                   </span>
                   <div className="inline-flex rounded-full bg-slate-100 p-1 text-xs font-bold">
                     {(["en", "ur", "pa"] as const).map((lang) => (
@@ -351,21 +403,16 @@ export default function WeeblyV9HomePage() {
                   </div>
                 </div>
 
-                {/* Selected Companion Spotlight */}
                 <div className="rounded-2xl bg-[#FAF7F2] border border-[#E7E0D6] p-5 flex flex-col items-center text-center">
                   <CompanionPortrait
                     character={activeCompanion.id}
                     size={112}
                     state={speakingCompanion === activeCompanion.id ? "speaking" : "idle"}
                   />
-                  <span
-                    className={`mt-3 px-3 py-0.5 rounded-full text-xs font-bold border ${activeCompanion.badgeBg}`}
-                  >
+                  <span className={`mt-3 px-3 py-0.5 rounded-full text-xs font-bold border ${activeCompanion.badgeBg}`}>
                     {activeCompanion.role}
                   </span>
-                  <h2 className="text-2xl font-extrabold text-slate-900 mt-2">
-                    {activeCompanion.name}
-                  </h2>
+                  <h2 className="text-2xl font-extrabold text-slate-900 mt-2">{activeCompanion.name}</h2>
                   <p
                     className="text-sm text-slate-700 mt-2 leading-relaxed font-medium"
                     dir={previewLang === "en" ? "ltr" : "rtl"}
@@ -402,7 +449,6 @@ export default function WeeblyV9HomePage() {
                   </div>
                 </div>
 
-                {/* Companion Switcher Pills */}
                 <div className="grid grid-cols-4 gap-2">
                   {COMPANIONS.map((comp) => (
                     <button
@@ -426,290 +472,218 @@ export default function WeeblyV9HomePage() {
         </section>
 
         {/* ===================================================================== */}
-        {/* V10 UNIFIED ECOSYSTEM: WEEBLY — LEARN. CREATE. THINK. GROW.           */}
+        {/* 02. THE PROBLEM: EVIDENCE-BASED BARRIERS TO LEARNING & GROWTH         */}
         {/* ===================================================================== */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 border-b border-[#E7E0D6] bg-white">
-          <div className="max-w-7xl mx-auto space-y-8">
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <div>
-                <span className="inline-block rounded-full bg-amber-100 border border-amber-300 px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-amber-950">
-                  WEEBLY — LEARN. CREATE. THINK. GROW.
-                </span>
-                <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">
-                  Four Connected Product Pillars for Ages 2–18
-                </h2>
-                <p className="text-slate-600 mt-1 text-sm sm:text-base max-w-2xl">
-                  A unified international-grade learning, AI creation, foundational thinking, and child-development ecosystem—exceptionally simple for children, richly structured for families and schools.
-                </p>
-              </div>
-              <Link
-                href="/ai-creator-academy"
-                className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-5 py-3 text-xs font-extrabold text-white hover:bg-slate-800 transition"
-              >
-                <span>Explore Age 2–18 AI Pathway &amp; Creator Academy</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+        <section className="py-20 px-4 sm:px-6 lg:px-8 border-b border-[#E7E0D6] bg-white">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div className="lg:col-span-5 space-y-4">
+              <span className="text-xs font-extrabold uppercase tracking-widest text-rose-600">
+                Section 02 • The Challenge We Address
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 leading-tight">
+                Passive Screen Time &amp; One-Size-Fits-All Instruction Leave Millions Behind.
+              </h2>
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+                Across classrooms and homes, children face three compounding barriers: noisy, overstimulating video feeds that reward passive scrolling; language gaps between home mother tongues and textbook English; and a lack of patient, individualized scaffolding for executive function and emotional regulation.
+              </p>
+              <p className="text-xs font-bold text-slate-500 bg-[#FAF7F2] p-3.5 rounded-2xl border border-[#E7E0D6]">
+                <strong>Evidence-Based Boundary:</strong> Weebly provides structured educational practice, language scaffolding, and calm routines. We never claim guaranteed &ldquo;brain rewiring,&rdquo; IQ inflation, or clinical treatment.
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              <div className="rounded-3xl border-2 border-teal-300 bg-teal-50/60 p-6 flex flex-col justify-between">
-                <div>
-                  <span className="text-xs font-extrabold uppercase text-teal-800">Pillar 01 · Learn with AI</span>
-                  <h3 className="text-xl font-extrabold text-slate-900 mt-1">5-Stage Learning Journeys</h3>
-                  <p className="text-xs text-slate-700 mt-2 leading-relaxed">
-                    Structured <strong>WATCH → LEARN → PLAY → IMPLEMENT → REFLECT</strong> journeys across math, reading, AI literacy, and life skills.
-                  </p>
-                </div>
-                <Link
-                  href="/youth/journeys"
-                  className="mt-5 inline-flex items-center gap-1.5 text-xs font-extrabold text-teal-900 underline underline-offset-4"
-                >
-                  <span>Open Learning Journeys</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="rounded-3xl bg-rose-50/60 border-2 border-rose-200 p-6 space-y-3">
+                <span className="text-xs font-black uppercase text-rose-800">Typical Screen Experience</span>
+                <h3 className="text-lg font-black text-slate-900">Passive Consumption &amp; Sensory Overload</h3>
+                <ul className="space-y-2 text-xs sm:text-sm text-slate-700">
+                  <li>• Endless algorithmic autoplay feeds designed to maximize screen time</li>
+                  <li>• Unmoderated chat boxes that give answers instead of teaching steps</li>
+                  <li>• English-only interfaces that exclude Urdu and Punjabi-speaking families</li>
+                  <li>• High-stress countdown timers that penalize neurodivergent learners</li>
+                </ul>
               </div>
 
-              <div className="rounded-3xl border-2 border-amber-300 bg-amber-50/60 p-6 flex flex-col justify-between">
-                <div>
-                  <span className="text-xs font-extrabold uppercase text-amber-900">Pillar 02 · Create with AI</span>
-                  <h3 className="text-xl font-extrabold text-slate-900 mt-1">AI Creator Academy</h3>
-                  <p className="text-xs text-slate-700 mt-2 leading-relaxed">
-                    AI Story Maker, Visual Block Game Maker (Ages 5–16), Cartoon Studio, Art Lab, Young AI Inventors, and AI Detective.
-                  </p>
-                </div>
-                <Link
-                  href="/youth/creator"
-                  className="mt-5 inline-flex items-center gap-1.5 text-xs font-extrabold text-amber-950 underline underline-offset-4"
-                >
-                  <span>Launch AI Creator Academy</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-
-              <div className="rounded-3xl border-2 border-indigo-300 bg-indigo-50/60 p-6 flex flex-col justify-between">
-                <div>
-                  <span className="text-xs font-extrabold uppercase text-indigo-900">Pillar 03 · Build Foundational Skills</span>
-                  <h3 className="text-xl font-extrabold text-slate-900 mt-1">Foundational Skills Lab</h3>
-                  <p className="text-xs text-slate-700 mt-2 leading-relaxed">
-                    10 non-clinical cognitive &amp; executive-function activities: Freeze &amp; Go, Memory Garden, Switch the Rule, and Story Sequencer.
-                  </p>
-                </div>
-                <Link
-                  href="/youth/skills-lab"
-                  className="mt-5 inline-flex items-center gap-1.5 text-xs font-extrabold text-indigo-950 underline underline-offset-4"
-                >
-                  <span>Practice Foundational Skills</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-
-              <div className="rounded-3xl border-2 border-rose-300 bg-rose-50/60 p-6 flex flex-col justify-between">
-                <div>
-                  <span className="text-xs font-extrabold uppercase text-rose-900">Pillar 04 · Grow with Support</span>
-                  <h3 className="text-xl font-extrabold text-slate-900 mt-1">Skills &amp; Creations Passport</h3>
-                  <p className="text-xs text-slate-700 mt-2 leading-relaxed">
-                    Private-by-default child portfolio, ADHD/autism-friendly calm pacing, AAC tap-to-speak boards, and parent sharing controls.
-                  </p>
-                </div>
-                <Link
-                  href="/youth/passport"
-                  className="mt-5 inline-flex items-center gap-1.5 text-xs font-extrabold text-rose-950 underline underline-offset-4"
-                >
-                  <span>View Skills Passport</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+              <div className="rounded-3xl bg-emerald-50/70 border-2 border-emerald-400 p-6 space-y-3">
+                <span className="text-xs font-black uppercase text-emerald-900">The Weebly V10 Approach</span>
+                <h3 className="text-lg font-black text-slate-900">Active Creation, Calm Pacing &amp; Real-World Transfer</h3>
+                <ul className="space-y-2 text-xs sm:text-sm text-slate-800 font-medium">
+                  <li>✓ Structured 5-stage journeys ending with offline family/classroom tasks</li>
+                  <li>✓ Human creativity first: children build their own stories and block games</li>
+                  <li>✓ Spoken &amp; written guidance in English, Urdu (اردو), and Punjabi (پنجابی)</li>
+                  <li>✓ Built-in session wind-downs and neurodiversity-affirming sensory controls</li>
+                </ul>
               </div>
             </div>
           </div>
         </section>
 
         {/* ===================================================================== */}
-        {/* SECTION 2: MEET THE FOUR AI FRIENDS                                   */}
+        {/* 03. WATCH → LEARN → PLAY → IMPLEMENT → REFLECT                        */}
         {/* ===================================================================== */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          <div className="max-w-3xl">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-indigo-600">
-              Section 02 • Expressive Voice Mentors
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">
-              Meet Your Child&apos;s Four AI Learning Friends
-            </h2>
-            <p className="text-slate-600 mt-2 text-base sm:text-lg">
-              Each companion has a distinct pedagogical specialty, calm vocal cadence, and strict child-safety boundaries.
-            </p>
+        <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="max-w-3xl">
+              <span className="text-xs font-extrabold uppercase tracking-widest text-teal-700">
+                Section 03 • Pillar 01: Learn with AI
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-1">
+                The 5-Stage Learning Journey Engine: Watch → Learn → Play → Implement → Reflect
+              </h2>
+              <p className="text-slate-600 text-sm sm:text-base mt-2">
+                A flexible pedagogical sequence that turns screen concepts into active practice, real-world family or classroom implementation, and thoughtful reflection. Learners can skip or replay any stage at their own pace.
+              </p>
+            </div>
+            <Link
+              href="/learning-method"
+              className="px-5 py-3 rounded-2xl bg-slate-900 text-white text-xs font-extrabold hover:bg-slate-800 shrink-0 inline-flex items-center gap-1.5"
+            >
+              <span>Explore Learning Method</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
-            {COMPANIONS.map((friend) => (
-              <div
-                key={friend.id}
-                className="rounded-3xl bg-white border-2 border-slate-900 p-6 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between">
-                    <CompanionPortrait
-                      character={friend.id}
-                      size={76}
-                      state={speakingCompanion === friend.id ? "speaking" : "idle"}
-                    />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handlePlaySample(
-                          friend.id,
-                          friend.sampleSpeech[previewLang],
-                          previewLang
-                        )
-                      }
-                      aria-label={`Play ${friend.name} voice sample`}
-                      className="w-11 h-11 rounded-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 flex items-center justify-center transition"
-                    >
-                      <Volume2 className="w-5 h-5" />
-                    </button>
-                  </div>
-
-                  <h3 className="text-2xl font-extrabold text-slate-900 mt-4">
-                    {friend.name}
-                  </h3>
-                  <p className="text-xs font-bold text-indigo-600 mt-0.5">
-                    {friend.role}
-                  </p>
-                  <p className="text-sm text-slate-600 mt-3 leading-relaxed">
-                    {friend.specialty}
-                  </p>
-                </div>
-
-                <div className="pt-5 mt-5 border-t border-slate-100 flex items-center justify-between">
-                  <Link
-                    href={`/youth/friends?friend=${friend.id}`}
-                    className="text-xs font-extrabold text-slate-900 hover:text-indigo-600 inline-flex items-center gap-1"
-                  >
-                    <span>Start Conversation</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                  <span className="text-[11px] font-semibold text-slate-400">
-                    EN • اردو • پنجابی
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+          <JourneyEngineInteractivePreview />
         </section>
 
         {/* ===================================================================== */}
-        {/* SECTION 3: LIVE INTERACTIVE PRODUCT DEMONSTRATION                     */}
+        {/* 04. FOUR AI FRIENDS: KAI, MIA, LUMI, ZAYN + LIVE VOICE TURN           */}
         {/* ===================================================================== */}
         <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white border-y border-[#E7E0D6]">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-            <div className="lg:col-span-5 space-y-5">
-              <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">
-                Section 03 • Real API Walkthrough
+          <div className="max-w-7xl mx-auto space-y-12">
+            <div className="max-w-3xl">
+              <span className="text-xs font-extrabold uppercase tracking-widest text-indigo-600">
+                Section 04 • Expressive Voice Mentors
               </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">
-                Try a Live Conversation Right Here
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-1">
+                Meet Your Child&apos;s Four AI Friends
               </h2>
-              <p className="text-slate-600 leading-relaxed">
-                This is not a static screenshot. Pick a companion prompt or type a question in English, Urdu, or Punjabi. Watch how Weebly responds, routes to an interactive learning activity, and enforces safety guardrails.
+              <p className="text-slate-600 mt-2 text-sm sm:text-base">
+                Original illustrated companions with distinct pedagogical roles, verified trilingual voice synthesis, and strict anti-secrecy and session-limit guardrails.
               </p>
+            </div>
 
-              <div className="space-y-2 pt-2">
-                <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                  Quick Prompts for {activeCompanion.name}:
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {COMPANIONS.map((friend) => (
+                <div
+                  key={friend.id}
+                  className="rounded-3xl bg-[#FAF7F2] border-2 border-slate-900 p-6 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <CompanionPortrait
+                        character={friend.id}
+                        size={76}
+                        state={speakingCompanion === friend.id ? "speaking" : "idle"}
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handlePlaySample(
+                            friend.id,
+                            friend.sampleSpeech[previewLang],
+                            previewLang
+                          )
+                        }
+                        aria-label={`Play ${friend.name} voice sample`}
+                        className="w-11 h-11 rounded-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 flex items-center justify-center transition"
+                      >
+                        <Volume2 className="w-5 h-5" />
+                      </button>
+                    </div>
+                    <h3 className="text-2xl font-black text-slate-900 mt-4">{friend.name}</h3>
+                    <p className="text-xs font-bold text-indigo-600 mt-0.5">{friend.role}</p>
+                    <p className="text-sm text-slate-600 mt-3 leading-relaxed">{friend.specialty}</p>
+                  </div>
+
+                  <div className="pt-5 mt-5 border-t border-slate-200 flex items-center justify-between">
+                    <Link
+                      href={`/youth/friends?friend=${friend.id}`}
+                      className="text-xs font-extrabold text-slate-900 hover:text-indigo-600 inline-flex items-center gap-1"
+                    >
+                      <span>Talk to {friend.name}</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                    <span className="text-[11px] font-semibold text-slate-500">EN • اردو • پنجابی</span>
+                  </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  {activeCompanion.prompts.map((p) => (
+              ))}
+            </div>
+
+            {/* Live Conversational Turn Sandbox */}
+            <div className="rounded-3xl bg-[#FAF7F2] border-2 border-slate-900 p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+              <div className="lg:col-span-5 space-y-3">
+                <span className="text-xs font-black uppercase text-indigo-700">
+                  Live Server-Validated Voice &amp; Tool Routing
+                </span>
+                <h3 className="text-xl font-black text-slate-900">
+                  Test How {activeCompanion.name} Guides Learning &amp; Launches Tools
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    "Let's start a learning journey",
+                    "Help me build a block game",
+                    ...activeCompanion.prompts.slice(0, 2),
+                  ].map((p) => (
                     <button
                       key={p}
                       type="button"
                       onClick={() => handleRunLiveTurn(p)}
-                      className="text-left px-4 py-3 rounded-2xl bg-[#FAF7F2] hover:bg-indigo-50 border border-[#E7E0D6] hover:border-indigo-300 text-sm font-semibold text-slate-800 transition flex items-center justify-between"
+                      className="px-3 py-2 rounded-xl bg-white border border-slate-300 hover:border-slate-900 text-xs font-bold text-slate-800 text-left"
                     >
-                      <span>&ldquo;{p}&rdquo;</span>
-                      <ArrowRight className="w-4 h-4 text-indigo-600 shrink-0" />
+                      &ldquo;{p}&rdquo;
                     </button>
                   ))}
                 </div>
               </div>
-            </div>
 
-            <div className="lg:col-span-7">
-              <div className="rounded-3xl bg-[#FAF7F2] border-2 border-slate-900 p-6 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#E7E0D6]">
-                  <div className="flex items-center gap-3">
-                    <CompanionPortrait character={selectedCompanion} size={44} />
-                    <div>
-                      <div className="text-sm font-extrabold text-slate-900">
-                        Talking with {activeCompanion.name}
-                      </div>
-                      <div className="text-xs text-slate-500">
-                        Connected to `/api/youth/friends/turn` • Safe Turn Limit Active
-                      </div>
-                    </div>
-                  </div>
-                  <Link
-                    href={`/youth/friends?friend=${selectedCompanion}`}
-                    className="text-xs font-bold text-indigo-600 hover:underline"
-                  >
-                    Open Full Screen →
-                  </Link>
-                </div>
-
-                {/* Conversation Transcript */}
-                <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
+              <div className="lg:col-span-7 space-y-3">
+                <div className="rounded-2xl bg-white border border-slate-200 p-4 max-h-48 overflow-y-auto space-y-2.5">
                   {demoHistory.map((item, idx) => (
                     <div
                       key={idx}
-                      className={`p-4 rounded-2xl text-sm ${
+                      className={`p-3 rounded-xl text-xs ${
                         item.role === "child"
                           ? "bg-slate-900 text-white ml-8"
-                          : "bg-white border border-[#E7E0D6] text-slate-800 mr-8"
+                          : "bg-amber-50/90 border border-amber-200 text-slate-900 mr-8"
                       }`}
                     >
-                      <div className="text-[11px] font-bold uppercase tracking-wider opacity-70 mb-1">
+                      <div className="font-black text-[10px] uppercase opacity-75 mb-0.5">
                         {item.speaker}
                       </div>
-                      <p className="leading-relaxed">{item.text}</p>
+                      <div>{item.text}</div>
                       {item.actionRoute && (
                         <Link
                           href={item.actionRoute}
-                          className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700"
+                          className="mt-2 inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-emerald-600 text-white font-extrabold text-[11px]"
                         >
                           <span>{item.actionLabel || "Open Activity"}</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
+                          <ArrowRight className="w-3 h-3" />
                         </Link>
                       )}
                     </div>
                   ))}
-                  {demoLoading && (
-                    <div className="p-3 rounded-2xl bg-white border border-[#E7E0D6] text-xs font-semibold text-slate-500">
-                      {activeCompanion.name} is thinking...
-                    </div>
-                  )}
                 </div>
-
-                {/* Input Form */}
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
                     handleRunLiveTurn(demoInput);
                   }}
-                  className="flex gap-2 pt-2"
+                  className="flex gap-2"
                 >
                   <input
                     type="text"
                     value={demoInput}
                     onChange={(e) => setDemoInput(e.target.value)}
-                    placeholder={`Ask ${activeCompanion.name} a question...`}
-                    aria-label={`Ask ${activeCompanion.name} a question`}
-                    className="flex-1 px-4 py-3 rounded-2xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:border-slate-900"
+                    placeholder={`Ask ${activeCompanion.name} a question or say "build a block game"...`}
+                    className="flex-1 px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-xs font-medium text-slate-900"
                   />
                   <button
                     type="submit"
                     disabled={demoLoading}
-                    className="px-5 py-3 rounded-2xl bg-slate-900 text-white text-sm font-bold hover:bg-slate-800 disabled:opacity-50 inline-flex items-center gap-1.5"
+                    className="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-extrabold inline-flex items-center gap-1.5"
                   >
-                    <Send className="w-4 h-4" />
-                    <span>Send</span>
+                    <Send className="w-3.5 h-3.5" />
+                    <span>Ask</span>
                   </button>
                 </form>
               </div>
@@ -718,424 +692,558 @@ export default function WeeblyV9HomePage() {
         </section>
 
         {/* ===================================================================== */}
-        {/* SECTION 4: SIX INTERACTIVE LEARNING WORLDS                            */}
+        {/* 05. FLAGSHIP SECTION: AI CREATOR ACADEMY                              */}
         {/* ===================================================================== */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <span className="text-xs font-extrabold uppercase tracking-widest text-indigo-600">
-                Section 04 • Holistic Curriculum
+        <AICreatorAcademyShowcase />
+
+        {/* ===================================================================== */}
+        {/* 06. AGE-BASED AI PATHWAYS (AGES 5 TO 16–18)                           */}
+        {/* ===================================================================== */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="max-w-3xl">
+              <span className="text-xs font-extrabold uppercase tracking-widest text-amber-800">
+                Section 06 • Readiness-Based Progression
               </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">
-                Six Interactive Learning Worlds
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-1">
+                Age-Based AI Pathways: Example Creations from Age 5 to 18
               </h2>
-              <p className="text-slate-600 mt-2 max-w-2xl">
-                Every conversation can launch a hands-on activity across literacy, numeracy, creative arts, movement, moral stories, coding, and emotional regulation.
+              <p className="text-sm sm:text-base text-slate-600 mt-2">
+                Structured around <strong>Understand → Apply → Create</strong> (aligned with international student AI competency themes without claiming official UNESCO endorsement). Shows example projects children can build at their own pace—never rigid chronological promises.
               </p>
+            </div>
+            <Link
+              href="/ai-creator-academy"
+              className="px-5 py-3 rounded-2xl bg-white border-2 border-slate-900 text-slate-900 text-xs font-extrabold hover:bg-amber-50 shrink-0"
+            >
+              View Full Age 2–18 Matrix →
+            </Link>
+          </div>
+
+          {/* Interactive Age Selector */}
+          <div className="flex flex-wrap gap-2" role="tablist">
+            {AGE_AI_PATHWAYS.map((item, idx) => (
+              <button
+                key={item.age}
+                type="button"
+                role="tab"
+                aria-selected={selectedAgePathway === idx}
+                onClick={() => setSelectedAgePathway(idx)}
+                className={`px-5 py-3 rounded-2xl border-2 text-xs sm:text-sm font-black transition ${
+                  selectedAgePathway === idx
+                    ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+                    : "bg-white text-slate-800 border-slate-200 hover:border-slate-900"
+                }`}
+              >
+                {item.age}
+              </button>
+            ))}
+          </div>
+
+          <div className="rounded-3xl bg-white border-2 border-slate-900 p-6 sm:p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="space-y-2">
+              <span className="text-xs font-black uppercase text-amber-700">Developmental Focus</span>
+              <h3 className="text-xl font-black text-slate-900">{AGE_AI_PATHWAYS[selectedAgePathway].focus}</h3>
+              <p className="text-xs text-slate-500">Ages 2–4 begin with caregiver-mediated audio stories and songs.</p>
+            </div>
+            <div className="space-y-2 bg-amber-50/70 p-4 rounded-2xl border border-amber-200">
+              <span className="text-xs font-black uppercase text-amber-900">Example Child Creation</span>
+              <p className="text-sm font-bold text-slate-900 leading-relaxed">
+                {AGE_AI_PATHWAYS[selectedAgePathway].exampleCreation}
+              </p>
+            </div>
+            <div className="space-y-2 bg-indigo-50/70 p-4 rounded-2xl border border-indigo-200">
+              <span className="text-xs font-black uppercase text-indigo-900">Practiced AI &amp; Thinking Skill</span>
+              <p className="text-sm font-bold text-slate-900 leading-relaxed">
+                {AGE_AI_PATHWAYS[selectedAgePathway].skills}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ===================================================================== */}
+        {/* 07. FOUNDATIONAL SKILLS LAB                                           */}
+        {/* ===================================================================== */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#EEF2FF]/60 border-y border-[#E7E0D6]">
+          <div className="max-w-7xl mx-auto space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+              <div className="max-w-3xl">
+                <span className="text-xs font-extrabold uppercase tracking-widest text-indigo-700">
+                  Section 07 • Pillar 03: Build Foundational Skills
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-1">
+                  10 Foundational Thinking, Memory &amp; Self-Regulation Games
+                </h2>
+                <p className="text-sm sm:text-base text-slate-600 mt-2">
+                  Playful, non-clinical practice across Attention (<em>Freeze &amp; Go</em>), Working Memory (<em>Memory Garden</em>), Cognitive Flexibility (<em>Switch the Rule</em>), Planning (<em>Plan My Day</em>), Communication, and Self-Regulation.
+                </p>
+              </div>
+              <div className="flex gap-2 shrink-0">
+                <Link
+                  href="/youth/skills-lab"
+                  className="px-5 py-3 rounded-2xl bg-indigo-600 text-white text-xs font-extrabold hover:bg-indigo-700"
+                >
+                  Open Skills Lab (10 Games) →
+                </Link>
+                <Link
+                  href="/brain-skills"
+                  className="px-4 py-3 rounded-2xl bg-white border border-slate-300 text-slate-800 text-xs font-extrabold"
+                >
+                  Methodology
+                </Link>
+              </div>
+            </div>
+
+            <FoundationalSkillsInteractivePreview />
+          </div>
+        </section>
+
+        {/* ===================================================================== */}
+        {/* 08. SIX LEARNING WORLDS (PRESERVING ALL ROUTES)                       */}
+        {/* ===================================================================== */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+              <span className="text-xs font-extrabold uppercase tracking-widest text-teal-700">
+                Section 08 • Six Interactive Learning Worlds
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-1">
+                Six Connected Worlds Backed by 3,000+ Guided Questions
+              </h2>
             </div>
             <Link
               href="/youth/play"
-              className="px-5 py-3 rounded-2xl bg-slate-900 text-white text-sm font-bold hover:bg-slate-800 transition self-start"
+              className="px-5 py-3 rounded-2xl bg-slate-900 text-white text-xs font-extrabold"
             >
-              Explore All 6 Worlds →
+              Open Child Play Hub →
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {WEEBLY_V9_LEARNING_WORLDS.map((world) => (
               <div
                 key={world.id}
-                className="rounded-3xl bg-white border-2 border-slate-900 p-6 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-2">
-                    <span
-                      className="px-3 py-1 rounded-full text-xs font-extrabold"
-                      style={{ backgroundColor: world.bgTint, color: world.color }}
-                    >
-                      Ages {world.ageBands.join(" • ")}
-                    </span>
-                    <span className="text-xs font-bold text-slate-500 capitalize">
-                      Guide: {world.mentor}
-                    </span>
-                  </div>
-
-                  <h3 className="text-2xl font-extrabold text-slate-900 mt-4">
-                    {world.title}
-                  </h3>
-                  <p className="text-xs font-bold text-slate-500 mt-0.5">
-                    {world.subtitle}
-                  </p>
-                  <p className="text-sm text-slate-600 mt-3 leading-relaxed">
-                    {world.description}
-                  </p>
-
-                  <div className="flex flex-wrap gap-1.5 mt-4">
-                    {world.skills.map((skill) => (
-                      <span
-                        key={skill}
-                        className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-[11px] font-semibold"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="pt-5 mt-6 border-t border-slate-100 flex items-center justify-between">
-                  <Link
-                    href={world.href}
-                    className="inline-flex items-center gap-1.5 text-sm font-extrabold text-indigo-600 hover:text-indigo-800"
-                  >
-                    <span>Open {world.title}</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ===================================================================== */}
-        {/* SECTION 5: VOICE-FIRST MULTILINGUAL LEARNING (HONEST STATUS)          */}
-        {/* ===================================================================== */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#EDE9FE]/50 border-y border-[#E7E0D6]">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            <div className="lg:col-span-6 space-y-4">
-              <span className="text-xs font-extrabold uppercase tracking-widest text-violet-700">
-                Section 05 • Multilingual Inclusion
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">
-                Built for English, Urdu &amp; Pakistani Punjabi Households
-              </h2>
-              <p className="text-slate-700 leading-relaxed">
-                Children learn best when they can ask questions in the language they speak at home. Weebly supports code-switching, Nastaliq &amp; Shahmukhi right-to-left typography, and transparent voice synthesis modes.
-              </p>
-              <div className="pt-2">
-                <Link
-                  href="/youth/language"
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-slate-900 text-white text-sm font-bold"
-                >
-                  <Globe className="w-4 h-4" />
-                  <span>Test Language &amp; Voice Studio</span>
-                </Link>
-              </div>
-            </div>
-
-            <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="rounded-2xl bg-white border border-slate-200 p-5">
-                <span className="text-xs font-bold uppercase text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">
-                  Native Neural &amp; OS Voice
-                </span>
-                <h3 className="text-xl font-extrabold text-slate-900 mt-3">English</h3>
-                <p className="text-xs text-slate-600 mt-1">
-                  Full speech recognition, neural TTS (`en-US`), and 3,000+ curriculum prompts.
-                </p>
-              </div>
-
-              <div className="rounded-2xl bg-white border border-slate-200 p-5">
-                <span className="text-xs font-bold uppercase text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">
-                  Nastaliq RTL + Neural TTS
-                </span>
-                <h3 className="text-xl font-extrabold text-slate-900 mt-3">اردو (Urdu)</h3>
-                <p className="text-xs text-slate-600 mt-1">
-                  Full Urdu conversational support (`ur-PK` neural voices Uzma &amp; Asad + Roman Urdu input).
-                </p>
-              </div>
-
-              <div className="rounded-2xl bg-white border border-slate-200 p-5">
-                <span className="text-xs font-bold uppercase text-amber-800 bg-amber-100 px-2.5 py-1 rounded-full">
-                  Shahmukhi Text + Phonetic TTS
-                </span>
-                <h3 className="text-xl font-extrabold text-slate-900 mt-3">پنجابی (Punjabi)</h3>
-                <p className="text-xs text-slate-600 mt-1">
-                  Written Shahmukhi &amp; Roman Punjabi dialogue with `ur-PK` phonetic speech synthesis fallback.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ===================================================================== */}
-        {/* SECTION 6 & 7: CREATIVE STUDIO & UNIFIED CHILD DEVELOPMENT LOOP       */}
-        {/* ===================================================================== */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Section 6: Learning & Creativity */}
-            <div className="rounded-3xl bg-white border-2 border-slate-900 p-8 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] space-y-4">
-              <div className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-pink-700">
-                <Palette className="w-4 h-4" />
-                <span>Section 06 • Creative Studio &amp; Active Play</span>
-              </div>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-                Screen Time That Leads to Drawing, Storytelling &amp; Offline Movement
-              </h3>
-              <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-                Instead of passive video scrolling, children paint on an interactive canvas, compose rhythms, act out moral story choices, and complete 60-second physical balance drills away from the screen.
-              </p>
-              <div className="pt-2 flex flex-wrap gap-3">
-                <Link
-                  href="/creative-studio"
-                  className="px-5 py-2.5 rounded-xl bg-pink-600 text-white text-xs font-bold hover:bg-pink-700"
-                >
-                  Open Creative Studio →
-                </Link>
-                <Link
-                  href="/youth/play?world=sports-movement"
-                  className="px-5 py-2.5 rounded-xl bg-slate-100 text-slate-800 text-xs font-bold hover:bg-slate-200"
-                >
-                  Try Movement Drills →
-                </Link>
-              </div>
-            </div>
-
-            {/* Section 7: Unified Child Development Architecture */}
-            <div className="rounded-3xl bg-white border-2 border-slate-900 p-8 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] space-y-4">
-              <div className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-emerald-700">
-                <Activity className="w-4 h-4" />
-                <span>Section 07 • Unified Learning Loop</span>
-              </div>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-                One Connected Loop: Child → Companion → Activity → Adult Insight
-              </h3>
-              <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-                When a child finishes a reading quest or calm-breathing exercise, Weebly logs a developmental milestone event (`/api/educational/activity-events`) that parents and teachers can review—without ever exposing private emotional journals or making clinical diagnoses.
-              </p>
-              <div className="pt-2 flex flex-wrap gap-3">
-                <Link
-                  href="/how-it-works"
-                  className="px-5 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700"
-                >
-                  See How the Loop Works →
-                </Link>
-                <Link
-                  href="/technology"
-                  className="px-5 py-2.5 rounded-xl bg-slate-100 text-slate-800 text-xs font-bold hover:bg-slate-200"
-                >
-                  Inspect Architecture →
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ===================================================================== */}
-        {/* SECTION 8 & 9: FOR PARENTS AND FOR SCHOOLS PREVIEWS                   */}
-        {/* ===================================================================== */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white border-y border-[#E7E0D6]">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
-            {/* Section 8: For Parents */}
-            <div className="rounded-3xl bg-[#FAF7F2] border border-[#E7E0D6] p-8 space-y-5">
-              <span className="text-xs font-extrabold uppercase tracking-widest text-indigo-600">
-                Section 08 • For Parents &amp; Caregivers
-              </span>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-                Peace of Mind, Home Routines &amp; Clear Progress
-              </h3>
-              <ul className="space-y-2.5 text-sm text-slate-700">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>See which worlds and skills your child practiced today.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>Set preferred household languages (English, Urdu, Punjabi) and calm sensory modes.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>Built-in 15-turn gentle screen-break reminders prevent compulsive use.</span>
-                </li>
-              </ul>
-              <div className="pt-2 flex flex-wrap gap-3">
-                <Link
-                  href="/parent"
-                  className="px-5 py-3 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800"
-                >
-                  Open Parent Portal →
-                </Link>
-                <Link
-                  href="/parents"
-                  className="px-5 py-3 rounded-xl bg-white border border-slate-300 text-slate-800 text-xs font-bold hover:bg-slate-50"
-                >
-                  Parent Guide
-                </Link>
-              </div>
-            </div>
-
-            {/* Section 9: For Schools & Teachers */}
-            <div className="rounded-3xl bg-[#FAF7F2] border border-[#E7E0D6] p-8 space-y-5">
-              <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-700">
-                Section 09 • For Schools, Teachers &amp; Pilots
-              </span>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-                Classroom Assignments, Cohort Analytics &amp; Safeguarding
-              </h3>
-              <ul className="space-y-2.5 text-sm text-slate-700">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>Assign age-banded learning quests aligned with ECCE, Primary, and Middle curricula.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>Low-bandwidth PWA works on shared classroom tablets and Android phones.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>Role-isolated portals for Teachers, Principals, and Safeguarding Leads.</span>
-                </li>
-              </ul>
-              <div className="pt-2 flex flex-wrap gap-3">
-                <Link
-                  href="/teacher/dashboard"
-                  className="px-5 py-3 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800"
-                >
-                  Open Teacher Studio →
-                </Link>
-                <Link
-                  href="/school/portal"
-                  className="px-5 py-3 rounded-xl bg-white border border-slate-300 text-slate-800 text-xs font-bold hover:bg-slate-50"
-                >
-                  School Portal →
-                </Link>
-                <Link
-                  href="/schools/pilot"
-                  className="px-5 py-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold hover:bg-emerald-100"
-                >
-                  School Pilot Program
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ===================================================================== */}
-        {/* SECTION 10: CHILD SAFETY, PRIVACY & NON-CLINICAL GOVERNANCE           */}
-        {/* ===================================================================== */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          <div className="rounded-3xl bg-[#0F172A] text-white p-8 sm:p-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-8 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold">
-                <ShieldCheck className="w-4 h-4" />
-                <span>Section 10 • Safeguarding by Architecture</span>
-              </div>
-              <h2 className="text-2xl sm:text-4xl font-extrabold">
-                Strict Child-Safety Guardrails. Zero Clinical Profiling.
-              </h2>
-              <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-                Weebly is an educational and developmental support platform—never a medical device or diagnostic tool. AI companions refuse secrecy requests (&ldquo;Can you keep a secret?&rdquo;), never label children with psychological conditions, and immediately route distress or abuse disclosures to verified human lifelines including{" "}
-                <strong className="text-white">Child Protection &amp; Welfare Bureau (1121)</strong> and{" "}
-                <strong className="text-white">Umang Pakistan (0311-7786264)</strong>.
-              </p>
-            </div>
-            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3">
-              <Link
-                href="/trust"
-                className="px-6 py-3.5 rounded-2xl bg-white text-slate-900 font-bold text-sm text-center hover:bg-slate-100"
-              >
-                Read Trust &amp; Safety Architecture →
-              </Link>
-              <Link
-                href="/child-safety"
-                className="px-6 py-3.5 rounded-2xl bg-slate-800 border border-slate-700 text-white font-bold text-sm text-center hover:bg-slate-700"
-              >
-                Safeguarding &amp; 1121 Protocol →
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* ===================================================================== */}
-        {/* SECTION 11: SIX ROLE-BASED INTERACTIVE DEMOS                          */}
-        {/* ===================================================================== */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <span className="text-xs font-extrabold uppercase tracking-widest text-indigo-600">
-                Section 11 • Complete Role Walkthroughs
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">
-                Six Isolated Role Demonstrations
-              </h2>
-              <p className="text-slate-600 mt-1 max-w-2xl">
-                Test Weebly from every perspective—Child, Teen, Parent, Teacher, School Principal, and Safeguarding Reviewer.
-              </p>
-            </div>
-            <Link
-              href="/demos"
-              className="px-5 py-3 rounded-2xl bg-indigo-600 text-white text-sm font-bold hover:bg-indigo-700"
-            >
-              Open Full Demo Center →
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-            {SIX_ROLE_DEMOS.map((demo) => (
-              <div
-                key={demo.id}
-                className="rounded-3xl bg-white border border-[#E7E0D6] p-6 hover:border-slate-900 transition flex flex-col justify-between shadow-2xs"
+                className="rounded-3xl bg-white border-2 border-slate-900 p-6 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold border ${demo.accent}`}>
-                      Demo {demo.number} • {demo.role}
+                    <CompanionPortrait character={world.mentor} size={40} />
+                    <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-[11px] font-extrabold capitalize">
+                      Guide: {world.mentor}
                     </span>
                   </div>
-                  <h3 className="text-xl font-extrabold text-slate-900 mt-4">
-                    {demo.title}
-                  </h3>
-                  <p className="text-sm text-slate-600 mt-2 leading-relaxed">
-                    {demo.summary}
-                  </p>
+                  <h3 className="text-xl font-black text-slate-900 mt-3">{world.title}</h3>
+                  <p className="text-xs font-bold text-indigo-600 mt-0.5">{world.subtitle}</p>
+                  <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">{world.description}</p>
                 </div>
-
-                <div className="pt-5 mt-5 border-t border-slate-100 flex items-center justify-between">
-                  <Link
-                    href={demo.href}
-                    className="text-xs font-extrabold text-indigo-600 hover:underline"
-                  >
-                    Guided Walkthrough →
-                  </Link>
-                  <Link
-                    href={demo.directHref}
-                    className="text-xs font-bold text-slate-700 hover:text-slate-900"
-                  >
-                    Live Workspace ↗
-                  </Link>
-                </div>
+                <Link
+                  href={world.href}
+                  className="mt-5 pt-3 border-t border-slate-100 text-xs font-extrabold text-slate-900 hover:text-indigo-600 inline-flex items-center justify-between"
+                >
+                  <span>Enter {world.title}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
             ))}
           </div>
         </section>
 
         {/* ===================================================================== */}
-        {/* SECTION 12: FINAL CALL TO ACTION                                      */}
+        {/* 09. INCLUSIVE LEARNING & NEURODIVERSITY-AFFIRMING SUPPORTS            */}
         {/* ===================================================================== */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-[#E7E0D6] bg-gradient-to-b from-[#FAF7F2] to-[#EDE9FE]/60">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
-              Start a Conversation That Helps Every Child Grow
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#ECFDF5]/60 border-y border-[#E7E0D6]">
+          <div className="max-w-7xl mx-auto space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+              <div className="max-w-3xl">
+                <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-800">
+                  Section 09 • Pillar 04: Inclusive Learning
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-1">
+                  ADHD-Friendly Focus, Autism-Affirming Routines &amp; AAC Communication
+                </h2>
+                <p className="text-sm sm:text-base text-slate-600 mt-2">
+                  Built with predictable visual schedules, sensory-friendly low-stimulation palettes, tap-to-speak AAC boards, and reading accessibility—never framing autism or neurodivergence as a disease to cure.
+                </p>
+              </div>
+              <Link
+                href="/inclusive-learning"
+                className="px-5 py-3 rounded-2xl bg-emerald-800 text-white text-xs font-extrabold shrink-0"
+              >
+                Explore Inclusive Design →
+              </Link>
+            </div>
+
+            <InclusiveLearningInteractivePreview />
+          </div>
+        </section>
+
+        {/* ===================================================================== */}
+        {/* 10. CHILD WELLBEING, EARLY SUPPORT & SAFEGUARDING BOUNDARIES          */}
+        {/* ===================================================================== */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="max-w-3xl">
+              <span className="text-xs font-extrabold uppercase tracking-widest text-rose-700">
+                Section 10 • Child Wellbeing &amp; Human Safeguarding
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-1">
+                Emotional Literacy, Adult Observations &amp; Strict Clinical Boundaries
+              </h2>
+              <p className="text-sm sm:text-base text-slate-600 mt-2">
+                Weebly helps children name everyday feelings and helps parents and teachers record structured behavioural observations—while strictly prohibiting AI psychiatric diagnoses and routing distress to human professionals and helplines (CPWB 1121 &amp; Umang).
+              </p>
+            </div>
+            <Link
+              href="/child-development"
+              className="px-5 py-3 rounded-2xl bg-white border-2 border-slate-900 text-slate-900 text-xs font-extrabold shrink-0"
+            >
+              Wellbeing &amp; Safety Architecture →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="rounded-3xl bg-white border-2 border-slate-200 p-6 space-y-2">
+              <span className="px-3 py-1 rounded-full bg-sky-100 text-sky-900 text-xs font-black">
+                Tier 1 • Everyday Emotional Literacy
+              </span>
+              <h3 className="text-lg font-black text-slate-900 pt-1">Feelings Check-Ins &amp; Calm Breaths</h3>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Lumi guides children through balloon breathing, visual emotion cards, and transition routines.
+              </p>
+            </div>
+            <div className="rounded-3xl bg-white border-2 border-slate-200 p-6 space-y-2">
+              <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-black">
+                Tier 2 • Parent &amp; Teacher Observations
+              </span>
+              <h3 className="text-lg font-black text-slate-900 pt-1">Non-Diagnostic Observation Logs</h3>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Caregivers and teachers log context notes to share with qualified human specialists—zero automated DSM/ICD screening.
+              </p>
+            </div>
+            <div className="rounded-3xl bg-rose-50/70 border-2 border-rose-300 p-6 space-y-2">
+              <span className="px-3 py-1 rounded-full bg-rose-200 text-rose-950 text-xs font-black">
+                Tier 3 • Crisis &amp; Caregiver-Harm Guardrail
+              </span>
+              <h3 className="text-lg font-black text-slate-900 pt-1">Spoken Reassurance &amp; 1121 Escalation</h3>
+              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                Immediate spoken reassurance aloud, CPWB 1121 / Umang lifelines, and caregiver-alert suppression if domestic harm is disclosed.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ===================================================================== */}
+        {/* 11. AI LITERACY & RESPONSIBLE AI DETECTIVE                            */}
+        {/* ===================================================================== */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white border-y border-[#E7E0D6]">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div className="lg:col-span-6 space-y-4">
+              <span className="text-xs font-extrabold uppercase tracking-widest text-teal-700">
+                Section 11 • AI Literacy &amp; Critical Thinking
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900">
+                Teach Children to Understand AI, Detect Mistakes &amp; Protect Privacy
+              </h2>
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+                Children learn that AI is a pattern-predicting tool that can hallucinate false facts. Through the <strong>AI Detective</strong> studio, students practice verifying claims with books and teachers and keeping personal data private.
+              </p>
+              <div className="flex flex-wrap gap-3 pt-1">
+                <Link
+                  href="/ai-literacy"
+                  className="px-5 py-3 rounded-2xl bg-slate-900 text-white text-xs font-extrabold"
+                >
+                  Explore AI Literacy Curriculum →
+                </Link>
+                <Link
+                  href="/youth/creator?tool=ai_detective"
+                  className="px-5 py-3 rounded-2xl bg-teal-50 border border-teal-300 text-teal-950 text-xs font-extrabold"
+                >
+                  Play AI Detective Cases
+                </Link>
+              </div>
+            </div>
+
+            <div className="lg:col-span-6 rounded-3xl bg-[#FAF7F2] border-2 border-slate-900 p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="px-3 py-1 rounded-full bg-teal-100 text-teal-900 text-xs font-extrabold">
+                  Mini AI Detective Challenge
+                </span>
+                <SearchCheck className="w-5 h-5 text-teal-700" />
+              </div>
+              <p className="text-sm font-bold text-slate-900 bg-white p-4 rounded-2xl border border-slate-200">
+                Chatbot Claim: &ldquo;The Minar-e-Pakistan in Lahore is made of solid chocolate and melts every July.&rdquo;
+              </p>
+              <div className="flex flex-wrap gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setDetectiveAnswer("hallucination")}
+                  className={`px-4 py-2.5 rounded-xl border-2 text-xs font-black ${
+                    detectiveAnswer === "hallucination"
+                      ? "bg-emerald-600 text-white border-emerald-600"
+                      : "bg-white text-slate-800 border-slate-300"
+                  }`}
+                >
+                  🕵️ Spot AI Hallucination (Check a Real Book!)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDetectiveAnswer("fact")}
+                  className={`px-4 py-2.5 rounded-xl border-2 text-xs font-black ${
+                    detectiveAnswer === "fact"
+                      ? "bg-amber-500 text-slate-950 border-amber-500"
+                      : "bg-white text-slate-800 border-slate-300"
+                  }`}
+                >
+                  Believe Without Checking
+                </button>
+              </div>
+              {detectiveAnswer && (
+                <p className="text-xs font-bold text-emerald-950 bg-emerald-50 p-3 rounded-xl border border-emerald-200">
+                  {detectiveAnswer === "hallucination"
+                    ? "✓ Great Detective Work! AI can invent silly falsehoods. Always verify facts with trusted sources!"
+                    : "💡 Detective Tip: Even confident computer text can be wrong! Let's check a real history book."}
+                </p>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* ===================================================================== */}
+        {/* 12 & 13. PARENT CENTER + TEACHER STUDIO & SCHOOL COMMAND              */}
+        {/* ===================================================================== */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Section 12: Parent Center */}
+          <div className="rounded-[32px] bg-white border-2 border-slate-900 p-7 sm:p-8 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] flex flex-col justify-between space-y-6">
+            <div className="space-y-3">
+              <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-700">
+                Section 12 • Parent &amp; Caregiver Center
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
+                Full Visibility, Skills Passport &amp; Family Sharing Controls
+              </h2>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Parents review completed learning journeys, approve or lock portfolio sharing on the child&apos;s Skills &amp; Creations Passport, manage language preferences, and receive offline dinner-table conversation ideas.
+              </p>
+              <ul className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-800 pt-2">
+                <li className="p-2.5 rounded-xl bg-emerald-50">✓ Educational Progress</li>
+                <li className="p-2.5 rounded-xl bg-emerald-50">✓ Creations Portfolio</li>
+                <li className="p-2.5 rounded-xl bg-emerald-50">✓ Visual Home Routines</li>
+                <li className="p-2.5 rounded-xl bg-emerald-50">✓ Consent &amp; Sharing Gates</li>
+              </ul>
+            </div>
+            <div className="flex flex-wrap gap-3 pt-2 border-t border-slate-100">
+              <Link
+                href="/parent"
+                className="px-5 py-3 rounded-2xl bg-emerald-700 text-white text-xs font-extrabold"
+              >
+                Open Parent Dashboard →
+              </Link>
+              <Link
+                href="/youth/passport"
+                className="px-5 py-3 rounded-2xl bg-slate-100 text-slate-900 text-xs font-extrabold"
+              >
+                Preview Skills Passport
+              </Link>
+            </div>
+          </div>
+
+          {/* Section 13: Teacher & School */}
+          <div className="rounded-[32px] bg-white border-2 border-slate-900 p-7 sm:p-8 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] flex flex-col justify-between space-y-6">
+            <div className="space-y-3">
+              <span className="text-xs font-extrabold uppercase tracking-widest text-indigo-700">
+                Section 13 • Teacher Studio &amp; School Command
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
+                Curriculum Alignment, Classroom Assignments &amp; School Pilots
+              </h2>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Teachers assign bilingual learning quests mapped to Punjab PCTB SLOs and CASEL competencies, while school leaders monitor cohort participation and safeguarding governance.
+              </p>
+              <ul className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-800 pt-2">
+                <li className="p-2.5 rounded-xl bg-indigo-50">✓ 3,000+ Guided Questions</li>
+                <li className="p-2.5 rounded-xl bg-indigo-50">✓ 1-Click Class Assignments</li>
+                <li className="p-2.5 rounded-xl bg-indigo-50">✓ Cohort Analytics</li>
+                <li className="p-2.5 rounded-xl bg-indigo-50">✓ 8-Week School Pilot Kit</li>
+              </ul>
+            </div>
+            <div className="flex flex-wrap gap-3 pt-2 border-t border-slate-100">
+              <Link
+                href="/teacher/dashboard"
+                className="px-5 py-3 rounded-2xl bg-indigo-600 text-white text-xs font-extrabold"
+              >
+                Open Teacher Studio →
+              </Link>
+              <Link
+                href="/school/portal"
+                className="px-4 py-3 rounded-2xl bg-slate-100 text-slate-900 text-xs font-extrabold"
+              >
+                School Portal
+              </Link>
+              <Link
+                href="/schools/pilot"
+                className="px-4 py-3 rounded-2xl bg-amber-100 text-amber-950 text-xs font-extrabold"
+              >
+                Punjab School Pilot
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ===================================================================== */}
+        {/* 14. DEMO CENTER: SIX ROLE-BASED DEMOS                                 */}
+        {/* ===================================================================== */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white border-y border-[#E7E0D6]">
+          <div className="max-w-7xl mx-auto space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+              <div>
+                <span className="text-xs font-extrabold uppercase tracking-widest text-amber-700">
+                  Section 14 • Interactive Evaluation Sandbox
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-1">
+                  Six Role-Based Demos with Guided Tours
+                </h2>
+                <p className="text-sm text-slate-600 mt-1">
+                  All demo environments use clearly marked fictional demonstration records to protect real student privacy.
+                </p>
+              </div>
+              <Link
+                href="/demos"
+                className="px-6 py-3.5 rounded-2xl bg-slate-900 text-white text-xs font-extrabold shrink-0"
+              >
+                Launch Full Demo Center →
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {SIX_ROLE_DEMOS.map((demo) => (
+                <div
+                  key={demo.id}
+                  className="rounded-3xl bg-[#FAF7F2] border-2 border-slate-200 hover:border-slate-900 p-6 flex flex-col justify-between transition"
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <span className={`px-3 py-1 rounded-full text-xs font-black border ${demo.accent}`}>
+                        Demo {demo.number} • {demo.role}
+                      </span>
+                      <span className="text-[10px] font-bold uppercase text-slate-400">Fictional Data</span>
+                    </div>
+                    <h3 className="text-lg font-black text-slate-900 mt-3">{demo.title}</h3>
+                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{demo.summary}</p>
+                  </div>
+                  <div className="mt-5 pt-3 border-t border-slate-200/80 flex items-center justify-between text-xs font-extrabold">
+                    <Link href={demo.href} className="text-indigo-600 hover:underline">
+                      Guided Tour →
+                    </Link>
+                    <Link href={demo.directHref} className="text-slate-700 hover:text-slate-900">
+                      Direct View
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ===================================================================== */}
+        {/* 15. SAFETY, LOW-DATA PWA & MULTILINGUAL ACCESS                        */}
+        {/* ===================================================================== */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+              <span className="text-xs font-extrabold uppercase tracking-widest text-slate-600">
+                Section 15 • Built for Real-World Connectivity &amp; Trust
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-1">
+                Installable Offline PWA, Low-Data Resilience &amp; Human Oversight
+              </h2>
+            </div>
+            <Link
+              href="/access"
+              className="px-5 py-3 rounded-2xl bg-white border-2 border-slate-900 text-slate-900 text-xs font-extrabold"
+            >
+              Explore Access &amp; Safety Specs →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[
+              {
+                icon: Smartphone,
+                title: "Installable Android & iOS PWA",
+                desc: "Works from the home screen with offline lesson caching and strict API cache exclusions for private data.",
+              },
+              {
+                icon: WifiOff,
+                title: "Low-Data & Offline Queue",
+                desc: "Vector illustrations and lightweight JSON state sync gracefully over 3G or intermittent school Wi-Fi.",
+              },
+              {
+                icon: Globe,
+                title: "English, Urdu & Punjabi",
+                desc: "Full Nastaliq/Gurmukhi typography and neural/browser voice synthesis across all four companions.",
+              },
+              {
+                icon: Lock,
+                title: "Private by Default & Zero Ad-Tech",
+                desc: "Children's projects stay private until a parent explicitly approves sharing. Zero third-party ad trackers.",
+              },
+              {
+                icon: ShieldCheck,
+                title: "WCAG 2.1 AA+ & Sensory Modes",
+                desc: "Reduced motion, low-stimulation surfaces, dyslexic spacing, and keyboard/screen-reader navigation.",
+              },
+              {
+                icon: Users,
+                title: "5-Stage Human Content Governance",
+                desc: "Every curriculum module moves through Draft → Under Review → Approved → Published → Archived.",
+              },
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.title} className="rounded-3xl bg-white border border-[#E7E0D6] p-6 space-y-2">
+                  <Icon className="w-6 h-6 text-indigo-600" />
+                  <h3 className="text-base font-black text-slate-900">{item.title}</h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">{item.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ===================================================================== */}
+        {/* 16. FINAL CTA                                                         */}
+        {/* ===================================================================== */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto rounded-[40px] bg-[#0F172A] text-white p-8 sm:p-14 border-4 border-amber-400 shadow-2xl text-center space-y-6">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-amber-400/20 text-amber-300 text-xs font-extrabold uppercase tracking-wider">
+              Section 16 • Ready for Families, Classrooms &amp; School Pilots
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-black tracking-tight max-w-3xl mx-auto leading-tight">
+              Start Exploring Weebly Today.
             </h2>
-            <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto">
-              Explore the interactive demos immediately with zero login required, or request a guided school pilot for your classrooms.
+            <p className="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto">
+              Experience the interactive 6-role demo, step into the child&apos;s Magic Home and AI Creator Academy, or request a school pilot briefing.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
               <Link
                 href="/demos"
-                className="px-8 py-4 rounded-2xl bg-slate-900 text-white font-bold text-base hover:bg-slate-800 shadow-sm"
+                className="px-8 py-4 rounded-2xl bg-amber-400 text-slate-950 font-black text-sm sm:text-base hover:bg-amber-300 transition inline-flex items-center gap-2"
               >
-                Launch Interactive Demo Center
+                <Sparkles className="w-5 h-5" />
+                <span>Try Weebly Interactive Demo</span>
               </Link>
               <Link
-                href="/youth/dashboard"
-                className="px-8 py-4 rounded-2xl bg-white border-2 border-slate-900 text-slate-900 font-bold text-base hover:bg-amber-50"
+                href="/schools/pilot"
+                className="px-7 py-4 rounded-2xl bg-white text-slate-950 font-black text-sm sm:text-base hover:bg-slate-100 transition inline-flex items-center gap-2"
               >
-                Open Kids Magic Home
+                <School className="w-5 h-5 text-indigo-600" />
+                <span>Explore School Pilot</span>
               </Link>
               <Link
                 href="/contact"
-                className="px-6 py-4 rounded-2xl text-indigo-700 font-bold text-sm hover:underline"
+                className="px-7 py-4 rounded-2xl bg-slate-800 border border-slate-700 text-white font-bold text-sm sm:text-base hover:bg-slate-700 transition"
               >
-                Contact School Pilot Team →
+                Contact Team
               </Link>
             </div>
           </div>
