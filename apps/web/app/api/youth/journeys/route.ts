@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isSupabaseConfigured, sbInsert, sbSelect } from "@/lib/server/supabase";
 import { WEEBLY_V10_JOURNEYS, JourneyStageId } from "@/lib/v10-journey-engine";
+import { recordServerActivityEvent } from "@/lib/server/activity-events-store";
 
 export interface JourneyProgressRecord {
   id: string;
@@ -84,18 +85,19 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const journeyId = String(body.journey_id || "").trim();
-    const studentId = String(body.student_pseudonymous_id || "std_ayan_7y");
+    const studentId = String(body.student_pseudonymous_id || body.child_id || "std_ayan_7y");
     const currentStage = (body.current_stage || "watch") as JourneyStageId;
     const completedStages: JourneyStageId[] = Array.isArray(body.completed_stages)
       ? body.completed_stages
       : [currentStage];
     const status: "in_progress" | "completed" =
-      body.status === "completed" ? "completed" : "in_progress";
+      body.status === "completed" || currentStage === "reflect" ? "completed" : "in_progress";
 
     if (!journeyId) {
       return NextResponse.json({ error: "journey_id is required" }, { status: 400 });
     }
 
+    const matchedJourney = WEEBLY_V10_JOURNEYS.find((j) => j.journey_id === journeyId);
     const store = getProgressStore();
     const existingIdx = store.findIndex(
       (p) => p.student_pseudonymous_id === studentId && p.journey_id === journeyId
@@ -122,6 +124,22 @@ export async function POST(req: NextRequest) {
       store.unshift(record);
     }
 
+    const eventType = status === "completed" ? "journey_completed" : "journey_started";
+    const emittedEvent = recordServerActivityEvent({
+      event_type: eventType,
+      student_pseudonymous_id: studentId,
+      activity_id: journeyId,
+      activity_title: matchedJourney?.title || journeyId,
+      category: matchedJourney?.subject.toLowerCase() || "learning_journey",
+      learning_objective:
+        matchedJourney?.learning_objective ||
+        "Complete 5-stage WATCH-LEARN-PLAY-IMPLEMENT-REFLECT journey",
+      completion_status: status === "completed" ? "completed" : "in_progress",
+      hints_used_count: 0,
+      language_used: record.language_used,
+      duration_seconds: status === "completed" ? 420 : 120,
+    });
+
     let persisted = false;
     if (isSupabaseConfigured()) {
       const inserted = await sbInsert<JourneyProgressRecord>("learning_journey_progress", record);
@@ -129,8 +147,9 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({
-      event_type: status === "completed" ? "journey_completed" : "journey_started",
+      event_type: eventType,
       progress: record,
+      emitted_event: emittedEvent,
       persisted,
       storage: persisted ? "supabase-postgres" : "in-memory-fallback",
     });

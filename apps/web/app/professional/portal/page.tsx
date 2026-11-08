@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   ShieldCheck,
@@ -92,6 +92,35 @@ export default function ProfessionalSupportPortal() {
   const [noteSuccess, setNoteSuccess] = useState(false);
 
   const selectedCase = cases.find((c) => c.id === selectedCaseId) || cases[0];
+
+  useEffect(() => {
+    fetch("/api/parent/observations")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data && Array.isArray(data.observations) && data.observations.length > 0) {
+          const intakeCases: SupportCase[] = data.observations.slice(0, 3).map((obs: any, idx: number) => ({
+            id: `case_obs_${obs.id || idx}`,
+            caseNumber: `CASE-202611-OBS${idx + 1}`,
+            childPseudonym: `Authorized Child (${obs.child_id || "Family Intake"})`,
+            ageTier: "Junior (Authorized Family Intake)",
+            referralSource: "Caregiver Observation Diary",
+            status: "consent_verified",
+            consentVerified: true,
+            caregiverHarmSuspected: false,
+            referralReason: obs.parent_note || "Authorized parent observation intake.",
+            assignedProfessional: "Dr. Sarah Jenkins, Ph.D.",
+            lastUpdated: "Synced from Parent Center",
+            clinicalNotesCount: 1,
+          }));
+          setCases((prev) => {
+            const existingIds = new Set(prev.map((c) => c.id));
+            const uniqueNew = intakeCases.filter((c) => !existingIds.has(c.id));
+            return [...prev, ...uniqueNew];
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handleAddNote = (e: React.FormEvent) => {
     e.preventDefault();

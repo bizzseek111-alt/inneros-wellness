@@ -1,105 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isSupabaseConfigured, sbInsert, sbSelect } from "@/lib/server/supabase";
+import {
+  EducationalActivityEvent,
+  V10EventType,
+  getActivityEventsStore,
+  recordServerActivityEvent,
+} from "@/lib/server/activity-events-store";
 
-export type V10EventType =
-  | "journey_started"
-  | "journey_completed"
-  | "activity_completed"
-  | "project_created"
-  | "project_updated"
-  | "learning_objective_practiced";
+export type { EducationalActivityEvent, V10EventType };
 
-export interface EducationalActivityEvent {
-  id: string;
-  event_type?: V10EventType;
-  student_pseudonymous_id: string;
-  student_name?: string;
-  activity_id: string;
-  activity_title?: string;
-  category?: string;
-  learning_objective: string;
-  completion_status: "completed" | "in_progress" | "reviewed";
-  hints_used_count: number;
-  language_used: "en" | "ur" | "pa";
-  duration_seconds: number;
-  curriculum_version: string;
-  created_at: string;
-}
-
-// Fallback seed store used when Supabase env vars are not yet set
-const inMemoryEvents: EducationalActivityEvent[] = [
-  {
-    id: "evt_demo_01",
-    event_type: "activity_completed",
-    student_pseudonymous_id: "std_ayan_7y",
-    student_name: "Ayan (Fictional Demo)",
-    activity_id: "q_emot_0001",
-    activity_title: "Somatic Body Butterflies Recognition",
-    category: "emotional_vocabulary",
-    learning_objective: "Identify and label bodily cues of apprehension",
-    completion_status: "completed",
-    hints_used_count: 1,
-    language_used: "en",
-    duration_seconds: 145,
-    curriculum_version: "v2.4.0",
-    created_at: new Date(Date.now() - 3600000 * 24).toISOString(),
-  },
-  {
-    id: "evt_demo_02",
-    event_type: "learning_objective_practiced",
-    student_pseudonymous_id: "std_zainab_10y",
-    student_name: "Zainab (Fictional Demo)",
-    activity_id: "q_scie_0001",
-    activity_title: "Light Speed vs Sound Speed Inquiry",
-    category: "science_and_discovery",
-    learning_objective: "Explain differences in propagation speeds of light and sound",
-    completion_status: "completed",
-    hints_used_count: 0,
-    language_used: "ur",
-    duration_seconds: 210,
-    curriculum_version: "v2.4.0",
-    created_at: new Date(Date.now() - 3600000 * 12).toISOString(),
-  },
-  {
-    id: "evt_demo_03",
-    event_type: "journey_completed",
-    student_pseudonymous_id: "std_ayan_7y",
-    student_name: "Ayan (Fictional Demo)",
-    activity_id: "q_math_0001",
-    activity_title: "Fair-Share Mango Division",
-    category: "mathematics",
-    learning_objective: "Equal partition division into 3 groups",
-    completion_status: "completed",
-    hints_used_count: 0,
-    language_used: "pa",
-    duration_seconds: 180,
-    curriculum_version: "v2.4.0",
-    created_at: new Date(Date.now() - 3600000 * 2).toISOString(),
-  },
-];
+// Supported V10 structured event types:
+// journey_started | journey_completed | activity_completed | project_created | project_updated | learning_objective_practiced
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const eventId = `evt_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
-    const newEvent: EducationalActivityEvent = {
-      id: eventId,
-      event_type: body.event_type || "activity_completed",
-      student_pseudonymous_id: body.student_pseudonymous_id || body.child_id || "std_anonymous_demo",
-      student_name: body.student_name || "Ayan (Fictional Demo)",
-      activity_id: body.activity_id || "q_interactive_activity",
-      activity_title: body.activity_title || "Interactive SEL Activity",
-      category: body.category || body.skill_domain || "emotional_vocabulary",
-      learning_objective: body.learning_objective || "Practice cooperative problem solving",
-      completion_status: body.completion_status || "completed",
-      hints_used_count: Number(body.hints_used_count || 0),
-      language_used: body.language_used || "en",
-      duration_seconds: Number(body.duration_seconds || 120),
-      curriculum_version: body.curriculum_version || "v2.4.0",
-      created_at: new Date().toISOString(),
-    };
+    const newEvent = recordServerActivityEvent(body);
 
-    inMemoryEvents.unshift(newEvent);
     const saved = await sbInsert<EducationalActivityEvent>(
       "educational_activity_events",
       newEvent as unknown as Record<string, unknown>
@@ -109,7 +26,7 @@ export async function POST(req: NextRequest) {
       success: true,
       persisted: Boolean(saved),
       storage: saved ? "supabase-postgres" : "in-memory-fallback",
-      event_id: eventId,
+      event_id: newEvent.id,
       event: saved || newEvent,
     });
   } catch (error: any) {
@@ -129,8 +46,9 @@ export async function GET(req: NextRequest) {
     ? await sbSelect<EducationalActivityEvent>("educational_activity_events", filter)
     : null;
 
-  let events = dbRows && dbRows.length > 0 ? dbRows : inMemoryEvents;
-  if (!dbRows && studentId) {
+  const store = getActivityEventsStore();
+  let events = dbRows && dbRows.length > 0 ? dbRows : store;
+  if (!dbRows && studentId && studentId !== "child_default") {
     events = events.filter((e) => e.student_pseudonymous_id === studentId);
   }
 

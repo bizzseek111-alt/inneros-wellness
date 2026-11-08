@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isSupabaseConfigured, sbInsert, sbSelect } from "@/lib/server/supabase";
+import { recordServerActivityEvent } from "@/lib/server/activity-events-store";
 
 export type CreatorToolType =
   | "story_maker"
@@ -16,6 +17,7 @@ export interface CreatorProjectRecord {
   title: string;
   age_band: string;
   project_state: Record<string, any>;
+  learning_objectives_practiced: string[];
   moderation_status: "approved_private" | "flagged";
   parent_sharing_approved: boolean;
   teacher_visible: boolean;
@@ -47,6 +49,15 @@ function sanitizeProjectContent(rawState: Record<string, any>): {
   };
 }
 
+const DEFAULT_OBJECTIVES_BY_TOOL: Record<CreatorToolType, string[]> = {
+  game_maker: ["Algorithmic sequencing", "Event-driven logic", "Rule-based game design"],
+  story_maker: ["Narrative structure", "Bilingual creative expression", "Character empathy"],
+  cartoon_studio: ["Visual storytelling", "Dialogue sequencing", "Scene composition"],
+  art_lab: ["Pattern symmetry", "Color harmony", "Visual imagination"],
+  ai_inventors: ["Pattern classification", "Training data fairness", "Decision tree logic"],
+  ai_detective: ["Fact verification", "Hallucination detection", "Source evaluation"],
+};
+
 function getProjectsStore(): CreatorProjectRecord[] {
   if (!globalThis.__weeblyV10CreatorProjects) {
     globalThis.__weeblyV10CreatorProjects = [
@@ -67,6 +78,7 @@ function getProjectsStore(): CreatorProjectRecord[] {
             { id: "b5", type: "win_condition", label: "If Score Reaches Goal → Win!" },
           ],
         },
+        learning_objectives_practiced: DEFAULT_OBJECTIVES_BY_TOOL.game_maker,
         moderation_status: "approved_private",
         parent_sharing_approved: false,
         teacher_visible: true,
@@ -89,6 +101,7 @@ function getProjectsStore(): CreatorProjectRecord[] {
             "Mia sang a clear melody so all the other fireflies lit up like lanterns, guiding their little friend home!",
           ],
         },
+        learning_objectives_practiced: DEFAULT_OBJECTIVES_BY_TOOL.story_maker,
         moderation_status: "approved_private",
         parent_sharing_approved: true,
         teacher_visible: true,
@@ -100,13 +113,21 @@ function getProjectsStore(): CreatorProjectRecord[] {
   return globalThis.__weeblyV10CreatorProjects;
 }
 
+function normalizeStudentId(rawId: string | null | undefined): string {
+  if (!rawId || rawId === "child_default" || rawId === "child_aarav_1") {
+    return "std_ayan_7y";
+  }
+  return rawId;
+}
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const studentId = searchParams.get("student_id") || "std_ayan_7y";
+  const rawStudentId = searchParams.get("student_id") || searchParams.get("child_id");
+  const studentId = normalizeStudentId(rawStudentId);
   const toolType = searchParams.get("tool_type");
 
   let projects = getProjectsStore().filter(
-    (p) => !studentId || p.student_pseudonymous_id === studentId
+    (p) => !rawStudentId || p.student_pseudonymous_id === studentId || p.student_pseudonymous_id === rawStudentId
   );
 
   if (isSupabaseConfigured()) {
@@ -135,15 +156,19 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const action = body.action || "save";
     const store = getProjectsStore();
+    const targetProjectId = body.project_id || body.id;
 
-    if (action === "delete" && body.project_id) {
-      const idx = store.findIndex((p) => p.id === body.project_id);
+    if (action === "delete" && targetProjectId) {
+      const idx = store.findIndex((p) => p.id === targetProjectId);
       if (idx >= 0) store.splice(idx, 1);
-      return NextResponse.json({ status: "deleted", project_id: body.project_id });
+      return NextResponse.json({ status: "deleted", project_id: targetProjectId });
     }
 
-    if (action === "toggle_parent_sharing" && body.project_id) {
-      const proj = store.find((p) => p.id === body.project_id);
+    if (
+      (action === "toggle_parent_sharing" || action === "set_parent_sharing") &&
+      targetProjectId
+    ) {
+      const proj = store.find((p) => p.id === targetProjectId);
       if (proj) {
         proj.parent_sharing_approved = Boolean(body.parent_sharing_approved);
         proj.updated_at = new Date().toISOString();
@@ -153,7 +178,7 @@ export async function POST(req: NextRequest) {
 
     const title = String(body.title || "My Weebly Creation").trim().slice(0, 140);
     const toolType = (body.tool_type || "game_maker") as CreatorToolType;
-    const studentId = String(body.student_pseudonymous_id || "std_ayan_7y");
+    const studentId = normalizeStudentId(body.student_pseudonymous_id || body.child_id);
     const ageBand = String(body.age_band || "6");
 
     const { safe, sanitized } = sanitizeProjectContent(body.project_state || {});
@@ -168,15 +193,22 @@ export async function POST(req: NextRequest) {
     }
 
     const now = new Date().toISOString();
-    const existingIdx = body.id ? store.findIndex((p) => p.id === body.id) : -1;
+    const existingIdx = targetProjectId ? store.findIndex((p) => p.id === targetProjectId) : -1;
+    const objectives = Array.isArray(body.learning_objectives_practiced)
+      ? body.learning_objectives_practiced
+      : DEFAULT_OBJECTIVES_BY_TOOL[toolType] || ["Creative expression", "Problem solving"];
 
     const record: CreatorProjectRecord = {
-      id: existingIdx >= 0 ? store[existingIdx].id : `proj_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+      id:
+        existingIdx >= 0
+          ? store[existingIdx].id
+          : `proj_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
       student_pseudonymous_id: studentId,
       tool_type: toolType,
       title,
       age_band: ageBand,
       project_state: sanitized,
+      learning_objectives_practiced: objectives,
       moderation_status: "approved_private",
       parent_sharing_approved: false, // Never public by default
       teacher_visible: true,
@@ -190,6 +222,20 @@ export async function POST(req: NextRequest) {
       store.unshift(record);
     }
 
+    const eventType = existingIdx >= 0 ? "project_updated" : "project_created";
+    const emittedEvent = recordServerActivityEvent({
+      event_type: eventType,
+      student_pseudonymous_id: studentId,
+      activity_id: record.id,
+      activity_title: `${title} (${toolType.replace("_", " ")})`,
+      category: "creative_expression",
+      learning_objective: objectives.join(", "),
+      completion_status: "completed",
+      hints_used_count: 0,
+      language_used: "en",
+      duration_seconds: 180,
+    });
+
     let persisted = false;
     if (isSupabaseConfigured()) {
       const inserted = await sbInsert<CreatorProjectRecord>("creator_projects", record);
@@ -197,8 +243,9 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({
-      event_type: existingIdx >= 0 ? "project_updated" : "project_created",
+      event_type: eventType,
       project: record,
+      emitted_event: emittedEvent,
       persisted,
       storage: persisted ? "supabase-postgres" : "in-memory-fallback",
     });

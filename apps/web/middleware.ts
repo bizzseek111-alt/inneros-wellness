@@ -31,6 +31,14 @@ const PUBLIC_MARKETING_ROUTES = new Set([
   "/schools/pilot",
   "/documents",
   "/creative-studio",
+  "/learning-method",
+  "/ai-creator",
+  "/ai-creator-academy",
+  "/ai-literacy",
+  "/brain-skills",
+  "/inclusive-learning",
+  "/child-development",
+  "/access",
 ]);
 
 

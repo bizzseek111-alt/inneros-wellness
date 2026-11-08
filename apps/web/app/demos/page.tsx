@@ -65,49 +65,49 @@ const DEMOS: DemoItem[] = [
     textColor: "text-amber-900",
     tourLength: "3 mins",
     description:
-      "Experience the ultra-clean child interface with only three choices: Home, Talk, and Play. Talk to Kai or Mia, solve the Khanmigo-inspired Mango Sharing math quest, and explore original stories with zero overwhelming navigation.",
+      "Experience the ultra-clean child interface with only three choices: Home, Talk, and Play. Talk to Kai or Mia, complete a 5-stage Learning Journey, create a visual block game, and save a bilingual story with zero overwhelming navigation.",
     whatYoullSee: [
-      "Ultra-clean 3-button child navigation (Home, Talk, Play)",
-      "Interactive AI Friends: Kai (Math), Mia (Stories), Lumi (Calm), Zayn (Science)",
-      "Khanmigo-style guided Mango Math Quest with visual counters (🥭)",
-      "Creative Studio drawing canvas with dinosaur sketchpad",
-      "Celebration achievement badge and safe session ending",
+      "Magic Home with ultra-clean 3-button child navigation (Home, Talk, Play)",
+      "Talk to AI Friend: Kai (Math), Mia (Stories), Lumi (Calm), Zayn (Science)",
+      "Complete learning journey (Watch → Learn → Play → Implement → Reflect)",
+      "Create a visual game in the AI Creator Academy block workbench",
+      "Save a story and dinosaur drawing to the private Skills & Creations Passport",
     ],
     exploreHref: "/youth/dashboard",
     tourSteps: [
       {
         title: "Welcome to Kids Magic Home",
         description:
-          "Children are greeted with a warm, clutter-free home world. Notice there are no complex navigation bars or overwhelming text—just clean, friendly entry points.",
+          "Children are greeted with a warm, clutter-free Magic Home world. Notice there are no complex navigation bars or overwhelming text—just clean, friendly entry points.",
         targetFeature: "Kids Magic Home (/youth/dashboard)",
         badge: "Step 1 of 5",
       },
       {
-        title: "Choose Your Learning Companion",
+        title: "Talk to Your AI Friend",
         description:
           "Four original characters specialize in different domains: Kai (homework & curiosity), Mia (stories & art), Lumi (calming & routines), and Zayn (science & puzzles).",
         targetFeature: "AI Friends Gallery (/youth/friends)",
         badge: "Step 2 of 5",
       },
       {
-        title: "Khanmigo-Inspired Math Quest",
+        title: "Complete a 5-Stage Learning Journey",
         description:
-          "Kai guides the child through the 12-mango division feast. Rather than giving away the answer, Kai asks questions and provides visual counters step-by-step.",
-        targetFeature: "Mango Math Quest (/youth/activities?category=mathematics)",
+          "Kai guides the child through the 12-mango division feast across Watch, Learn, Play, Implement, and Reflect with visual counters (🥭) step-by-step.",
+        targetFeature: "5-Stage Learning Journey (/youth/journeys)",
         badge: "Step 3 of 5",
       },
       {
-        title: "Creative Studio & Dino Drawing",
+        title: "Create a Visual Game & Save a Story",
         description:
-          "Children switch to the Creative Studio to draw a friendly Stegosaurus with interactive colors, stroke sizes, and undo tools.",
-        targetFeature: "Creative Studio (/youth/creative-studio)",
+          "Children build a playable Star Collector visual block game, author a bilingual story with Mia, or sketch in Creative Studio—saving directly to their private portfolio.",
+        targetFeature: "AI Creator & Creative Studio (/youth/creator & /youth/creative-studio)",
         badge: "Step 4 of 5",
       },
       {
-        title: "Joyful Achievement & Calm Exit",
+        title: "Skills Passport & Calm Session Exit",
         description:
-          "The child earns a star milestone. When session time concludes, the character gently winds down without addictive loops.",
-        targetFeature: "Achievements (/youth/achievements)",
+          "Saved creations appear in the child's private Skills & Creations Passport (/youth/passport). When session time concludes, the character gently winds down.",
+        targetFeature: "Skills Passport & Achievements (/youth/passport & /youth/achievements)",
         badge: "Step 5 of 5",
       },
     ],
@@ -124,42 +124,42 @@ const DEMOS: DemoItem[] = [
     textColor: "text-emerald-900",
     tourLength: "4 mins",
     description:
-      "Tour the dedicated Parent Center with fictional family data (Fatima Ahmed & children Maya and Ali). Inspect factual daily learning summaries, the non-diagnostic parent observation diary, routine tracking, and school linkages.",
+      "Tour the dedicated Parent Center with fictional family data (Fatima Ahmed & children Maya and Ali). Inspect factual learning progress, created projects from the AI Creator Academy, the non-diagnostic observation diary, and family settings.",
     whatYoullSee: [
-      "Fictional family profiles (Maya, Grade 3 & Ali, Pre-K)",
-      "Daily and weekly factual learning mastery reports",
-      "Parent observation diary with school-avoidance notes (zero AI diagnosis)",
-      "Bedtime routine checklists and low-stimulation toggles",
+      "Learning progress across 5-stage journeys and 6 learning worlds",
+      "Created projects portfolio (stories & visual games) with parent sharing approval",
+      "Observation diary with school-avoidance & sleep notes (zero AI diagnosis)",
+      "Family settings: bedtime routine checklists, screen limits & low-stimulation toggles",
       "Verifiable parental consent controls and data purge requests",
     ],
     exploreHref: "/parent",
     tourSteps: [
       {
-        title: "Family Overview Dashboard",
+        title: "Family Overview & Learning Progress",
         description:
-          "Caregivers see weekly learning time, active curriculum modules, and demonstrated skills for each linked child profile.",
-        targetFeature: "Parent Overview (/parent)",
+          "Caregivers see weekly learning time, completed 5-stage Learning Journeys, and factual mastery records for each linked child profile.",
+        targetFeature: "Parent Overview & Learning Progress (/parent?tab=progress)",
         badge: "Step 1 of 5",
       },
       {
-        title: "Factual Learning Progress",
+        title: "Created Projects Portfolio & Sharing Controls",
         description:
-          "Factual activity records show exact questions practiced, hints used, and duration. Notice these records are strictly non-diagnostic.",
-        targetFeature: "Learning Progress (/parent?tab=progress)",
+          "Inspect every story and visual block game your child saved in the AI Creator Academy. Projects remain private by default until a parent explicitly approves sharing.",
+        targetFeature: "Created Projects Portfolio (/parent?tab=progress & /youth/passport)",
         badge: "Step 2 of 5",
       },
       {
         title: "Parent Observation Diary (School Avoidance)",
         description:
-          "Caregivers record factual observations like morning transition resistance. Barkley & Gottman co-regulation tips provide actionable family support.",
+          "Caregivers record factual observations like morning transition resistance. Barkley & Gottman co-regulation tips provide actionable family support with zero AI diagnosis.",
         targetFeature: "Observation Diary (/parent?tab=observations)",
         badge: "Step 3 of 5",
       },
       {
-        title: "Bedtime & Screen Time Routines",
+        title: "Family Settings, Routines & Sensory Supports",
         description:
-          "Set daily screen limits (e.g. 45 mins), bedtime curfews (8:30 PM), and high-contrast or dyslexic font accommodations.",
-        targetFeature: "Daily Routines (/parent?tab=routines)",
+          "Configure daily screen limits (e.g. 45 mins), First/Then visual schedules, Urdu/Punjabi language preferences, and low-stimulation sensory accommodations.",
+        targetFeature: "Daily Routines & Family Settings (/parent?tab=routines)",
         badge: "Step 4 of 5",
       },
       {
@@ -183,48 +183,48 @@ const DEMOS: DemoItem[] = [
     textColor: "text-blue-900",
     tourLength: "4 mins",
     description:
-      "Explore fictional classroom 'Grade 4-B Sunflower' under Teacher Ahmed Khan. Review the 24-student roster, curriculum coverage, AI-assisted lesson planner, question paper builder from the 3,000-question bank, and classroom observations.",
+      "Explore fictional classroom 'Grade 4-B Sunflower' under Teacher Ahmed Khan. Assign 5-stage Learning Journeys, review learning completion across the 24-student roster, and inspect the student project portfolio.",
     whatYoullSee: [
-      "Classroom roster with 24 enrolled students and join codes",
-      "Punjab Curriculum alignment across Mathematics and Science",
+      "Assign journey: dispatch 5-stage Watch-Learn-Play-Implement-Reflect quests",
+      "Review learning completion and hint usage across the 24-student roster",
+      "Inspect project portfolio (student-created stories, block games & inventions)",
       "Question paper builder powered by the 3,000-question relational bank",
-      "Assignment dispatching and real-time student completion tracking",
-      "Classroom observations and non-clinical accommodation logs",
+      "Classroom observations and non-clinical UDL accommodation logs",
     ],
     exploreHref: "/teacher/dashboard",
     tourSteps: [
       {
-        title: "Teacher Command Dashboard",
+        title: "Teacher Command Dashboard & Roster",
         description:
-          "Educators monitor classroom attendance, active learning modules, and daily emotional climate check-ins at a glance.",
+          "Educators monitor classroom attendance, pseudonymous student rosters, and active join codes with zero student PII leakage.",
         targetFeature: "Teacher Dashboard (/teacher/dashboard)",
         badge: "Step 1 of 5",
       },
       {
-        title: "Classroom Roster & Enrollment",
+        title: "Assign a 5-Stage Learning Journey",
         description:
-          "Manage student pseudonyms, generate join codes, and invite co-teachers with zero student PII leakage.",
-        targetFeature: "Class Roster (/teacher/dashboard?tab=overview)",
+          "Dispatch V10 Learning Journeys (like Fair-Share Mango Division or Sunlight & Sprouts) directly to student tablets with custom due dates.",
+        targetFeature: "Assign Journey (/teacher/dashboard?tab=assignments)",
         badge: "Step 2 of 5",
       },
       {
-        title: "3,000-Question Relational Bank",
+        title: "Review Learning Completion & Mastery",
         description:
-          "Filter approved questions by grade, subject, difficulty, and learning objective to instantly generate printable worksheets and quizzes.",
-        targetFeature: "Question Bank Builder (/admin/curriculum)",
+          "Track real-time assignment completion rates (e.g., 92% class mastery) and average hints used per learning objective.",
+        targetFeature: "Learning Completion (/teacher/dashboard?tab=assignments)",
         badge: "Step 3 of 5",
       },
       {
-        title: "Assign Interactive SEL & Math Quests",
+        title: "Inspect Student Project Portfolio",
         description:
-          "Dispatch assignments (like Photosynthesis Drawing or Mango Sharing) directly to student tablets with custom due dates.",
-        targetFeature: "Assignments (/teacher/dashboard?tab=assignments)",
+          "Review teacher-visible stories, visual block games, and AI Creator Academy projects alongside the 3,000-question bank builder.",
+        targetFeature: "Project Portfolio (/teacher/dashboard?tab=assignments & /admin/curriculum)",
         badge: "Step 4 of 5",
       },
       {
-        title: "Classroom Accommodations & Observations",
+        title: "Classroom Accommodations & Smartboard Calming",
         description:
-          "Document untimed reading accommodations, visual timers, and sensory breaks without clinical pathology labels.",
+          "Document untimed reading accommodations, visual timers, and launch whole-class breathing regulation on the smartboard.",
         targetFeature: "Accommodations (/teacher/dashboard?tab=climate)",
         badge: "Step 5 of 5",
       },
@@ -242,42 +242,42 @@ const DEMOS: DemoItem[] = [
     textColor: "text-indigo-900",
     tourLength: "5 mins",
     description:
-      "Tour the institutional command center for fictional institution 'Oakridge Punjab Campuses' (North & West). Inspect multi-campus deployment, license tier allocations, curriculum participation rates, and aggregate reports with k-anonymity privacy.",
+      "Tour the institutional command center for fictional institution 'Oakridge Punjab Campuses' (North & West). Inspect classes, curriculum alignment, V10 programs, and aggregate educational reports with k-anonymity privacy.",
     whatYoullSee: [
-      "Multi-campus administration (Oakridge North & Oakridge West)",
-      "94% curriculum adoption analytics and program assignments",
-      "Institutional district license pack administration (500 seats)",
-      "FERPA & COPPA Aligned Architecture disclosure banner",
-      "Aggregate educational summaries with k-anonymity (k≥5) privacy",
+      "Classes & multi-campus administration (Oakridge North & Oakridge West)",
+      "Curriculum coverage across PCTB, CASEL, and V10 AI Creator standards",
+      "Programs & 94% adoption analytics across all 6 Learning Worlds",
+      "Aggregate educational reports with k-anonymity (k≥5) privacy protection",
+      "FERPA & COPPA Aligned Architecture disclosure banner & 500-seat licenses",
     ],
     exploreHref: "/school/portal",
     tourSteps: [
       {
-        title: "Institutional Overview",
+        title: "Institutional Classes & Campus Directory",
         description:
-          "District administrators view campus enrollment, active teacher licenses, and curriculum coverage across schools.",
-        targetFeature: "School Portal (/school/portal)",
+          "District administrators view 44 active classes across Oakridge North Elementary and Oakridge West Intermediate with lead educator assignments.",
+        targetFeature: "Classes & Campuses (/school/portal?tab=classes)",
         badge: "Step 1 of 5",
       },
       {
-        title: "Campus Directory & Leadership",
+        title: "Curriculum Standards Alignment",
         description:
-          "Inspect individual campuses (North Elementary Pre-K–4 and West Intermediate 5–8) with lead administrator assignments.",
-        targetFeature: "Campuses (/school/portal?tab=campuses)",
+          "Inspect curriculum coverage across Early & Elementary Mathematics, Phonics, Science, CASEL SEL, and V10 AI Literacy pathways.",
+        targetFeature: "Curriculum (/school/portal?tab=curriculum)",
         badge: "Step 2 of 5",
       },
       {
-        title: "Curriculum Program Mapping",
+        title: "School Programs & V10 Adoption",
         description:
-          "Map programs to Punjab Curriculum and Textbook Board standards across Creative Studio, Move & Play, and Brain Quest.",
-        targetFeature: "Program Adoption (/school/portal?tab=adoption)",
+          "Map school programs to Punjab Curriculum and Textbook Board standards across Creative Studio, AI Creator Academy, Move & Play, and Brain Quest.",
+        targetFeature: "Programs (/school/portal?tab=adoption)",
         badge: "Step 3 of 5",
       },
       {
-        title: "k-Anonymity Educational Outcomes",
+        title: "Aggregate Educational Reports (k-Anonymity)",
         description:
-          "Aggregate reports group data into cohorts of 5 or more students to ensure individual learning records cannot be unmasked.",
-        targetFeature: "Outcomes (/school/portal?tab=outcomes)",
+          "Aggregate educational reports group data into cohorts of 5 or more students so individual learning records cannot be unmasked.",
+        targetFeature: "Aggregate Reports (/school/portal?tab=outcomes)",
         badge: "Step 4 of 5",
       },
       {
@@ -301,35 +301,35 @@ const DEMOS: DemoItem[] = [
     textColor: "text-teal-900",
     tourLength: "4 mins",
     description:
-      "Inspect the verified professional support portal under Dr. Sarah Jenkins, Ph.D. (PPA #88291-PK). Review referral intake, parental consent audits, protected clinical notes, and the safeguarding caregiver-harm exception protocol.",
+      "Inspect the verified professional support portal under Dr. Sarah Jenkins, Ph.D. (PPA #88291-PK). Review fictional consent verification, parent/teacher observation intake, and professional support review workflows.",
     whatYoullSee: [
-      "Verified clinician credential registry (PPA #88291-PK / Punjab Healthcare)",
+      "Fictional consent verification with immutable parental audit trail (CASE-202611-8F3A)",
+      "Observation intake from authorized parents and classroom educators",
+      "Professional support review and accommodation planning by licensed specialists",
       "Strict non-diagnostic ethical boundary (AI never diagnoses ADHD or autism)",
-      "Authorized support cases with consent audit trail (CASE-202611-8F3A)",
-      "Protected clinical notes authoring with case-level encryption",
       "Caregiver Harm Exception Protocol routing to CPWB Punjab 1121",
     ],
     exploreHref: "/professional/portal",
     tourSteps: [
       {
-        title: "Professional Support Hub",
+        title: "Fictional Consent & Credential Verification",
         description:
-          "Specialists enter an encrypted clinical environment governed by the principle: 'All clinical judgments belong to qualified humans.'",
-        targetFeature: "Professional Portal (/professional/portal)",
+          "Specialists verify signed fictional parental consent tokens before any case record is decrypted. All clinical judgments belong to qualified humans.",
+        targetFeature: "Fictional Consent Audit (/professional/portal?tab=cases)",
         badge: "Step 1 of 5",
       },
       {
-        title: "Referral Intake & Consent Verification",
+        title: "Structured Observation Intake",
         description:
-          "Review parent-initiated concerns and teacher observations with verified parental consent audit trails.",
-        targetFeature: "Authorized Cases (/professional/portal?tab=cases)",
+          "Review parent-initiated observations (sleep, routines, transitions) and teacher accommodation logs in one structured intake timeline.",
+        targetFeature: "Observation Intake (/professional/portal?tab=cases)",
         badge: "Step 2 of 5",
       },
       {
-        title: "Protected Clinical Notes Authoring",
+        title: "Professional Support Review & Notes",
         description:
-          "Author observation analyses, multi-sensory accommodation plans, and follow-up schedules. Notes are restricted exclusively to assigned clinicians.",
-        targetFeature: "Clinical Notes (/professional/portal?tab=notes)",
+          "Author observation analyses, multi-sensory accommodation plans, and follow-up guidance restricted exclusively to assigned clinicians.",
+        targetFeature: "Professional Support Review (/professional/portal?tab=notes)",
         badge: "Step 3 of 5",
       },
       {
@@ -360,49 +360,49 @@ const DEMOS: DemoItem[] = [
     textColor: "text-purple-900",
     tourLength: "4 mins",
     description:
-      "Examine operational governance with simulated data: curriculum CMS review, 3,000-question bank statistics, RAG source registries, AI character voice configurations, safeguarding circuit breakers, and zero live credential exposure.",
+      "Examine operational governance with simulated data: curriculum management, V10 Journey CMS, AI Creator templates, character voice configuration, RAG registry, 5-stage content approvals, and release QA status.",
     whatYoullSee: [
-      "Curriculum CMS review gating for Punjab Textbook Board sources",
-      "3,000-question bank category distribution and review pipeline",
-      "Character voice configurations across OpenAI, ElevenLabs, and Azure",
-      "Real-time safety circuit breakers and distress lifeline routing",
-      "Zero-credential mock operations view with tenant isolation",
+      "Curriculum & 3,000-question bank category distribution",
+      "Journey CMS & Creator templates management across age bands 5–18",
+      "Voice configuration across OpenAI, ElevenLabs, Azure & Web Speech fallback",
+      "RAG source registry for Punjab Textbook Board & CASEL standards",
+      "5-stage content approvals (Draft → Published) and live release QA status",
     ],
     exploreHref: "/admin/curriculum",
     tourSteps: [
       {
-        title: "Platform Governance Overview",
+        title: "Curriculum & 3,000-Question Bank",
         description:
-          "System operators monitor platform health, tenant isolation, active curriculum versions, and safety circuit breakers.",
-        targetFeature: "Admin Dashboard (/admin)",
+          "Audit curriculum domains and the 3,000 relational questions across Emotional Vocabulary, Science, Mathematics, and Life Skills.",
+        targetFeature: "Curriculum & Question Bank (/admin/curriculum)",
         badge: "Step 1 of 5",
       },
       {
-        title: "Curriculum CMS & RAG Registry",
+        title: "V10 Journey CMS & Creator Templates",
         description:
-          "Inspect Punjab Curriculum source documents, chunk indices, and reviewer approvals (e.g. Prof. Fatima Zahra).",
-        targetFeature: "Curriculum CMS (/admin/curriculum)",
+          "Manage 5-stage Watch-Learn-Play-Implement-Reflect journeys and starter templates for Story Maker, Game Builder, and AI Inventors.",
+        targetFeature: "Journey CMS & Creator Templates (/admin/curriculum)",
         badge: "Step 2 of 5",
       },
       {
-        title: "3,000-Question Relational Bank Statistics",
+        title: "Character Voice Configuration & RAG Registry",
         description:
-          "Audit the 3,000 questions across Emotional Vocabulary (400), Science (350), Math (350), and Life Skills (300).",
-        targetFeature: "Question Bank (/admin/youth-content)",
+          "Review character voice profiles (Kai, Mia, Lumi, Zayn), Punjabi native validation status, and verified RAG document chunks.",
+        targetFeature: "Voice Configuration & RAG (/admin/curriculum & /technology)",
         badge: "Step 3 of 5",
       },
       {
-        title: "Multi-Provider Voice Configuration",
+        title: "5-Stage Content Approvals Pipeline",
         description:
-          "Review character voice profiles (Kai alloy, Mia warm, Lumi ur-PK, Zayn fable) and Punjabi native validation status.",
-        targetFeature: "Voice Configuration (/technology)",
+          "Transition items through Draft → Educational Review → Safety Review → Approved → Published. Unapproved drafts never enter child flows.",
+        targetFeature: "Content Approvals (/admin/curriculum)",
         badge: "Step 4 of 5",
       },
       {
-        title: "Safeguarding Incident Resolution",
+        title: "Release QA Status & Safeguarding Circuit Breakers",
         description:
-          "Track safety circuit breaker activations and verify that human safeguarding officers review every elevated alert.",
-        targetFeature: "Safety Operations (/safety)",
+          "Verify automated test suites, zero-credential tenant isolation, and human safeguarding escalation status.",
+        targetFeature: "QA Status & Governance (/admin & /safety)",
         badge: "Step 5 of 5",
       },
     ],
@@ -415,6 +415,10 @@ export default function DemosPage() {
 
   const startTour = (demo: DemoItem) => {
     setActiveTourDemo(demo);
+    setCurrentStepIndex(0);
+  };
+
+  const restartTour = () => {
     setCurrentStepIndex(0);
   };
 
@@ -644,15 +648,31 @@ export default function DemosPage() {
               ))}
             </div>
 
-            {/* Modal Controls: Prev, Next, Skip, Explore Live */}
-            <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-              <button
-                type="button"
-                onClick={() => setActiveTourDemo(null)}
-                className="text-xs font-bold text-slate-400 hover:text-slate-600"
-              >
-                Exit Tour
-              </button>
+            {/* Modal Controls: Back, Restart, Exit, Explore Freely, Next */}
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-slate-100">
+              <div className="flex items-center space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setActiveTourDemo(null)}
+                  className="text-xs font-bold text-slate-400 hover:text-slate-700"
+                >
+                  Exit Tour
+                </button>
+                <button
+                  type="button"
+                  onClick={restartTour}
+                  className="text-xs font-bold text-slate-500 hover:text-slate-800 inline-flex items-center space-x-1"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Restart</span>
+                </button>
+                <Link
+                  href={activeTourDemo.exploreHref}
+                  className="text-xs font-bold text-indigo-600 hover:underline"
+                >
+                  Explore Freely
+                </Link>
+              </div>
 
               <div className="flex items-center space-x-2">
                 <button
@@ -662,7 +682,7 @@ export default function DemosPage() {
                   className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center space-x-1"
                 >
                   <ChevronLeft className="w-4 h-4" />
-                  <span>Previous</span>
+                  <span>Back</span>
                 </button>
 
                 {currentStepIndex < activeTourDemo.tourSteps.length - 1 ? (

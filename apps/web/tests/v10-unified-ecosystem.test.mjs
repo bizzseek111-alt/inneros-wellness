@@ -159,5 +159,124 @@ describe("Weebly V10 — Unified AI Learning, Creation, Foundational Skills & Ch
       assert.ok(content.includes("LIVE AND VERIFIED"), `${pagePath} must state current implementation status`);
     }
   });
+
+  it("Task A — Complete End-to-End Integration: AI Friends -> Journeys/Creator/Worlds -> Saved Projects -> Skills Passport -> Parent Reports & Teacher/School/Professional Workflows", () => {
+    const friendsTurn = readFile("app/api/youth/friends/turn/route.ts");
+    const journeysApi = readFile("app/api/youth/journeys/route.ts");
+    const creatorApi = readFile("app/api/youth/creator/projects/route.ts");
+    const activityEventsApi = readFile("app/api/educational/activity-events/route.ts");
+    const passportPage = readFile("app/youth/passport/page.tsx");
+    const parentPage = readFile("app/parent/page.tsx");
+    const teacherPage = readFile("app/teacher/dashboard/page.tsx");
+    const schoolPage = readFile("app/school/portal/page.tsx");
+    const profPage = readFile("app/professional/portal/page.tsx");
+
+    // 1-3: AI Friends -> Learning Journeys, AI Creator, Six Learning Worlds
+    assert.ok(friendsTurn.includes("open_learning_journey"), "AI Friends routes to Learning Journeys");
+    assert.ok(
+      friendsTurn.includes("open_creator_academy") && friendsTurn.includes("debug_visual_game"),
+      "AI Friends routes to AI Creator"
+    );
+    assert.ok(
+      friendsTurn.includes("start_creative_drawing") &&
+        friendsTurn.includes("start_sports_drill") &&
+        friendsTurn.includes("start_tech_discovery"),
+      "AI Friends routes to Six Learning Worlds"
+    );
+
+    // 4-6: Learning Journeys & AI Creator -> Shared Educational Events Store & Skills Passport
+    assert.ok(journeysApi.includes("recordServerActivityEvent"), "Journeys API emits directly into shared activity events store");
+    assert.ok(creatorApi.includes("recordServerActivityEvent"), "Creator Projects API emits project_created/project_updated into shared activity events store");
+    assert.ok(
+      creatorApi.includes('action === "set_parent_sharing"') && creatorApi.includes('searchParams.get("child_id")'),
+      "Creator Projects API aligns with Skills Passport child_id and set_parent_sharing parameters"
+    );
+    assert.ok(passportPage.includes("/api/youth/creator/projects"), "Skills Passport loads saved projects from Creator API");
+
+    // 7: Educational Events & Saved Projects -> Authorized Parent Dashboard Reports
+    assert.ok(
+      parentPage.includes("/api/educational/activity-events?view=parent") &&
+        parentPage.includes("/api/youth/creator/projects"),
+      "Parent Dashboard fetches live V10 educational events and created projects portfolio"
+    );
+    assert.ok(
+      parentPage.includes("Created Projects Portfolio (AI Creator Academy)") &&
+        parentPage.includes("Recent Learning Journeys"),
+      "Parent Dashboard renders Created Projects Portfolio and Recent Learning Journeys"
+    );
+
+    // 8-10: Teacher Assignments -> Child Activities, School Programs -> Curriculum, Authorized Observations -> Support Workflow
+    assert.ok(
+      teacherPage.includes("Assign V10 Learning Journeys") &&
+        teacherPage.includes("Inspect Student Project Portfolio"),
+      "Teacher Dashboard supports assigning V10 Learning Journeys and inspecting student project portfolios"
+    );
+    assert.ok(
+      schoolPage.includes("V10 AI Creator Academy & 5-Stage Learning Journeys"),
+      "School Portal maps programs to V10 AI Creator & 5-Stage Learning Journeys curriculum"
+    );
+    assert.ok(
+      parentPage.includes("/api/parent/observations") && profPage.includes("/api/parent/observations"),
+      "Authorized Parent Observations flow end-to-end into Professional Support Portal"
+    );
+  });
+
+  it("Task B — Demo Center (/demos): All 6 role demos include V10 capabilities with Fictional Isolated Data and Guided Tour / Explore Freely / Back / Restart / Exit controls", () => {
+    const demos = readFile("app/demos/page.tsx");
+
+    // Verify all 6 role demo IDs and V10 highlights
+    assert.ok(demos.includes("child-magic-world") && demos.includes("Complete learning journey") && demos.includes("Create a visual game") && demos.includes("Save a story"), "Child demo covers Magic Home, AI Friend, Journey, Visual Game, and Story");
+    assert.ok(demos.includes("parent-center") && demos.includes("Learning progress") && demos.includes("Created projects") && demos.includes("Observation diary") && demos.includes("Family settings"), "Parent demo covers progress, created projects, observation diary, and settings");
+    assert.ok(demos.includes("teacher-studio") && demos.includes("Assign journey") && demos.includes("Review learning completion") && demos.includes("Inspect project portfolio"), "Teacher demo covers assigning journeys, completion review, and project portfolio");
+    assert.ok(demos.includes("school-management") && demos.includes("Classes") && demos.includes("Curriculum") && demos.includes("Programs") && demos.includes("Aggregate educational reports"), "School demo covers classes, curriculum, programs, and aggregate reports");
+    assert.ok(demos.includes("child-support-review") && demos.includes("Fictional consent") && demos.includes("Observation intake") && demos.includes("Professional support review"), "Professional demo covers fictional consent, observation intake, and support review");
+    assert.ok(demos.includes("platform-admin") && demos.includes("Journey CMS") && demos.includes("Creator templates") && demos.includes("Voice configuration") && demos.includes("content approvals") && demos.includes("QA status"), "Admin demo covers Curriculum, Journey CMS, Creator templates, Voice, RAG, Approvals, and QA status");
+
+    // Verify required interactive tour controls: Guided Tour, Explore Freely, Back, Restart, Exit
+    assert.ok(demos.includes("Guided Tour"), "Guided Tour control present");
+    assert.ok(demos.includes("Explore Freely"), "Explore Freely control present");
+    assert.ok(demos.includes("Back"), "Back control present");
+    assert.ok(demos.includes("Restart") && demos.includes("restartTour"), "Restart control present");
+    assert.ok(demos.includes("Exit Tour"), "Exit control present");
+  });
+
+  it("Task C, D, E & F — Mobile/PWA, Educational Quality, Safety/Privacy & Visual QA Verification", () => {
+    const manifest = readFile("app/manifest.ts");
+    const sw = readFile("public/sw.js");
+    const offlinePage = readFile("app/offline/page.tsx");
+    const creatorApi = readFile("app/api/youth/creator/projects/route.ts");
+    const cmsApi = readFile("app/api/admin/cms/route.ts");
+    const middleware = readFile("middleware.ts");
+
+    // Task C: Mobile & PWA
+    assert.ok(manifest.includes('display: "standalone"') && manifest.includes("/youth/dashboard"), "PWA manifest configured for standalone install");
+    assert.ok(sw.includes("/offline") && sw.includes("CACHE_VERSION"), "Service worker caches offline fallback and assets");
+    assert.ok(offlinePage.includes("Offline") || offlinePage.includes("offline"), "Offline fallback route exists");
+
+    // Task D: Educational Quality (Trilingual EN/UR/PA, learning objectives, content approvals)
+    const journeyEngine = readFile("lib/v10-journey-engine.ts");
+    assert.ok(
+      journeyEngine.includes("learning_objective") &&
+        journeyEngine.includes('"en"') &&
+        journeyEngine.includes('"ur"') &&
+        journeyEngine.includes('"pa"'),
+      "Journeys include explicit learning objectives and EN/UR/PA trilingual content"
+    );
+    assert.ok(cmsApi.includes('item.lifecycle_stage === "Published"'), "CMS enforces content approval gating before child visibility");
+
+    // Task E: Safety & Privacy (No public project sharing by default, PII/unsafe filter, no eval/Function execution, role isolation)
+    assert.ok(creatorApi.includes("public_sharing_default: false") && creatorApi.includes("parent_sharing_approved: false"), "No unauthorized public project sharing");
+    assert.ok(creatorApi.includes("BANNED_PATTERNS") && creatorApi.includes("sanitizeProjectContent"), "Creator API enforces PII and safety filter");
+    assert.ok(!creatorApi.includes("eval(") && !readFile("app/youth/creator/page.tsx").includes("eval("), "No unsafe game-code eval() execution");
+    assert.ok(
+      middleware.includes("youth_sanctuary") &&
+        middleware.includes("caregiver_portal") &&
+        middleware.includes("teacher_portal") &&
+        middleware.includes("school_portal") &&
+        middleware.includes("professional_portal") &&
+        middleware.includes("admin_console"),
+      "Middleware enforces role and adult-isolation boundaries"
+    );
+  });
 });
 

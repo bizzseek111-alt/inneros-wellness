@@ -65,6 +65,8 @@ export default function TeacherDashboardPage() {
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [climate, setClimate] = useState<any | null>(null);
   const [accommodations, setAccommodations] = useState<any[]>([]);
+  const [v10Journeys, setV10Journeys] = useState<any[]>([]);
+  const [v10StudentProjects, setV10StudentProjects] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Modals
@@ -168,12 +170,20 @@ export default function TeacherDashboardPage() {
         );
       }
 
-      const [stuData, climData] = await Promise.all([
+      const [stuData, climData, jrnRes, projRes] = await Promise.all([
         apiClient.listClassroomStudents(clsId).catch(() => []),
         apiClient.getClassroomClimate(clsId).catch(() => null),
+        fetch("/api/youth/journeys")
+          .then((r) => (r.ok ? r.json() : null))
+          .catch(() => null),
+        fetch("/api/youth/creator/projects?child_id=child_default")
+          .then((r) => (r.ok ? r.json() : null))
+          .catch(() => null),
       ]);
       if (stuData.length > 0) setStudents(stuData);
       if (climData) setClimate(climData);
+      if (jrnRes && Array.isArray(jrnRes.journeys)) setV10Journeys(jrnRes.journeys);
+      if (projRes && Array.isArray(projRes.projects)) setV10StudentProjects(projRes.projects);
     } catch {
       // Handled via graceful state
     }
@@ -537,6 +547,109 @@ export default function TeacherDashboardPage() {
                   </div>
                 </div>
               ))}
+            </div>
+
+            {/* V10 5-Stage Learning Journeys & Student Project Portfolio */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 pt-2">
+              <div className="p-6 rounded-3xl bg-white border border-[#E2E8F0] shadow-xs space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-sm font-bold text-[#0F172A]">
+                      Assign V10 Learning Journeys (Watch → Learn → Play → Implement → Reflect)
+                    </h4>
+                    <p className="text-xs text-[#64748B]">
+                      Curriculum-aligned 5-stage quests ready for classroom tablets
+                    </p>
+                  </div>
+                  <Link
+                    href="/youth/journeys"
+                    className="text-xs font-bold text-[#2B4CDE] hover:underline"
+                  >
+                    Preview Player →
+                  </Link>
+                </div>
+
+                <div className="space-y-2.5">
+                  {v10Journeys.slice(0, 4).map((jrn) => {
+                    const jId = jrn.journey_id || jrn.id;
+                    const jTitle = typeof jrn.title === "string" ? jrn.title : jrn.title?.en || jId;
+                    return (
+                      <div
+                        key={jId}
+                        className="p-3.5 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between gap-3"
+                      >
+                        <div className="space-y-0.5">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-[#EEF4FF] text-[#2B4CDE]">
+                              {jrn.subject}
+                            </span>
+                            <span className="text-xs font-bold text-[#0F172A]">{jTitle}</span>
+                          </div>
+                          <p className="text-[11px] text-[#64748B]">
+                            Ages {jrn.age_band} • {jrn.grade || "All Grades"}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setAssignTitle(`Journey: ${jTitle}`);
+                            setAssignDepartment(String(jrn.subject || "literacy").toLowerCase());
+                            setAssignActivity(jId);
+                            setAssignInstructions(
+                              `Complete all 5 stages (Watch, Learn, Play, Implement, Reflect) for ${jTitle}.`
+                            );
+                            setShowAssignModal(true);
+                          }}
+                          className="px-3 py-1.5 rounded-xl bg-[#2B4CDE] hover:bg-[#1E3A8A] text-white text-xs font-bold shrink-0"
+                        >
+                          Assign Journey
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="p-6 rounded-3xl bg-white border border-[#E2E8F0] shadow-xs space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-sm font-bold text-[#0F172A]">
+                      Inspect Student Project Portfolio (AI Creator Academy)
+                    </h4>
+                    <p className="text-xs text-[#64748B]">
+                      Teacher-visible stories, block games, and inventions created by students
+                    </p>
+                  </div>
+                  <Link
+                    href="/youth/passport"
+                    className="text-xs font-bold text-[#16A34A] hover:underline"
+                  >
+                    Full Passport →
+                  </Link>
+                </div>
+
+                <div className="space-y-2.5">
+                  {v10StudentProjects.slice(0, 4).map((proj) => (
+                    <div
+                      key={proj.id}
+                      className="p-3.5 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-1.5"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-bold text-[#0F172A]">{proj.title}</span>
+                        <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          {(proj.tool_type || "project").replace(/_/g, " ")}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[#64748B]">
+                        Student ID: <code className="font-mono">{proj.student_pseudonymous_id}</code> •{" "}
+                        {Array.isArray(proj.learning_objectives_practiced)
+                          ? proj.learning_objectives_practiced.join(", ")
+                          : "Creative problem solving"}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         )}

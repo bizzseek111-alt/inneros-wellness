@@ -153,6 +153,13 @@ export default function SchoolPortalPage() {
       questionsCompleted: 3950,
       color: "bg-sky-500",
     },
+    {
+      domain: "V10 AI Creator Academy & 5-Stage Learning Journeys",
+      standardsCovered: "Watch → Learn → Play → Implement → Reflect, Visual Block Games & Story Studio",
+      coveragePercent: 91,
+      questionsCompleted: 2680,
+      color: "bg-indigo-600",
+    },
   ];
 
   return (

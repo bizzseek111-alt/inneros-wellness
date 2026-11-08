@@ -94,6 +94,8 @@ export default function ParentDashboardPage() {
   const [referrals, setReferrals] = useState<any[]>([]);
   const [departments, setDepartments] = useState<any[]>([]);
   const [curriculumModules, setCurriculumModules] = useState<any[]>([]);
+  const [v10ActivityEvents, setV10ActivityEvents] = useState<any[]>([]);
+  const [v10CreatorProjects, setV10CreatorProjects] = useState<any[]>([]);
 
   // Modals
   const [showAddChildModal, setShowAddChildModal] = useState(false);
@@ -200,20 +202,59 @@ export default function ParentDashboardPage() {
     setTimeout(() => setObsSavedMessage(null), 3000);
   };
 
+  const handleToggleParentProjectSharing = async (project: any) => {
+    const nextValue = !project.parent_sharing_approved;
+    setV10CreatorProjects((prev) =>
+      prev.map((p) => (p.id === project.id ? { ...p, parent_sharing_approved: nextValue } : p))
+    );
+    try {
+      await fetch("/api/youth/creator/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "set_parent_sharing",
+          id: project.id,
+          parent_sharing_approved: nextValue,
+        }),
+      });
+      setStatusMessage(
+        nextValue
+          ? `Approved family showcase sharing for "${project.title}".`
+          : `Set "${project.title}" back to private child-only mode.`
+      );
+    } catch {
+      // Optimistic state kept
+    }
+  };
+
   const loadAllData = async () => {
     setLoading(true);
     try {
-      const [dash, subs, ords, invs, tkts, refs, depts, mods, obsRes] = await Promise.all([
-        api.getParentDashboard().catch(() => null),
-        api.getUserSubscriptions().catch(() => []),
-        api.getUserOrders().catch(() => []),
-        api.getUserInvoices().catch(() => []),
-        api.getUserSupportTickets().catch(() => []),
-        api.getReferrals().catch(() => []),
-        api.getAcademyDepartments().catch(() => []),
-        api.getAcademyModules({ approval_status: "published" }).catch(() => []),
-        fetch("/api/parent/observations").then((r) => (r.ok ? r.json() : null)).catch(() => null),
-      ]);
+      const [dash, subs, ords, invs, tkts, refs, depts, mods, obsRes, actRes, projRes] =
+        await Promise.all([
+          api.getParentDashboard().catch(() => null),
+          api.getUserSubscriptions().catch(() => []),
+          api.getUserOrders().catch(() => []),
+          api.getUserInvoices().catch(() => []),
+          api.getUserSupportTickets().catch(() => []),
+          api.getReferrals().catch(() => []),
+          api.getAcademyDepartments().catch(() => []),
+          api.getAcademyModules({ approval_status: "published" }).catch(() => []),
+          fetch("/api/parent/observations").then((r) => (r.ok ? r.json() : null)).catch(() => null),
+          fetch("/api/educational/activity-events?view=parent")
+            .then((r) => (r.ok ? r.json() : null))
+            .catch(() => null),
+          fetch("/api/youth/creator/projects?child_id=child_default")
+            .then((r) => (r.ok ? r.json() : null))
+            .catch(() => null),
+        ]);
+
+      if (actRes && Array.isArray(actRes.recent_timeline)) {
+        setV10ActivityEvents(actRes.recent_timeline);
+      }
+      if (projRes && Array.isArray(projRes.projects)) {
+        setV10CreatorProjects(projRes.projects);
+      }
 
       if (obsRes && Array.isArray(obsRes.observations) && obsRes.observations.length > 0) {
         const mapped = obsRes.observations.map((o: any) => ({
@@ -908,13 +949,22 @@ export default function ParentDashboardPage() {
             {/* MODULE 6: LEARNING PROGRESS */}
             {activeTab === "progress" && (
               <div className="peopleflow-card p-6 space-y-6">
-                <div>
-                  <h2 className="text-lg font-semibold text-[#1A1E1C]">
-                    Learning Progress for {selectedChild?.display_name || "Family"}
-                  </h2>
-                  <p className="text-xs text-[#5C6661]">
-                    Evidence-informed developmental skills demonstrated (Non-clinical &amp; non-diagnostic)
-                  </p>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h2 className="text-lg font-semibold text-[#1A1E1C]">
+                      Learning Progress for {selectedChild?.display_name || "Family"}
+                    </h2>
+                    <p className="text-xs text-[#5C6661]">
+                      Evidence-informed developmental skills demonstrated (Non-clinical &amp; non-diagnostic)
+                    </p>
+                  </div>
+                  <Link
+                    href="/youth/passport"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#285B55] hover:bg-[#1E4440] text-white text-xs font-semibold transition-colors self-start"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Open Child Skills &amp; Creations Passport</span>
+                  </Link>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -932,6 +982,98 @@ export default function ParentDashboardPage() {
                     <span className="text-xs font-bold text-[#7D8A84]">Somatic Reset Usage</span>
                     <div className="text-xl font-bold text-[#285B55]">6 Guided Breaths</div>
                     <p className="text-xs text-[#5C6661]">Voluntary calming breaks</p>
+                  </div>
+                </div>
+
+                {/* V10 Created Projects Portfolio & Parental Sharing Approval */}
+                <div className="space-y-3 pt-2 border-t border-[#E4ECE8]">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-bold text-[#1A1E1C]">
+                        Created Projects Portfolio (AI Creator Academy)
+                      </h3>
+                      <p className="text-xs text-[#5C6661]">
+                        Stories, block games, and inventions saved in /youth/creator. All projects are private by default until parent-approved.
+                      </p>
+                    </div>
+                    <Badge variant="teal">{v10CreatorProjects.length} Saved Projects</Badge>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {v10CreatorProjects.map((proj) => (
+                      <div
+                        key={proj.id}
+                        className="p-4 rounded-xl border border-[#E4ECE8] bg-white space-y-2.5 flex flex-col justify-between"
+                      >
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#E8F3EE] text-[#285B55]">
+                              {(proj.tool_type || "project").replace(/_/g, " ")}
+                            </span>
+                            <span className="text-[11px] font-semibold text-[#7D8A84]">
+                              Age Band {proj.age_band || "6"}
+                            </span>
+                          </div>
+                          <h4 className="text-sm font-bold text-[#1A1E1C]">{proj.title}</h4>
+                          {Array.isArray(proj.learning_objectives_practiced) && (
+                            <p className="text-[11px] text-[#5C6661]">
+                              <strong>Skills practiced:</strong> {proj.learning_objectives_practiced.join(", ")}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="pt-2 border-t border-[#F0F4F2] flex items-center justify-between gap-2">
+                          <span
+                            className={`text-[11px] font-bold ${
+                              proj.parent_sharing_approved ? "text-emerald-700" : "text-[#7D8A84]"
+                            }`}
+                          >
+                            {proj.parent_sharing_approved
+                              ? "Approved for Family Showcase"
+                              : "Private to Child & Parent"}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleToggleParentProjectSharing(proj)}
+                            className="px-2.5 py-1 rounded-lg border border-[#D5DDD8] hover:bg-[#FAF8F5] text-[11px] font-semibold text-[#1A1E1C]"
+                          >
+                            {proj.parent_sharing_approved ? "Revoke Sharing" : "Approve Sharing"}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* V10 Learning Journeys & Educational Activity Events */}
+                <div className="space-y-3 pt-2 border-t border-[#E4ECE8]">
+                  <h3 className="text-sm font-bold text-[#1A1E1C]">
+                    Recent Learning Journeys &amp; Educational Activity Log
+                  </h3>
+                  <div className="space-y-2">
+                    {v10ActivityEvents.slice(0, 6).map((evt) => (
+                      <div
+                        key={evt.id}
+                        className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#EBE7DF] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"
+                      >
+                        <div className="space-y-0.5">
+                          <div className="flex items-center gap-2">
+                            <span className="px-2 py-0.5 rounded-full bg-[#E8F3EE] text-[#285B55] text-[10px] font-bold uppercase">
+                              {(evt.event_type || "activity_completed").replace(/_/g, " ")}
+                            </span>
+                            <span className="font-bold text-[#1A1E1C]">{evt.activity_title}</span>
+                          </div>
+                          <p className="text-[#5C6661]">
+                            Objective: {evt.learning_objective} • Language:{" "}
+                            {(evt.language_used || "en").toUpperCase()}
+                          </p>
+                        </div>
+                        <span className="text-[11px] font-semibold text-emerald-700 shrink-0">
+                          {evt.completion_status === "completed" ? "Completed" : "In Progress"} (
+                          {Math.max(1, Math.round((evt.duration_seconds || 120) / 60))} mins)
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
