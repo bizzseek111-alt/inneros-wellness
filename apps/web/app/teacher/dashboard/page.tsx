@@ -151,14 +151,29 @@ export default function TeacherDashboardPage() {
 
   const loadClassroomDetails = async (clsId: string) => {
     try {
-      const [stuData, asgnData, climData] = await Promise.all([
-        apiClient.listClassroomStudents(clsId),
-        apiClient.listClassroomAssignments(clsId),
-        apiClient.getClassroomClimate(clsId),
+      const asgnRes = await fetch(`/api/teacher/assignments?classroom_id=${encodeURIComponent(clsId)}`)
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null);
+
+      if (asgnRes && Array.isArray(asgnRes.assignments)) {
+        setAssignments(
+          asgnRes.assignments.map((a: any) => ({
+            id: a.id,
+            title: a.title,
+            department_id: a.skill_domain || "literacy",
+            activity_type: a.world_id || "learning-quest",
+            instructions: `Language: ${a.language || "en"} • Age Band: ${a.age_band || "6-9"}`,
+            due_date: a.due_date || "Upcoming",
+          }))
+        );
+      }
+
+      const [stuData, climData] = await Promise.all([
+        apiClient.listClassroomStudents(clsId).catch(() => []),
+        apiClient.getClassroomClimate(clsId).catch(() => null),
       ]);
-      setStudents(stuData);
-      setAssignments(asgnData);
-      setClimate(climData);
+      if (stuData.length > 0) setStudents(stuData);
+      if (climData) setClimate(climData);
     } catch {
       // Handled via graceful state
     }
@@ -233,32 +248,51 @@ export default function TeacherDashboardPage() {
     e.preventDefault();
     if (!assignTitle.trim() || !selectedClassroomId) return;
     try {
-      const res = await apiClient.createClassroomAssignment({
-        classroom_id: selectedClassroomId,
-        title: assignTitle.trim(),
-        department_id: assignDepartment,
-        activity_type: assignActivity,
-        instructions: assignInstructions.trim(),
-        due_date: assignDueDate.trim(),
+      const res = await fetch("/api/teacher/assignments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          classroom_id: selectedClassroomId,
+          title: assignTitle.trim(),
+          world_id: assignActivity,
+          skill_domain: assignDepartment,
+          due_date: assignDueDate.trim(),
+        }),
       });
-      setAssignments([res, ...assignments]);
-      setShowAssignModal(false);
-      setAssignTitle("");
-      setAssignInstructions("");
+      if (res.ok) {
+        const data = await res.json();
+        const created = data.assignment;
+        setAssignments([
+          {
+            id: created.id,
+            title: created.title,
+            department_id: created.skill_domain,
+            activity_type: created.world_id,
+            instructions: assignInstructions.trim() || "Assigned via Teacher Studio",
+            due_date: created.due_date,
+          },
+          ...assignments,
+        ]);
+        setShowAssignModal(false);
+        setAssignTitle("");
+        setAssignInstructions("");
+        return;
+      }
     } catch {
-      const fallbackAsgn: Assignment = {
-        id: `asgn_${Date.now()}`,
-        title: assignTitle.trim(),
-        department_id: assignDepartment,
-        activity_type: assignActivity,
-        instructions: assignInstructions.trim(),
-        due_date: assignDueDate.trim(),
-      };
-      setAssignments([fallbackAsgn, ...assignments]);
-      setShowAssignModal(false);
-      setAssignTitle("");
-      setAssignInstructions("");
+      // Fallback below
     }
+    const fallbackAsgn: Assignment = {
+      id: `asgn_${Date.now()}`,
+      title: assignTitle.trim(),
+      department_id: assignDepartment,
+      activity_type: assignActivity,
+      instructions: assignInstructions.trim(),
+      due_date: assignDueDate.trim(),
+    };
+    setAssignments([fallbackAsgn, ...assignments]);
+    setShowAssignModal(false);
+    setAssignTitle("");
+    setAssignInstructions("");
   };
 
   const activeClass = classrooms.find((c) => c.id === selectedClassroomId);

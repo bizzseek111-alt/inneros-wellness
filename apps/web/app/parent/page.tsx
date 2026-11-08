@@ -165,7 +165,7 @@ export default function ParentDashboardPage() {
   const [newObsSchool, setNewObsSchool] = useState("");
   const [obsSavedMessage, setObsSavedMessage] = useState<string | null>(null);
 
-  const handleSaveObservation = (e: React.FormEvent) => {
+  const handleSaveObservation = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newObsNote.trim()) return;
     const newEntry = {
@@ -181,6 +181,19 @@ export default function ParentDashboardPage() {
       school_notes: newObsSchool.trim() || "None reported",
     };
     setParentObservations([newEntry, ...parentObservations]);
+    try {
+      await fetch("/api/parent/observations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          child_id: selectedChild?.id || "child_aarav_1",
+          parent_note: newObsNote.trim(),
+          context_tag: newObsMood.toLowerCase(),
+        }),
+      });
+    } catch {
+      // Local state already updated
+    }
     setNewObsNote("");
     setNewObsSchool("");
     setObsSavedMessage("Observation entry saved to secure family record.");
@@ -190,7 +203,7 @@ export default function ParentDashboardPage() {
   const loadAllData = async () => {
     setLoading(true);
     try {
-      const [dash, subs, ords, invs, tkts, refs, depts, mods] = await Promise.all([
+      const [dash, subs, ords, invs, tkts, refs, depts, mods, obsRes] = await Promise.all([
         api.getParentDashboard().catch(() => null),
         api.getUserSubscriptions().catch(() => []),
         api.getUserOrders().catch(() => []),
@@ -199,7 +212,22 @@ export default function ParentDashboardPage() {
         api.getReferrals().catch(() => []),
         api.getAcademyDepartments().catch(() => []),
         api.getAcademyModules({ approval_status: "published" }).catch(() => []),
+        fetch("/api/parent/observations").then((r) => (r.ok ? r.json() : null)).catch(() => null),
       ]);
+
+      if (obsRes && Array.isArray(obsRes.observations) && obsRes.observations.length > 0) {
+        const mapped = obsRes.observations.map((o: any) => ({
+          id: o.id,
+          date: o.created_at ? new Date(o.created_at).toLocaleDateString() : "Recent",
+          child_name: "Ayan / Zara",
+          type: "parent_note",
+          tag: "PARENT-ENTERED NOTE",
+          badgeVariant: "indigo",
+          content: o.parent_note,
+          mood: o.context_tag || "Calm",
+        }));
+        setParentObservations((prev) => [...mapped, ...prev.slice(0, 3)]);
+      }
 
       if (dash) {
         setDashboardSummary(dash);
