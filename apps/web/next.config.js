@@ -65,6 +65,18 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      { source: "/explore", destination: "/platform", permanent: false },
+      { source: "/features", destination: "/platform", permanent: false },
+      { source: "/demo", destination: "/demos", permanent: false },
+      { source: "/investor-demo", destination: "/demos", permanent: false },
+      { source: "/kids", destination: "/youth/dashboard", permanent: false },
+      { source: "/youth", destination: "/youth/dashboard", permanent: false },
+      { source: "/student", destination: "/youth/dashboard", permanent: false },
+      { source: "/teacher", destination: "/teacher/dashboard", permanent: false },
+    ];
+  },
   async rewrites() {
     return [
       {
