@@ -53,7 +53,7 @@ export default function NotificationsSettingsPage() {
             Notifications & Quiet Hours
           </h1>
           <p className="text-[15px] text-[#52625E] leading-relaxed">
-            Set your peaceful hours so InnerOS never interrupts your rest, and choose how often you’d like gentle check-ins.
+            Set your peaceful hours so Weebly never interrupts your rest, and choose how often you’d like gentle check-ins.
           </p>
         </div>
 
@@ -161,7 +161,7 @@ export default function NotificationsSettingsPage() {
           <div className="space-y-4">
             <Switch
               label="In-App Gentle Cards"
-              description="Show a calm reminder banner at the top of the screen while you are using InnerOS."
+              description="Show a calm reminder banner at the top of the screen while you are using Weebly."
               checked={inAppActive}
               onChange={setInAppActive}
             />

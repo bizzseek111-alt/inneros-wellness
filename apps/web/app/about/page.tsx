@@ -25,7 +25,7 @@ const ETHICAL_PRINCIPLES = [
   {
     title: "2. Honest Non-Clinical Boundaries",
     description:
-      "InnerOS is an AI companion for reflection, everyday stress, and personal growth. It never claims to be a licensed therapist or doctor, never diagnoses medical conditions, and always provides clear pathways to human care.",
+      "Weebly is an AI companion for reflection, everyday stress, and personal growth. It never claims to be a licensed therapist or doctor, never diagnoses medical conditions, and always provides clear pathways to human care.",
   },
   {
     title: "3. No Secret Profiling",

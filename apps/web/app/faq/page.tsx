@@ -35,9 +35,9 @@ const FAQ_ITEMS: FaqItem[] = [
     id: "cap-1",
     category: "capabilities",
     categoryLabel: "Product Capabilities",
-    question: "What can I use InnerOS for in my daily life?",
+    question: "What can I use Weebly for in my daily life?",
     answer:
-      "You can use InnerOS to talk through everyday stress via voice or text, check in with your mood and energy, write in a private journal with guided prompts, explore evidence-informed psychology guides, track gentle personal growth goals, and set rest-friendly reminders.",
+      "You can use Weebly to talk through everyday stress via voice or text, check in with your mood and energy, write in a private journal with guided prompts, explore evidence-informed psychology guides, track gentle personal growth goals, and set rest-friendly reminders.",
   },
   {
     id: "cap-2",
@@ -45,29 +45,29 @@ const FAQ_ITEMS: FaqItem[] = [
     categoryLabel: "Product Capabilities",
     question: "Can I tell the companion just to listen without giving me advice?",
     answer:
-      "Yes. In the Text Companion, you can select the 'Just Listen' mode at any time. In this mode, InnerOS reflects and validates what you are sharing without offering unsolicited checklists or problem-solving advice.",
+      "Yes. In the Text Companion, you can select the 'Just Listen' mode at any time. In this mode, Weebly reflects and validates what you are sharing without offering unsolicited checklists or problem-solving advice.",
   },
   {
     id: "lim-1",
     category: "limitations",
     categoryLabel: "AI Limitations",
-    question: "Is InnerOS a replacement for a human therapist or medical professional?",
+    question: "Is Weebly a replacement for a human therapist or medical professional?",
     answer:
-      "No. InnerOS is an AI companion designed for personal reflection, emotional wellbeing, and everyday life habits. It is not a medical device, does not diagnose mental health or medical conditions, and does not replace licensed psychotherapy or psychiatric care.",
+      "No. Weebly is an AI companion designed for personal reflection, emotional wellbeing, and everyday life habits. It is not a medical device, does not diagnose mental health or medical conditions, and does not replace licensed psychotherapy or psychiatric care.",
   },
   {
     id: "lim-2",
     category: "limitations",
     categoryLabel: "AI Limitations",
-    question: "Does InnerOS guess my psychological state or assign hidden scores?",
+    question: "Does Weebly guess my psychological state or assign hidden scores?",
     answer:
-      "No. InnerOS does not secretly profile you or treat AI interpretations as objective facts. Any note suggested from a conversation is clearly marked as a suggestion and requires your explicit approval before it is saved to your memories.",
+      "No. Weebly does not secretly profile you or treat AI interpretations as objective facts. Any note suggested from a conversation is clearly marked as a suggestion and requires your explicit approval before it is saved to your memories.",
   },
   {
     id: "priv-1",
     category: "privacy",
     categoryLabel: "Data & Privacy",
-    question: "How do I control what InnerOS remembers about me?",
+    question: "How do I control what Weebly remembers about me?",
     answer:
       "In the 'Things I Remember' section (/memory), you can view every saved memory, edit its wording, dismiss unconfirmed suggestions, pause memory recording for temporary chats, download your data as JSON, or clear all memories with one click.",
   },
@@ -77,15 +77,15 @@ const FAQ_ITEMS: FaqItem[] = [
     categoryLabel: "Data & Privacy",
     question: "How do connected app imports handle my private information?",
     answer:
-      "InnerOS never asks for third-party passwords or scrapes external accounts. When you upload a selected export file (such as ChatGPT/Claude JSON or Markdown notes), personal identifiers like emails and phone numbers are masked, and you can preview and exclude individual items before anything is saved.",
+      "Weebly never asks for third-party passwords or scrapes external accounts. When you upload a selected export file (such as ChatGPT/Claude JSON or Markdown notes), personal identifiers like emails and phone numbers are masked, and you can preview and exclude individual items before anything is saved.",
   },
   {
     id: "lang-1",
     category: "languages",
     categoryLabel: "Languages",
-    question: "Which languages does InnerOS support?",
+    question: "Which languages does Weebly support?",
     answer:
-      "InnerOS is architected for 30 languages—prioritizing English, Spanish, French, German, Bulgarian, Arabic (with RTL layout), Urdu (with RTL layout), and Hindi. We evaluate each language for dialect nuances, code-switching, and safety accuracy rather than relying solely on raw speech API support.",
+      "Weebly is architected for 30 languages—prioritizing English, Spanish, French, German, Bulgarian, Arabic (with RTL layout), Urdu (with RTL layout), and Hindi. We evaluate each language for dialect nuances, code-switching, and safety accuracy rather than relying solely on raw speech API support.",
   },
   {
     id: "sup-1",
@@ -93,7 +93,7 @@ const FAQ_ITEMS: FaqItem[] = [
     categoryLabel: "Professional Mental-Health Support",
     question: "What happens if I am experiencing a crisis or severe emotional distress?",
     answer:
-      "InnerOS is not an emergency service. If you express severe distress or crisis, InnerOS immediately provides free, confidential 24/7 human crisis resources—including 988 (US/Canada), 116 123 / NHS 111 (UK), and 112 / 0800 88 001 (EU/Bulgaria). You can also access the 'Need Support?' button at the top of every screen.",
+      "Weebly is not an emergency service. If you express severe distress or crisis, Weebly immediately provides free, confidential 24/7 human crisis resources—including 988 (US/Canada), 116 123 / NHS 111 (UK), and 112 / 0800 88 001 (EU/Bulgaria). You can also access the 'Need Support?' button at the top of every screen.",
   },
 ];
 
@@ -155,7 +155,7 @@ export default function FaqMarketingPage() {
             Clear answers about capabilities, privacy, and boundaries.
           </h1>
           <p className="text-[18px] text-[#52625E] leading-relaxed max-w-3xl">
-            Everything you need to know about how InnerOS works, what it remembers, and when to reach out to a licensed human professional.
+            Everything you need to know about how Weebly works, what it remembers, and when to reach out to a licensed human professional.
           </p>
         </div>
 

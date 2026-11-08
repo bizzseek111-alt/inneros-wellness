@@ -160,7 +160,7 @@ export default function PrivacyAndTrustPage() {
               3. AI Transparency &amp; Safety Boundaries
             </Badge>
             <h2 className="text-3xl font-serif font-medium text-[#263330]">
-              What InnerOS is—and what it will never claim to be
+              What Weebly is—and what it will never claim to be
             </h2>
             <p className="text-[16px] text-[#52625E] leading-relaxed">
               We believe trustworthy AI starts with honesty about its capabilities and limitations.
@@ -173,7 +173,7 @@ export default function PrivacyAndTrustPage() {
                 Clear AI Identity
               </h3>
               <p className="text-[14.5px] text-[#52625E] leading-relaxed">
-                InnerOS always identifies itself clearly as an AI wellbeing companion—never impersonating a human counselor or licensed clinician.
+                Weebly always identifies itself clearly as an AI wellbeing companion—never impersonating a human counselor or licensed clinician.
               </p>
             </div>
 
@@ -182,7 +182,7 @@ export default function PrivacyAndTrustPage() {
                 Non-Clinical Scope
               </h3>
               <p className="text-[14.5px] text-[#52625E] leading-relaxed">
-                InnerOS does not diagnose mental health conditions, prescribe treatments, or interpret clinical assessments.
+                Weebly does not diagnose mental health conditions, prescribe treatments, or interpret clinical assessments.
               </p>
             </div>
 
@@ -209,7 +209,7 @@ export default function PrivacyAndTrustPage() {
                 Immediate access to trained human support 24/7
               </h2>
               <p className="text-[16px] text-[#52625E] leading-relaxed">
-                If you or someone you know is going through a crisis or severe distress, real human support is always available and easy to reach from every screen in InnerOS.
+                If you or someone you know is going through a crisis or severe distress, real human support is always available and easy to reach from every screen in Weebly.
               </p>
             </div>
             <Link href="/safety">

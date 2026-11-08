@@ -4,7 +4,7 @@ import { PwaClientRegistrar } from "@/components/pwa/PwaClientRegistrar";
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#0D9488" },
+    { media: "(prefers-color-scheme: light)", color: "#FAF7F2" },
     { media: "(prefers-color-scheme: dark)", color: "#0F172A" },
   ],
   width: "device-width",
@@ -17,19 +17,18 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "Weebly — A Little More Clarity. A Little More Calm.",
+    default: "Weebly — Voice-First Learning, Creativity & Child Development",
     template: "%s | Weebly",
   },
   description:
-    "Talk, reflect, and find your next step with a multilingual AI companion designed for everyday emotional wellbeing, personal growth, and mindful routines.",
+    "A calm, joyful multilingual learning world where children talk with caring AI companions, explore six interactive learning worlds, and grow with parent and school support in English, Urdu, and Punjabi.",
   keywords: [
-    "AI wellbeing companion",
-    "personal reflection",
-    "voice companion",
-    "mindful journaling",
-    "personal memory",
-    "emotional clarity",
-    "Weebly",
+    "Weebly learning world",
+    "voice-first child education",
+    "multilingual kids learning",
+    "Urdu Punjabi English education",
+    "parent teacher child development",
+    "safe AI learning companions",
   ],
   manifest: "/manifest.webmanifest",
   appleWebApp: {
@@ -48,9 +47,9 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: "Weebly — A Little More Clarity. A Little More Calm.",
+    title: "Weebly — Voice-First Learning, Creativity & Child Development",
     description:
-      "Talk, reflect, and find your next step with an AI companion designed for everyday wellbeing and personal growth.",
+      "A calm, joyful multilingual learning world where children talk, learn, create, and grow—supported by parents and teachers.",
     type: "website",
     locale: "en_US",
     siteName: "Weebly",
@@ -66,10 +65,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  /* Design system tokens: Modern AI Mental Wellness Palette (#F8FAFC, #2B4CDE, #0F172A) honoring legacy base (#FAF8F4, #285B55, #263330) */
   return (
     <html lang="en" className="light">
-      <body className="antialiased bg-[#F8FAFC] text-[#0F172A] selection:bg-[#EEF4FF] selection:text-[#2B4CDE]">
+      <body className="antialiased bg-[#FAF7F2] text-[#0F172A] selection:bg-[#EDE9FE] selection:text-[#0F172A]">
         <div className="fixed inset-0 pointer-events-none sanctuary-glow z-0" />
         <div className="relative z-10 min-h-screen flex flex-col">
           <PwaClientRegistrar>{children}</PwaClientRegistrar>

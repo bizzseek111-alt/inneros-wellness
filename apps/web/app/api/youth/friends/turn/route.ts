@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { generateFriendReply } from "@/lib/server/llm";
 
 export interface ToolAction {
   tool:
@@ -17,7 +18,13 @@ export interface ToolAction {
     | "start_sports_drill"
     | "open_interactive_cartoon"
     | "start_tech_discovery"
-    | "start_life_skills_mission";
+    | "start_life_skills_mission"
+    | "open_learning_journey"
+    | "open_creator_academy"
+    | "debug_visual_game"
+    | "suggest_story_branch"
+    | "open_foundational_skills_lab"
+    | "open_skills_passport";
   route?: string;
   label: string;
   icon?: string;
@@ -31,12 +38,15 @@ export interface ChoiceOption {
 }
 
 interface TurnRequest {
-  character_id: "kai" | "mia" | "lumi" | "zayn";
-  message: string;
+  character_id?: "kai" | "mia" | "lumi" | "zayn";
+  message?: string;
+  utterance?: string;
+  user_utterance?: string;
   language?: "en" | "ur" | "pa" | "ur-Latn" | "pa-Latn";
   age_tier?: "little" | "junior" | "teen";
   session_id?: string;
   turn_count?: number;
+  history?: Array<{ role: "child" | "friend" | "user" | "assistant"; text: string }>;
 }
 
 const REGIONAL_YOUTH_LIFELINES = [
@@ -73,7 +83,7 @@ export async function POST(req: NextRequest) {
   try {
     const body: TurnRequest = await req.json();
     const characterId = body.character_id || "kai";
-    const userUtterance = (body.message || "").trim();
+    const userUtterance = (body.message || body.utterance || body.user_utterance || "").trim();
     const currentTurn = (body.turn_count || 0) + 1;
     const ageTier = body.age_tier || "junior";
     const language = body.language || detectLanguage(userUtterance);
@@ -103,6 +113,7 @@ export async function POST(req: NextRequest) {
         is_safety_escalation: true,
         safety_resources: REGIONAL_YOUTH_LIFELINES,
         turn_count: currentTurn,
+        ai_provider: "safety-guardrail",
       });
     }
 
@@ -127,6 +138,7 @@ export async function POST(req: NextRequest) {
         detected_language: language,
         is_safety_escalation: false,
         turn_count: currentTurn,
+        ai_provider: "safety-guardrail",
       });
     }
 
@@ -149,6 +161,7 @@ export async function POST(req: NextRequest) {
         is_safety_escalation: false,
         session_limit_reached: true,
         turn_count: currentTurn,
+        ai_provider: "session-guardrail",
       });
     } else if (currentTurn >= warningTurn) {
       windDownNotice =
@@ -162,15 +175,37 @@ export async function POST(req: NextRequest) {
     // 4. Tool & Intent Routing Engine
     const toolMatch = evaluateToolRouting(userUtterance, language, characterId);
 
-    // 5. Generate Response (either tool-guided confirmation or conversational dialogue)
+    // 5. Generate Response (either tool-guided confirmation, live LLM, or safe deterministic fallback)
     let reply = "";
-    let action: ToolAction | undefined = toolMatch.action;
-    let choices: ChoiceOption[] | undefined = toolMatch.choices;
+    let aiProvider = "template-fallback";
+    const action: ToolAction | undefined = toolMatch.action;
+    const choices: ChoiceOption[] | undefined = toolMatch.choices;
 
     if (toolMatch.confirmationReply) {
       reply = toolMatch.confirmationReply;
+      aiProvider = "tool-router";
     } else {
-      reply = generateCharacterReply(characterId, userUtterance, language, ageTier);
+      const normalizedLang = language.startsWith("ur") ? "ur" : language.startsWith("pa") ? "pa" : "en";
+      const normalizedHistory = Array.isArray(body.history)
+        ? body.history.map((h) => ({
+            role: (h.role === "user" || h.role === "child" ? "child" : "friend") as "child" | "friend",
+            text: h.text,
+          }))
+        : undefined;
+      const llmReply = await generateFriendReply({
+        character: characterId,
+        message: userUtterance,
+        language: normalizedLang,
+        ageTier,
+        history: normalizedHistory,
+      });
+      if (llmReply && llmReply.text) {
+        reply = llmReply.text;
+        aiProvider = llmReply.provider;
+      } else {
+        reply = generateCharacterReply(characterId, userUtterance, language, ageTier);
+        aiProvider = "template-fallback";
+      }
     }
 
     return NextResponse.json({
@@ -184,6 +219,7 @@ export async function POST(req: NextRequest) {
       safety_resources: [],
       wind_down_notice: windDownNotice,
       turn_count: currentTurn,
+      ai_provider: aiProvider,
     });
   } catch (error: any) {
     return NextResponse.json(
@@ -276,6 +312,100 @@ function evaluateToolRouting(
         params: { language: "en" },
       },
       confirmationReply: "Awesome! Let's talk in English. What would you like to explore today?",
+    };
+  }
+
+  // V10 UNIFIED ECOSYSTEM TOOL ROUTING (Journeys, Creator Academy, Skills Lab, Passport)
+  if (
+    lower.includes("learning journey") ||
+    lower.includes("watch learn play") ||
+    lower.includes("fair share mangoes") ||
+    lower.includes("5-stage") ||
+    (lower.includes("journey") && !lower.includes("space"))
+  ) {
+    return {
+      action: {
+        tool: "open_learning_journey",
+        route: "/youth/journeys",
+        label: "Open 5-Stage Learning Journeys",
+        icon: "🧭",
+      },
+      confirmationReply:
+        "Let's start a 5-Stage Learning Journey together — Watch, Learn, Play, Implement, and Reflect!",
+    };
+  }
+
+  if (
+    lower.includes("debug game") ||
+    lower.includes("fix my game") ||
+    lower.includes("block game") ||
+    lower.includes("game maker") ||
+    lower.includes("build a game")
+  ) {
+    return {
+      action: {
+        tool: "debug_visual_game",
+        route: "/youth/creator?tool=game_maker",
+        label: "Open Visual Block Game Maker",
+        icon: "🕹️",
+      },
+      confirmationReply:
+        "Let's inspect your visual blocks step-by-step in the AI Game Maker! Check if your 'Move Right' and 'If Touching Star' blocks are in the right order.",
+    };
+  }
+
+  if (
+    lower.includes("creator academy") ||
+    lower.includes("story maker") ||
+    lower.includes("ai detective") ||
+    lower.includes("young ai inventor")
+  ) {
+    return {
+      action: {
+        tool: "open_creator_academy",
+        route: "/youth/creator",
+        label: "Open AI Creator Academy",
+        icon: "🚀",
+      },
+      confirmationReply:
+        "Welcome to the AI Creator Academy! Let's build a story, block game, or cartoon where you are the author and AI is your helper.",
+    };
+  }
+
+  if (
+    lower.includes("skills lab") ||
+    lower.includes("freeze and go") ||
+    lower.includes("memory garden") ||
+    lower.includes("switch the rule") ||
+    lower.includes("foundational skill")
+  ) {
+    return {
+      action: {
+        tool: "open_foundational_skills_lab",
+        route: "/youth/skills-lab",
+        label: "Open Foundational Skills Lab",
+        icon: "🧠",
+      },
+      confirmationReply:
+        "Let's practice focus, memory, and flexible rules in the Foundational Skills Lab!",
+    };
+  }
+
+  if (
+    lower.includes("my passport") ||
+    lower.includes("skills passport") ||
+    lower.includes("creations passport") ||
+    lower.includes("my portfolio")
+  ) {
+    return {
+      action: {
+        tool: "open_skills_passport",
+        route: "/youth/passport",
+        label: "Open Skills & Creations Passport",
+        icon: "🏅",
+      },
+      confirmationReply:
+        "Let's open your private Skills & Creations Passport to celebrate your stories, games, and badges!",
     };
   }
 

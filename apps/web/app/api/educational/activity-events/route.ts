@@ -1,7 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isSupabaseConfigured, sbInsert, sbSelect } from "@/lib/server/supabase";
+
+export type V10EventType =
+  | "journey_started"
+  | "journey_completed"
+  | "activity_completed"
+  | "project_created"
+  | "project_updated"
+  | "learning_objective_practiced";
 
 export interface EducationalActivityEvent {
   id: string;
+  event_type?: V10EventType;
   student_pseudonymous_id: string;
   student_name?: string;
   activity_id: string;
@@ -16,10 +26,11 @@ export interface EducationalActivityEvent {
   created_at: string;
 }
 
-// In-memory persistent event store for serverless execution
+// Fallback seed store used when Supabase env vars are not yet set
 const inMemoryEvents: EducationalActivityEvent[] = [
   {
     id: "evt_demo_01",
+    event_type: "activity_completed",
     student_pseudonymous_id: "std_ayan_7y",
     student_name: "Ayan (Fictional Demo)",
     activity_id: "q_emot_0001",
@@ -35,6 +46,7 @@ const inMemoryEvents: EducationalActivityEvent[] = [
   },
   {
     id: "evt_demo_02",
+    event_type: "learning_objective_practiced",
     student_pseudonymous_id: "std_zainab_10y",
     student_name: "Zainab (Fictional Demo)",
     activity_id: "q_scie_0001",
@@ -50,6 +62,7 @@ const inMemoryEvents: EducationalActivityEvent[] = [
   },
   {
     id: "evt_demo_03",
+    event_type: "journey_completed",
     student_pseudonymous_id: "std_ayan_7y",
     student_name: "Ayan (Fictional Demo)",
     activity_id: "q_math_0001",
@@ -71,11 +84,12 @@ export async function POST(req: NextRequest) {
     const eventId = `evt_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
     const newEvent: EducationalActivityEvent = {
       id: eventId,
-      student_pseudonymous_id: body.student_pseudonymous_id || "std_anonymous_demo",
+      event_type: body.event_type || "activity_completed",
+      student_pseudonymous_id: body.student_pseudonymous_id || body.child_id || "std_anonymous_demo",
       student_name: body.student_name || "Ayan (Fictional Demo)",
       activity_id: body.activity_id || "q_interactive_activity",
       activity_title: body.activity_title || "Interactive SEL Activity",
-      category: body.category || "emotional_vocabulary",
+      category: body.category || body.skill_domain || "emotional_vocabulary",
       learning_objective: body.learning_objective || "Practice cooperative problem solving",
       completion_status: body.completion_status || "completed",
       hints_used_count: Number(body.hints_used_count || 0),
@@ -86,11 +100,17 @@ export async function POST(req: NextRequest) {
     };
 
     inMemoryEvents.unshift(newEvent);
+    const saved = await sbInsert<EducationalActivityEvent>(
+      "educational_activity_events",
+      newEvent as unknown as Record<string, unknown>
+    );
 
     return NextResponse.json({
       success: true,
+      persisted: Boolean(saved),
+      storage: saved ? "supabase-postgres" : "in-memory-fallback",
       event_id: eventId,
-      event: newEvent,
+      event: saved || newEvent,
     });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 400 });
@@ -102,8 +122,15 @@ export async function GET(req: NextRequest) {
   const studentId = searchParams.get("student_id");
   const view = searchParams.get("view"); // 'parent', 'teacher', 'admin', 'raw'
 
-  let events = inMemoryEvents;
-  if (studentId) {
+  const filter = studentId
+    ? `select=*&student_pseudonymous_id=eq.${encodeURIComponent(studentId)}&order=created_at.desc&limit=50`
+    : "select=*&order=created_at.desc&limit=50";
+  const dbRows = isSupabaseConfigured()
+    ? await sbSelect<EducationalActivityEvent>("educational_activity_events", filter)
+    : null;
+
+  let events = dbRows && dbRows.length > 0 ? dbRows : inMemoryEvents;
+  if (!dbRows && studentId) {
     events = events.filter((e) => e.student_pseudonymous_id === studentId);
   }
 

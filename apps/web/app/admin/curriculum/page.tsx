@@ -246,6 +246,40 @@ export default function AdminCurriculumCMSPage() {
           </div>
         )}
 
+        {/* V10 Content Operations & 5-Stage Lifecycle Governance Summary */}
+        <div className="p-5 rounded-2xl border border-border bg-card shadow-2xs space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">
+                Weebly V10 Content Operations · 5-Stage Lifecycle (Draft → Under Review → Approved → Published → Archived)
+              </span>
+              <h2 className="text-base font-extrabold mt-0.5">
+                Unified Ecosystem Content &amp; Licensing Registry
+              </h2>
+            </div>
+            <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
+              Rule: Only Published Content is Visible to Children
+            </span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 text-xs">
+            {[
+              { label: "Journey templates", count: "6 Published" },
+              { label: "Watch content", count: "6 Original" },
+              { label: "AI Creator templates", count: "6 Studios" },
+              { label: "Foundational skills activities", count: "10 Games" },
+              { label: "AI literacy curriculum", count: "Ages 2–18" },
+              { label: "Age pathways", count: "7 Age Bands" },
+              { label: "Question bank", count: "3,000 Items" },
+              { label: "RAG sources", count: "PCTB & OER" },
+            ].map((cat) => (
+              <div key={cat.label} className="p-2.5 rounded-xl bg-muted/50 border border-border">
+                <div className="font-bold text-foreground truncate">{cat.label}</div>
+                <div className="text-[11px] text-muted-foreground mt-0.5">{cat.count}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Demo / Sandbox Visitor Notice */}
         {isDemoReviewer && (
           <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-xs text-blue-900 dark:text-blue-200 flex items-start justify-between gap-3">

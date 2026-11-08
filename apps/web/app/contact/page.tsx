@@ -34,11 +34,15 @@ export default function ContactAndSupportPage() {
     }
     setErrorMsg(null);
     try {
-      await api.submitContactForm({
-        name: name.trim(),
-        email: email.trim(),
-        inquiry_type: topic,
-        message: message.trim(),
+      await fetch("/api/pilot/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contact_name: name.trim(),
+          contact_email: email.trim(),
+          role: topic,
+          message: message.trim(),
+        }),
       });
     } catch {
       // Allow offline confirmation UI even if backend is unreachable
@@ -54,13 +58,13 @@ export default function ContactAndSupportPage() {
         <div className="max-w-3xl space-y-4">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#E8F1EB] border border-[#CFE2D6] text-[#1F4742] text-[13.5px] font-medium">
             <Mail className="w-4 h-4 text-[#285B55]" />
-            <span>Contact &amp; Support</span>
+            <span>Contact, School Pilots &amp; Family Support</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-serif font-medium text-[#263330] tracking-tight">
-            We’re here to help with product questions, privacy requests, and feedback.
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-[#0F172A] tracking-tight">
+            We’re here to help families, teachers, and school pilot partners.
           </h1>
-          <p className="text-[18px] text-[#52625E] leading-relaxed">
-            Send a note to the InnerOS team below—or connect immediately with free, confidential 24/7 crisis support if you need urgent human care.
+          <p className="text-[18px] text-[#334155] leading-relaxed">
+            Send a note to the Weebly team below—or connect immediately with free, confidential 24/7 child protection and mental health support if you need urgent human care.
           </p>
         </div>
 
@@ -69,8 +73,8 @@ export default function ContactAndSupportPage() {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center space-x-2.5 text-[#263330]">
               <HeartHandshake className="w-5 h-5 text-[#A4384B]" />
-              <h2 className="text-xl font-serif font-medium">
-                Need Urgent Emotional or Crisis Support Right Now?
+              <h2 className="text-xl font-bold">
+                Need Urgent Child Protection or Crisis Support Right Now?
               </h2>
             </div>
             <Badge variant="peach" size="sm">
@@ -78,19 +82,35 @@ export default function ContactAndSupportPage() {
             </Badge>
           </div>
           <p className="text-[15px] text-[#52625E] leading-relaxed">
-            Our contact form is for product and account questions and is not monitored 24/7 for emergencies. If you or someone you know is in distress, please connect with a trained human counselor immediately:
+            Our contact form is for product, school pilot, and account questions and is not monitored 24/7 for emergencies. If a child or family member is in immediate danger or distress, please contact a verified human helpline right away:
           </p>
           <div className="grid sm:grid-cols-3 gap-4 pt-1">
             <div className="p-4 rounded-2xl bg-white border border-[#E6E0D6] space-y-2">
               <span className="font-semibold text-[15px] text-[#263330] block">
-                US &amp; Canada: 988
+                Pakistan Child Protection: 1121
               </span>
               <p className="text-[13.5px] text-[#52625E]">
-                Call or text <strong>988</strong> (Suicide &amp; Crisis Lifeline)
+                Call <strong>1121</strong> (Child Protection &amp; Welfare Bureau) or Umang at <strong>0311-7786264</strong>
+              </p>
+              <a
+                href="tel:1121"
+                className="inline-flex items-center space-x-1.5 text-[13.5px] font-semibold text-[#A4384B] hover:underline"
+              >
+                <Phone className="w-3.5 h-3.5" />
+                <span>Call 1121</span>
+              </a>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white border border-[#E6E0D6] space-y-2">
+              <span className="font-semibold text-[15px] text-[#263330] block">
+                US, Canada &amp; UK: 988 / 116 123
+              </span>
+              <p className="text-[13.5px] text-[#52625E]">
+                Call or text <strong>988</strong> (US/CA) or Samaritans at <strong>116 123</strong> (UK)
               </p>
               <a
                 href="tel:988"
-                className="inline-flex items-center space-x-1.5 text-[13.5px] font-semibold text-[#A4384B] hover:underline"
+                className="inline-flex items-center space-x-1.5 text-[13.5px] font-semibold text-[#285B55] hover:underline"
               >
                 <Phone className="w-3.5 h-3.5" />
                 <span>Call 988</span>
@@ -99,33 +119,17 @@ export default function ContactAndSupportPage() {
 
             <div className="p-4 rounded-2xl bg-white border border-[#E6E0D6] space-y-2">
               <span className="font-semibold text-[15px] text-[#263330] block">
-                United Kingdom: 116 123 / 111
+                International &amp; EU: 112
               </span>
               <p className="text-[13.5px] text-[#52625E]">
-                Call Samaritans at <strong>116 123</strong> or NHS at <strong>111</strong>
-              </p>
-              <a
-                href="tel:116123"
-                className="inline-flex items-center space-x-1.5 text-[13.5px] font-semibold text-[#285B55] hover:underline"
-              >
-                <Phone className="w-3.5 h-3.5" />
-                <span>Call 116 123</span>
-              </a>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-white border border-[#E6E0D6] space-y-2">
-              <span className="font-semibold text-[15px] text-[#263330] block">
-                EU &amp; Bulgaria: 112 / 0800 88 001
-              </span>
-              <p className="text-[13.5px] text-[#52625E]">
-                Call <strong>112</strong> (EU) or <strong>0800 88 001</strong> (Bulgaria)
+                Call <strong>112</strong> or browse verified youth and family helplines
               </p>
               <Link
-                href="/safety"
+                href="/child-safety"
                 className="inline-flex items-center space-x-1.5 text-[13.5px] font-semibold text-[#285B55] hover:underline"
               >
                 <LifeBuoy className="w-3.5 h-3.5" />
-                <span>All Global Helplines</span>
+                <span>Child Safeguarding Directory</span>
               </Link>
             </div>
           </div>
@@ -140,11 +144,11 @@ export default function ContactAndSupportPage() {
                 <div className="w-14 h-14 rounded-2xl bg-[#E8F1EB] border border-[#CFE2D6] flex items-center justify-center text-[#285B55] mx-auto">
                   <CheckCircle2 className="w-7 h-7" />
                 </div>
-                <h2 className="text-2xl font-serif font-medium text-[#263330]">
+                <h2 className="text-2xl font-bold text-[#263330]">
                   Thank you for reaching out, {name}.
                 </h2>
                 <p className="text-[15.5px] text-[#52625E] max-w-md mx-auto leading-relaxed">
-                  Your message regarding <strong>{topic.replace(/_/g, " ")}</strong> has been recorded. For immediate self-service privacy or memory controls, you can also visit your Privacy Settings directly.
+                  Your message regarding <strong>{topic.replace(/_/g, " ")}</strong> has been recorded by the Weebly team.
                 </p>
                 <div className="pt-3 flex justify-center gap-3">
                   <Button
@@ -157,9 +161,9 @@ export default function ContactAndSupportPage() {
                   >
                     Send Another Message
                   </Button>
-                  <Link href="/dashboard">
+                  <Link href="/demos">
                     <Button variant="primary" size="sm">
-                      Go to Companion App
+                      Explore Interactive Demos
                     </Button>
                   </Link>
                 </div>

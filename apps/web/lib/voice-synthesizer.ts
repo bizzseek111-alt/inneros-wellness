@@ -12,8 +12,10 @@ export interface SpeakOptions {
 
 class VoiceSynthesizer {
   private activeUtterance: SpeechSynthesisUtterance | null = null;
+  private activeAudio: HTMLAudioElement | null = null;
   private audioContext: AudioContext | null = null;
   private isAudioUnlocked = false;
+  private neuralTtsAvailable: boolean | null = null;
 
   private unlockAudioContext() {
     if (typeof window === "undefined") return;
@@ -79,10 +81,80 @@ class VoiceSynthesizer {
   }
 
   public stop() {
+    if (this.activeAudio) {
+      try {
+        this.activeAudio.pause();
+        this.activeAudio.src = "";
+      } catch {
+        // ignore
+      }
+      this.activeAudio = null;
+    }
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
     this.activeUtterance = null;
+  }
+
+  private async tryNeuralTts(options: SpeakOptions, volume: number): Promise<boolean> {
+    if (typeof window === "undefined" || this.neuralTtsAvailable === false) {
+      return false;
+    }
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 3500);
+      const res = await fetch("/api/voice/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: options.text,
+          character: options.characterId,
+          language: options.locale || "en",
+        }),
+        signal: controller.signal,
+      });
+      clearTimeout(timeout);
+
+      if (res.status === 204) {
+        this.neuralTtsAvailable = false;
+        return false;
+      }
+      if (!res.ok) {
+        return false;
+      }
+
+      const blob = await res.blob();
+      if (!blob || blob.size === 0) return false;
+
+      this.neuralTtsAvailable = true;
+      const url = URL.createObjectURL(blob);
+      return await new Promise<boolean>((resolve) => {
+        const audio = new Audio(url);
+        audio.volume = volume;
+        this.activeAudio = audio;
+        audio.onplay = () => {
+          options.onStart?.();
+        };
+        audio.onended = () => {
+          URL.revokeObjectURL(url);
+          this.activeAudio = null;
+          options.onEnd?.();
+          resolve(true);
+        };
+        audio.onerror = () => {
+          URL.revokeObjectURL(url);
+          this.activeAudio = null;
+          resolve(false);
+        };
+        audio.play().catch(() => {
+          URL.revokeObjectURL(url);
+          this.activeAudio = null;
+          resolve(false);
+        });
+      });
+    } catch {
+      return false;
+    }
   }
 
   public speak(
@@ -125,62 +197,70 @@ class VoiceSynthesizer {
       const locale = options.locale || "en";
       const volume = options.volume !== undefined ? options.volume : 0.9;
 
-      if (!("speechSynthesis" in window)) {
-        // Fallback: Web Audio melodic utterance indicator
-        this.playMelodicChime(charDef.voiceProfile.pitch, options.onStart, () => {
+      // First try free-tier Azure Neural TTS if configured on server
+      this.tryNeuralTts(options, volume).then((playedNeural) => {
+        if (playedNeural) {
+          resolve();
+          return;
+        }
+
+        if (!("speechSynthesis" in window)) {
+          // Fallback: Web Audio melodic utterance indicator
+          this.playMelodicChime(charDef.voiceProfile.pitch, options.onStart, () => {
+            options.onEnd?.();
+            resolve();
+          });
+          return;
+        }
+
+        const utterance = new SpeechSynthesisUtterance(options.text);
+        utterance.pitch = legacyOptions?.pitch !== undefined ? legacyOptions.pitch : charDef.voiceProfile.pitch;
+        utterance.rate = legacyOptions?.rate !== undefined ? legacyOptions.rate : charDef.voiceProfile.rate;
+        utterance.volume = volume;
+
+        // Assign matched language code
+        if (locale === "ur" || locale === "ur-Latn") {
+          utterance.lang = "ur-PK";
+        } else if (locale === "pa" || locale === "pa-Latn") {
+          utterance.lang = "pa-PK";
+        } else {
+          utterance.lang = "en-US";
+        }
+
+        const voice = this.findBestVoice(utterance.lang);
+        if (voice) {
+          utterance.voice = voice;
+        }
+
+        utterance.onstart = () => {
+          options.onStart?.();
+        };
+
+        utterance.onend = () => {
+          this.activeUtterance = null;
           options.onEnd?.();
           resolve();
-        });
-        return;
-      }
+        };
 
-      const utterance = new SpeechSynthesisUtterance(options.text);
-      utterance.pitch = legacyOptions?.pitch !== undefined ? legacyOptions.pitch : charDef.voiceProfile.pitch;
-      utterance.rate = legacyOptions?.rate !== undefined ? legacyOptions.rate : charDef.voiceProfile.rate;
-      utterance.volume = volume;
-
-      // Assign matched language code
-      if (locale === "ur" || locale === "ur-Latn") {
-        utterance.lang = "ur-PK";
-      } else if (locale === "pa" || locale === "pa-Latn") {
-        utterance.lang = "pa-PK";
-      } else {
-        utterance.lang = "en-US";
-      }
-
-      const voice = this.findBestVoice(utterance.lang);
-      if (voice) {
-        utterance.voice = voice;
-      }
-
-      utterance.onstart = () => {
-        options.onStart?.();
-      };
-
-      utterance.onend = () => {
-        this.activeUtterance = null;
-        options.onEnd?.();
-        resolve();
-      };
-
-      utterance.onerror = (e) => {
-        this.activeUtterance = null;
-        options.onError?.(e);
-        options.onEnd?.();
-        resolve();
-      };
-
-      this.activeUtterance = utterance;
-
-      // Chrome bug workaround: voices occasionally don't trigger if speak is called synchronously before getVoices
-      try {
-        window.speechSynthesis.speak(utterance);
-      } catch {
-        this.playMelodicChime(charDef.voiceProfile.pitch, options.onStart, () => {
+        utterance.onerror = (e) => {
+          this.activeUtterance = null;
+          options.onError?.(e);
           options.onEnd?.();
           resolve();
-        });
-      }
+        };
+
+        this.activeUtterance = utterance;
+
+        // Chrome bug workaround: voices occasionally don't trigger if speak is called synchronously before getVoices
+        try {
+          window.speechSynthesis.speak(utterance);
+        } catch {
+          this.playMelodicChime(charDef.voiceProfile.pitch, options.onStart, () => {
+            options.onEnd?.();
+            resolve();
+          });
+        }
+      });
     });
   }
 

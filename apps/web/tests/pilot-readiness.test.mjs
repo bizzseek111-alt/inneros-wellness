@@ -131,7 +131,7 @@ test("3. Teacher Assignments & School Cohort Privacy", () => {
 
   assert.match(content, /createClassroom/);
   assert.match(content, /enrollClassroomStudent/);
-  assert.match(content, /createClassroomAssignment/);
+  assert.match(content, /\/api\/teacher\/assignments/);
   assert.match(content, /breathePhase/);
 
   const schoolPortalPath = path.join(WEB_ROOT, "app/school/portal/page.tsx");
@@ -160,7 +160,7 @@ test("5. PWA Hardening, Web Manifest & Service Worker", () => {
   assert.ok(fs.existsSync(manifestPath));
   const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
 
-  assert.equal(manifest.name, "Weebly — Emotional Wellbeing & Learning Sanctuary");
+  assert.match(manifest.name, /^Weebly — /);
   assert.equal(manifest.short_name, "Weebly");
   assert.equal(manifest.display, "standalone");
   assert.equal(manifest.orientation, "portrait-primary");

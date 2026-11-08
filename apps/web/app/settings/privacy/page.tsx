@@ -140,7 +140,7 @@ export default function PrivacySettingsPage() {
             Your Data Belongs to You
           </h1>
           <p className="text-[15px] text-[#52625E] leading-relaxed">
-            Choose what InnerOS remembers, download a copy of your data anytime, or clear your history with a single click.
+            Choose what Weebly remembers, download a copy of your data anytime, or clear your history with a single click.
           </p>
         </div>
 
@@ -176,7 +176,7 @@ export default function PrivacySettingsPage() {
             <div className="border-t border-[#F3EFE8] pt-4">
               <Switch
                 label="Suggest Memories & Personal Connections"
-                description="Allows InnerOS to suggest helpful notes (like routines, goals, or preferences) that you can review and approve before they are saved."
+                description="Allows Weebly to suggest helpful notes (like routines, goals, or preferences) that you can review and approve before they are saved."
                 checked={consent.deriveLongTermMemory}
                 onChange={() => toggleConsent("deriveLongTermMemory")}
               />

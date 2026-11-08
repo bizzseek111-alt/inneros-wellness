@@ -332,7 +332,7 @@ export default function DashboardPage() {
             <div className="relative rounded-[28px] overflow-hidden h-[290px] sm:h-[320px] bg-[#E5EAE7] flex items-center justify-center group">
               <img
                 src="/images/dashboard-portrait.jpg"
-                alt="InnerOS Calm Companion Presence"
+                alt="Weebly Calm Companion Presence"
                 className="w-full h-full object-cover object-center group-hover:scale-[1.02] transition-transform duration-700"
               />
               {/* Floating Glass Overlay Bar */}

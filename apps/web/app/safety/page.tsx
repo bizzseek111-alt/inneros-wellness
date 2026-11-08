@@ -60,7 +60,7 @@ export default function SafetySupportPage() {
             You Don’t Have to Carry Heavy Moments Alone
           </h1>
           <p className="text-[15px] text-[#52625E] leading-relaxed">
-            InnerOS is an AI companion for everyday reflection—not a medical or crisis service. Whenever you need a real human voice, free and confidential support is available 24/7.
+            Weebly is an AI companion for everyday reflection—not a medical or crisis service. Whenever you need a real human voice, free and confidential support is available 24/7.
           </p>
         </div>
 
@@ -312,7 +312,7 @@ export default function SafetySupportPage() {
 
         {/* Honest Non-Clinical Notice */}
         <div className="p-4 rounded-2xl bg-[#F3EFE8] border border-[#E6E0D6] text-[13.5px] text-[#52625E] leading-relaxed text-center">
-          InnerOS is a personal wellbeing and reflection companion. It does not provide medical advice, clinical diagnosis, psychotherapy, or emergency crisis intervention.
+          Weebly is a personal wellbeing and reflection companion. It does not provide medical advice, clinical diagnosis, psychotherapy, or emergency crisis intervention.
         </div>
       </div>
     </SanctuaryShell>

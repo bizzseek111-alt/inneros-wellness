@@ -62,7 +62,7 @@ export default function DesignSystemPage() {
         <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E6E0D6] shadow-sm space-y-3">
           <div className="flex items-center space-x-2 text-[#285B55] text-[14px] font-medium">
             <Layers className="w-4 h-4" />
-            <span>InnerOS Design System &bull; Warm Human Minimalism</span>
+            <span>Weebly Design System &bull; Warm Human Minimalism</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-serif font-medium text-[#263330]">
             Warm Human Minimalism with Gentle Futurism

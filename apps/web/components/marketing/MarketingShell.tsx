@@ -45,10 +45,21 @@ const MarketingLocaleContext = createContext<MarketingLocaleContextValue>({
 export const useMarketingLocale = () => useContext(MarketingLocaleContext);
 
 const MARKETING_NAV_LINKS = [
-  { href: "/demos", label: "Explore" },
-  { href: "/how-it-works", label: "How It Works" },
+  { href: "/platform", label: "Explore" },
+  { href: "/learning-method", label: "Learning" },
+  { href: "/ai-creator", label: "Create with AI" },
   { href: "/parents", label: "Parents" },
   { href: "/schools", label: "Schools" },
+];
+
+const V10_DEDICATED_PRODUCT_LINKS = [
+  { href: "/how-it-works", label: "How It Works" },
+  { href: "/ai-literacy", label: "AI Literacy" },
+  { href: "/brain-skills", label: "Foundational Skills" },
+  { href: "/inclusive-learning", label: "Inclusive Learning" },
+  { href: "/child-development", label: "Child Wellbeing" },
+  { href: "/access", label: "Safety & Access" },
+  { href: "/research", label: "Research" },
   { href: "/login", label: "Sign In" },
 ];
 
@@ -64,7 +75,6 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
   const [footerSubscribed, setFooterSubscribed] = useState(false);
 
   const localeConfig = MARKETING_LOCALES[locale] || MARKETING_LOCALES.en;
-  const isHomePage = pathname === "/";
 
   useEffect(() => {
     setTelemetryEnabled(isTelemetryAllowed());
@@ -106,40 +116,46 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
       }}
     >
       <div
-        className="min-h-screen w-full overflow-x-hidden flex flex-col bg-[#F8FAFC] text-[#0F172A] selection:bg-[#EEF4FF] selection:text-[#2B4CDE]"
+        className="min-h-screen w-full overflow-x-hidden flex flex-col bg-[#FAF7F2] text-[#0F172A] selection:bg-[#EDE9FE] selection:text-[#0F172A]"
         dir={localeConfig.dir}
       >
         {/* Skip to main content for keyboard & screen-reader users */}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 z-50 px-5 py-3 bg-[#2B4CDE] text-white rounded-full text-[14px] font-semibold shadow-lg"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 z-50 px-5 py-3 bg-[#0F172A] text-white rounded-full text-[14px] font-semibold shadow-lg"
         >
           Skip to main content
         </a>
 
         {/* Subtle Brand & Multi-Portal Navigation Strip */}
-        <div className="px-4 sm:px-8 py-2 text-[12.5px] border-b bg-[#EEF4FF] border-[#DCE7FE] text-[#334155] transition-colors">
+        <div className="px-4 sm:px-8 py-2 text-[12.5px] border-b bg-[#F3EFE6] border-[#E7E0D6] text-[#334155] transition-colors">
           <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center space-x-2">
-              <Sparkles className="w-3.5 h-3.5 text-[#2B4CDE] shrink-0" />
-              <span>Weebly: Safe, multilingual learning for children &amp; teens.</span>
+              <Sparkles className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+              <span>Weebly: Voice-first learning, creativity &amp; child development (Ages 3–16).</span>
             </div>
             <div className="flex items-center space-x-4">
               <Link
+                href="/youth/dashboard"
+                className="font-semibold text-indigo-700 hover:underline"
+              >
+                Kids World
+              </Link>
+              <Link
                 href="/parent"
-                className="font-medium hover:text-[#2B4CDE] hover:underline"
+                className="font-medium hover:text-indigo-700 hover:underline"
               >
                 Parent Portal
               </Link>
               <Link
                 href="/teacher/dashboard"
-                className="font-medium hover:text-[#2B4CDE] hover:underline"
+                className="font-medium hover:text-indigo-700 hover:underline"
               >
-                Teacher Hub
+                Teacher Studio
               </Link>
               <Link
                 href="/school/portal"
-                className="font-medium hover:text-[#2B4CDE] hover:underline"
+                className="font-medium hover:text-indigo-700 hover:underline"
               >
                 School Portal
               </Link>
@@ -150,32 +166,37 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                 className="hover:underline font-semibold inline-flex items-center space-x-1 text-[#E11D48]"
               >
                 <LifeBuoy className="w-3.5 h-3.5" />
-                <span>24/7 Crisis</span>
+                <span>24/7 Helpline (1121)</span>
               </button>
             </div>
           </div>
         </div>
 
-        {/* Floating Pill Header (AI Mental Wellness Dribbble Aesthetic) */}
-        <header className="sticky top-0 z-40 w-full px-4 sm:px-8 py-3.5 bg-[#F8FAFC]/85 backdrop-blur-xl border-b border-[#DCE7FE]/40 transition-all">
+        {/* Sticky Editorial Header */}
+        <header className="sticky top-0 z-40 w-full px-4 sm:px-8 py-3.5 bg-[#FAF7F2]/90 backdrop-blur-xl border-b border-[#E7E0D6] transition-all">
           <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
             {/* Brand Identity (Top Left) */}
             <Link
               href="/"
               className="flex items-center space-x-2.5 shrink-0 group focus-visible:outline-none rounded-full"
             >
-              <div className="w-10 h-10 rounded-2xl bg-[#2B4CDE] text-white flex items-center justify-center shadow-[0_4px_16px_rgba(43,76,222,0.28)] group-hover:scale-105 transition-transform">
-                <Flower2 className="w-5 h-5" />
+              <div className="w-10 h-10 rounded-2xl bg-[#0F172A] text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+                <Flower2 className="w-5 h-5 text-amber-300" />
               </div>
-              <span className="text-xl font-bold tracking-tight text-[#0F172A]">
-                Weebly
-              </span>
+              <div className="flex flex-col">
+                <span className="text-xl font-extrabold tracking-tight text-[#0F172A] leading-none">
+                  Weebly
+                </span>
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500 mt-0.5">
+                  Learning World
+                </span>
+              </div>
             </Link>
 
-            {/* Center Floating Glass Pill Navigation */}
+            {/* Center Pill Navigation */}
             <nav
               aria-label="Primary Marketing Navigation"
-              className="hidden lg:flex items-center space-x-1 px-3 py-1.5 rounded-full bg-white/95 border border-[#DCE7FE] shadow-[0_8px_30px_rgba(43,76,222,0.06)] backdrop-blur-xl"
+              className="hidden lg:flex items-center space-x-1 px-3 py-1.5 rounded-full bg-white border border-[#E7E0D6] shadow-xs"
             >
               {MARKETING_NAV_LINKS.map((link) => {
                 const active = isNavActive(link.href);
@@ -186,8 +207,8 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                     aria-current={active ? "page" : undefined}
                     className={`px-4 py-2 rounded-full text-[13.5px] font-medium whitespace-nowrap transition-all ${
                       active
-                        ? "bg-[#2B4CDE] text-white font-semibold shadow-xs"
-                        : "text-[#475569] hover:text-[#2B4CDE] hover:bg-[#EEF4FF]"
+                        ? "bg-[#0F172A] text-white font-semibold shadow-xs"
+                        : "text-[#334155] hover:text-[#0F172A] hover:bg-[#FAF7F2]"
                     }`}
                   >
                     {link.label}
@@ -196,26 +217,18 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
               })}
             </nav>
 
-            {/* Right Actions: Language Selector + Login + Main CTA "Try Demo" */}
+            {/* Right Actions: Language Selector + Main CTA "Try Demo" */}
             <div className="flex items-center space-x-2.5 shrink-0">
               {/* Language Switcher */}
               <div className="relative flex items-center">
-                <Globe
-                  className={`w-3.5 h-3.5 absolute left-3 pointer-events-none ${
-                    isHomePage ? "text-white/70" : "text-[#4A5752]"
-                  }`}
-                />
+                <Globe className="w-3.5 h-3.5 absolute left-3 pointer-events-none text-slate-600" />
                 <select
                   aria-label="Select Language"
                   value={locale}
                   onChange={(e) =>
                     handleSetLocale(e.target.value as SupportedMarketingLocale)
                   }
-                  className={`pl-8 pr-3 py-2 rounded-full text-[12.5px] font-medium focus:outline-none transition-colors cursor-pointer max-w-[115px] sm:max-w-none backdrop-blur-md ${
-                    isHomePage
-                      ? "bg-white/10 border border-white/20 text-white hover:bg-white/15"
-                      : "bg-white border border-[#DCE3DF] text-[#1A1E1C] hover:border-[#1A1E1C]"
-                  }`}
+                  className="pl-8 pr-3 py-2 rounded-full text-[12.5px] font-medium focus:outline-none transition-colors cursor-pointer max-w-[115px] sm:max-w-none bg-white border border-[#E7E0D6] text-[#0F172A] hover:border-slate-900"
                 >
                   {Object.values(MARKETING_LOCALES).map((loc) => (
                     <option
@@ -296,6 +309,23 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
                 })}
               </nav>
 
+              <div className="pt-2 border-t border-slate-100">
+                <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-2 px-1">
+                  Product Deep Dives
+                </div>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {V10_DEDICATED_PRODUCT_LINKS.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-700"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
               <div className="pt-2 flex flex-col gap-2.5">
                 <Link
                   href="/demos"
@@ -352,7 +382,7 @@ export const MarketingShell: React.FC<{ children: React.ReactNode }> = ({
 
                   <div className="flex flex-wrap items-center gap-3 pt-1">
                     <Link
-                      href="/demo"
+                      href="/demos"
                       className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-full bg-amber-400 text-slate-950 hover:bg-amber-300 text-[13.5px] font-black transition-all shadow-[0_4px_14px_rgba(245,158,11,0.25)]"
                     >
                       <span>Try Interactive Demo</span>
