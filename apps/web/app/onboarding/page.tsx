@@ -151,10 +151,10 @@ export default function OnboardingPage() {
                 <span>A Quiet Space for Your Mind</span>
               </span>
               <h1 className="text-2xl sm:text-3xl font-serif font-medium text-[#263330]">
-                Welcome to InnerOS
+                Welcome to Weebly
               </h1>
               <p className="text-[16px] text-[#52625E] leading-relaxed">
-                InnerOS is a calm, supportive AI companion designed for everyday reflection, talking through busy thoughts, and keeping gentle routines.
+                Weebly is a calm, supportive AI companion designed for everyday reflection, talking through busy thoughts, and keeping gentle routines.
               </p>
             </div>
 
@@ -164,7 +164,7 @@ export default function OnboardingPage() {
                 <span>Important to Know</span>
               </div>
               <p className="text-[#263330] leading-relaxed text-[14px]">
-                InnerOS is an AI companion for personal reflection and wellbeing—not a medical provider or human therapist.
+                Weebly is an AI companion for personal reflection and wellbeing—not a medical provider or human therapist.
               </p>
             </div>
 

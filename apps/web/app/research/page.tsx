@@ -101,7 +101,7 @@ export default function ResearchPage() {
                   &ldquo;{src.citation}&rdquo;
                 </p>
                 <p className="text-sm text-[#334155] leading-relaxed">
-                  <strong>InnerOS Application:</strong> {src.relevance}
+                  <strong>Weebly Application:</strong> {src.relevance}
                 </p>
               </div>
             ))}
