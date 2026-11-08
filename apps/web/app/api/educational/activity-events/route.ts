@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isSupabaseConfigured, sbInsert, sbSelect } from "@/lib/server/supabase";
 
 export interface EducationalActivityEvent {
   id: string;
@@ -16,7 +17,7 @@ export interface EducationalActivityEvent {
   created_at: string;
 }
 
-// In-memory persistent event store for serverless execution
+// Fallback seed store used when Supabase env vars are not yet set
 const inMemoryEvents: EducationalActivityEvent[] = [
   {
     id: "evt_demo_01",
@@ -86,11 +87,17 @@ export async function POST(req: NextRequest) {
     };
 
     inMemoryEvents.unshift(newEvent);
+    const saved = await sbInsert<EducationalActivityEvent>(
+      "educational_activity_events",
+      newEvent as unknown as Record<string, unknown>
+    );
 
     return NextResponse.json({
       success: true,
+      persisted: Boolean(saved),
+      storage: saved ? "supabase-postgres" : "in-memory-fallback",
       event_id: eventId,
-      event: newEvent,
+      event: saved || newEvent,
     });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 400 });
@@ -102,8 +109,15 @@ export async function GET(req: NextRequest) {
   const studentId = searchParams.get("student_id");
   const view = searchParams.get("view"); // 'parent', 'teacher', 'admin', 'raw'
 
-  let events = inMemoryEvents;
-  if (studentId) {
+  const filter = studentId
+    ? `select=*&student_pseudonymous_id=eq.${encodeURIComponent(studentId)}&order=created_at.desc&limit=50`
+    : "select=*&order=created_at.desc&limit=50";
+  const dbRows = isSupabaseConfigured()
+    ? await sbSelect<EducationalActivityEvent>("educational_activity_events", filter)
+    : null;
+
+  let events = dbRows && dbRows.length > 0 ? dbRows : inMemoryEvents;
+  if (!dbRows && studentId) {
     events = events.filter((e) => e.student_pseudonymous_id === studentId);
   }
 

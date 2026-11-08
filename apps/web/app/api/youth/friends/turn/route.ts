@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { generateFriendReply } from "@/lib/server/llm";
 
 export interface ToolAction {
   tool:
@@ -31,12 +32,15 @@ export interface ChoiceOption {
 }
 
 interface TurnRequest {
-  character_id: "kai" | "mia" | "lumi" | "zayn";
-  message: string;
+  character_id?: "kai" | "mia" | "lumi" | "zayn";
+  message?: string;
+  utterance?: string;
+  user_utterance?: string;
   language?: "en" | "ur" | "pa" | "ur-Latn" | "pa-Latn";
   age_tier?: "little" | "junior" | "teen";
   session_id?: string;
   turn_count?: number;
+  history?: Array<{ role: "user" | "assistant"; text: string }>;
 }
 
 const REGIONAL_YOUTH_LIFELINES = [
@@ -73,7 +77,7 @@ export async function POST(req: NextRequest) {
   try {
     const body: TurnRequest = await req.json();
     const characterId = body.character_id || "kai";
-    const userUtterance = (body.message || "").trim();
+    const userUtterance = (body.message || body.utterance || body.user_utterance || "").trim();
     const currentTurn = (body.turn_count || 0) + 1;
     const ageTier = body.age_tier || "junior";
     const language = body.language || detectLanguage(userUtterance);
@@ -103,6 +107,7 @@ export async function POST(req: NextRequest) {
         is_safety_escalation: true,
         safety_resources: REGIONAL_YOUTH_LIFELINES,
         turn_count: currentTurn,
+        ai_provider: "safety-guardrail",
       });
     }
 
@@ -127,6 +132,7 @@ export async function POST(req: NextRequest) {
         detected_language: language,
         is_safety_escalation: false,
         turn_count: currentTurn,
+        ai_provider: "safety-guardrail",
       });
     }
 
@@ -149,6 +155,7 @@ export async function POST(req: NextRequest) {
         is_safety_escalation: false,
         session_limit_reached: true,
         turn_count: currentTurn,
+        ai_provider: "session-guardrail",
       });
     } else if (currentTurn >= warningTurn) {
       windDownNotice =
@@ -162,15 +169,31 @@ export async function POST(req: NextRequest) {
     // 4. Tool & Intent Routing Engine
     const toolMatch = evaluateToolRouting(userUtterance, language, characterId);
 
-    // 5. Generate Response (either tool-guided confirmation or conversational dialogue)
+    // 5. Generate Response (either tool-guided confirmation, live LLM, or safe deterministic fallback)
     let reply = "";
-    let action: ToolAction | undefined = toolMatch.action;
-    let choices: ChoiceOption[] | undefined = toolMatch.choices;
+    let aiProvider = "template-fallback";
+    const action: ToolAction | undefined = toolMatch.action;
+    const choices: ChoiceOption[] | undefined = toolMatch.choices;
 
     if (toolMatch.confirmationReply) {
       reply = toolMatch.confirmationReply;
+      aiProvider = "tool-router";
     } else {
-      reply = generateCharacterReply(characterId, userUtterance, language, ageTier);
+      const normalizedLang = language.startsWith("ur") ? "ur" : language.startsWith("pa") ? "pa" : "en";
+      const llmReply = await generateFriendReply({
+        character: characterId,
+        message: userUtterance,
+        language: normalizedLang,
+        ageTier,
+        history: body.history,
+      });
+      if (llmReply && llmReply.reply) {
+        reply = llmReply.reply;
+        aiProvider = llmReply.provider;
+      } else {
+        reply = generateCharacterReply(characterId, userUtterance, language, ageTier);
+        aiProvider = "template-fallback";
+      }
     }
 
     return NextResponse.json({
@@ -184,6 +207,7 @@ export async function POST(req: NextRequest) {
       safety_resources: [],
       wind_down_notice: windDownNotice,
       turn_count: currentTurn,
+      ai_provider: aiProvider,
     });
   } catch (error: any) {
     return NextResponse.json(
