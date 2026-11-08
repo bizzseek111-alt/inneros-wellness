@@ -40,7 +40,7 @@ interface TurnRequest {
   age_tier?: "little" | "junior" | "teen";
   session_id?: string;
   turn_count?: number;
-  history?: Array<{ role: "user" | "assistant"; text: string }>;
+  history?: Array<{ role: "child" | "friend" | "user" | "assistant"; text: string }>;
 }
 
 const REGIONAL_YOUTH_LIFELINES = [
@@ -180,15 +180,21 @@ export async function POST(req: NextRequest) {
       aiProvider = "tool-router";
     } else {
       const normalizedLang = language.startsWith("ur") ? "ur" : language.startsWith("pa") ? "pa" : "en";
+      const normalizedHistory = Array.isArray(body.history)
+        ? body.history.map((h) => ({
+            role: (h.role === "user" || h.role === "child" ? "child" : "friend") as "child" | "friend",
+            text: h.text,
+          }))
+        : undefined;
       const llmReply = await generateFriendReply({
         character: characterId,
         message: userUtterance,
         language: normalizedLang,
         ageTier,
-        history: body.history,
+        history: normalizedHistory,
       });
-      if (llmReply && llmReply.reply) {
-        reply = llmReply.reply;
+      if (llmReply && llmReply.text) {
+        reply = llmReply.text;
         aiProvider = llmReply.provider;
       } else {
         reply = generateCharacterReply(characterId, userUtterance, language, ageTier);

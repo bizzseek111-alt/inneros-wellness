@@ -46,7 +46,7 @@ export async function sbSelect<T = Record<string, unknown>>(
 
 export async function sbInsert<T = Record<string, unknown>>(
   table: string,
-  row: Record<string, unknown>
+  row: T | Record<string, unknown>
 ): Promise<T | null> {
   const cfg = getConfig();
   if (!cfg) return null;

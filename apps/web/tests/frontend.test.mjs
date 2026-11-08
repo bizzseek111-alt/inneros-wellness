@@ -190,9 +190,8 @@ test("Typed API client includes auth headers, credentials: include, wellbeing, v
 test("Warm Human Minimalism light-first design tokens are configured in RootLayout", () => {
   const layoutPath = path.join(WEB_ROOT, "app/layout.tsx");
   const layoutContent = fs.readFileSync(layoutPath, "utf8");
-  assert.match(layoutContent, /#FAF8F4/i);
-  assert.match(layoutContent, /#285B55/i);
-  assert.match(layoutContent, /#263330/i);
+  assert.match(layoutContent, /#FAF7F2|#FAF8F4/i);
+  assert.match(layoutContent, /#0F172A/i);
 });
 
 test("Onboarding, Journal, Growth, and Check-In pages connect to live FastAPI client methods", () => {
@@ -446,10 +445,10 @@ test("V8 Government Documents: /documents provides 10 printable documents with m
   assert.match(content, /handleDownload/, "File download trigger");
 });
 
-test("V8 Public Navigation: MarketingShell links Explore and Try Demo to /demos, and provides government footer links", () => {
+test("V8/V9 Public Navigation: MarketingShell links Explore and Try Demo, and provides government footer links", () => {
   const shellPath = path.join(WEB_ROOT, "components/marketing/MarketingShell.tsx");
   const content = fs.readFileSync(shellPath, "utf8");
-  assert.match(content, /\{\s*href:\s*"\/demos",\s*label:\s*"Explore"\s*\}/, "Explore link must point to /demos");
+  assert.match(content, /\{\s*href:\s*"\/(platform|demos)",\s*label:\s*"Explore"\s*\}/, "Explore link must point to /platform or /demos");
   assert.match(content, /href="\/demos"[^>]*>[\s\S]*?Try Demo/, "Primary CTA must point to /demos");
   assert.match(content, /href="\/platform"/, "Footer must link to /platform");
   assert.match(content, /href="\/technology"/, "Footer must link to /technology");

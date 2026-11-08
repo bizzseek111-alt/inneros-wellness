@@ -1,14 +1,14 @@
 {
-  "name": "Weebly — Emotional Wellbeing & Learning Sanctuary",
+  "name": "Weebly — Voice-First Learning, Creativity & Child Development",
   "short_name": "Weebly",
-  "description": "Personal reflection, mindful routines, and neurodiversity-affirming developmental learning for all ages.",
+  "description": "A calm, joyful multilingual learning world where children talk with caring AI companions, explore six interactive learning worlds, and grow with parent and school support.",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#F8FAFC",
-  "theme_color": "#0D9488",
-  "categories": ["education", "health", "lifestyle"],
+  "background_color": "#FAF7F2",
+  "theme_color": "#0F172A",
+  "categories": ["education", "kids", "family"],
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
@@ -43,40 +43,32 @@
   ],
   "shortcuts": [
     {
-      "name": "Sanctuary",
-      "short_name": "Sanctuary",
-      "description": "Open your adult sanctuary companion and reflection journal",
-      "url": "/dashboard?source=pwa_shortcut",
-      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Kids Academy",
-      "short_name": "Kids",
-      "description": "Safe, sensory-friendly developmental academy for ages 2–12",
+      "name": "Kids Magic Home",
+      "short_name": "Kids World",
+      "description": "Talk with Kai, Mia, Lumi & Zayn and open 6 learning worlds",
       "url": "/youth/dashboard?source=pwa_shortcut",
       "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Teens Hub",
-      "short_name": "Teens",
-      "description": "Emotion regulation, executive function, and reflection for teens",
-      "url": "/teens?source=pwa_shortcut",
+      "name": "Talk to AI Friends",
+      "short_name": "Talk",
+      "description": "Voice conversation in English, Urdu, and Punjabi",
+      "url": "/youth/friends?source=pwa_shortcut",
       "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Daily Check-In",
-      "short_name": "Check-In",
-      "description": "Mindful emotional check-in and grounding",
-      "url": "/check-in?source=pwa_shortcut",
+      "name": "Parent Center",
+      "short_name": "Parents",
+      "description": "Review child progress, home observations, and routines",
+      "url": "/parent?source=pwa_shortcut",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Teacher Studio",
+      "short_name": "Teachers",
+      "description": "Assign classroom quests and review cohort participation",
+      "url": "/teacher/dashboard?source=pwa_shortcut",
       "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
     }
-  ],
-  "share_target": {
-    "action": "/journal?source=pwa_share",
-    "method": "GET",
-    "params": {
-      "title": "title",
-      "text": "text"
-    }
-  }
+  ]
 }

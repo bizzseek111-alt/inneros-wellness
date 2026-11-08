@@ -112,13 +112,28 @@ export default function PunjabSchoolPilotPage() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => {
+    try {
+      await fetch("/api/pilot/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          organization_name: formData.institutionName,
+          contact_name: formData.fullName,
+          contact_email: formData.email,
+          role: formData.title || "school_leader",
+          student_count_estimate: formData.studentCount,
+          message: `City: ${formData.city} | Phone: ${formData.phone} | Grades: ${formData.grades.join(", ")} | Notes: ${formData.notes}`,
+        }),
+      });
+    } catch {
+      // Allow offline confirmation
+    } finally {
       setSubmitting(false);
       setFormSubmitted(true);
-    }, 600);
+    }
   };
 
   return (
