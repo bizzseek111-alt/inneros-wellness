@@ -426,6 +426,104 @@ export default function WeeblyV9HomePage() {
         </section>
 
         {/* ===================================================================== */}
+        {/* V10 UNIFIED ECOSYSTEM: WEEBLY — LEARN. CREATE. THINK. GROW.           */}
+        {/* ===================================================================== */}
+        <section className="py-16 px-4 sm:px-6 lg:px-8 border-b border-[#E7E0D6] bg-white">
+          <div className="max-w-7xl mx-auto space-y-8">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <span className="inline-block rounded-full bg-amber-100 border border-amber-300 px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-amber-950">
+                  WEEBLY — LEARN. CREATE. THINK. GROW.
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">
+                  Four Connected Product Pillars for Ages 2–18
+                </h2>
+                <p className="text-slate-600 mt-1 text-sm sm:text-base max-w-2xl">
+                  A unified international-grade learning, AI creation, foundational thinking, and child-development ecosystem—exceptionally simple for children, richly structured for families and schools.
+                </p>
+              </div>
+              <Link
+                href="/ai-creator-academy"
+                className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-5 py-3 text-xs font-extrabold text-white hover:bg-slate-800 transition"
+              >
+                <span>Explore Age 2–18 AI Pathway &amp; Creator Academy</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              <div className="rounded-3xl border-2 border-teal-300 bg-teal-50/60 p-6 flex flex-col justify-between">
+                <div>
+                  <span className="text-xs font-extrabold uppercase text-teal-800">Pillar 01 · Learn with AI</span>
+                  <h3 className="text-xl font-extrabold text-slate-900 mt-1">5-Stage Learning Journeys</h3>
+                  <p className="text-xs text-slate-700 mt-2 leading-relaxed">
+                    Structured <strong>WATCH → LEARN → PLAY → IMPLEMENT → REFLECT</strong> journeys across math, reading, AI literacy, and life skills.
+                  </p>
+                </div>
+                <Link
+                  href="/youth/journeys"
+                  className="mt-5 inline-flex items-center gap-1.5 text-xs font-extrabold text-teal-900 underline underline-offset-4"
+                >
+                  <span>Open Learning Journeys</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+
+              <div className="rounded-3xl border-2 border-amber-300 bg-amber-50/60 p-6 flex flex-col justify-between">
+                <div>
+                  <span className="text-xs font-extrabold uppercase text-amber-900">Pillar 02 · Create with AI</span>
+                  <h3 className="text-xl font-extrabold text-slate-900 mt-1">AI Creator Academy</h3>
+                  <p className="text-xs text-slate-700 mt-2 leading-relaxed">
+                    AI Story Maker, Visual Block Game Maker (Ages 5–16), Cartoon Studio, Art Lab, Young AI Inventors, and AI Detective.
+                  </p>
+                </div>
+                <Link
+                  href="/youth/creator"
+                  className="mt-5 inline-flex items-center gap-1.5 text-xs font-extrabold text-amber-950 underline underline-offset-4"
+                >
+                  <span>Launch AI Creator Academy</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+
+              <div className="rounded-3xl border-2 border-indigo-300 bg-indigo-50/60 p-6 flex flex-col justify-between">
+                <div>
+                  <span className="text-xs font-extrabold uppercase text-indigo-900">Pillar 03 · Build Foundational Skills</span>
+                  <h3 className="text-xl font-extrabold text-slate-900 mt-1">Foundational Skills Lab</h3>
+                  <p className="text-xs text-slate-700 mt-2 leading-relaxed">
+                    10 non-clinical cognitive &amp; executive-function activities: Freeze &amp; Go, Memory Garden, Switch the Rule, and Story Sequencer.
+                  </p>
+                </div>
+                <Link
+                  href="/youth/skills-lab"
+                  className="mt-5 inline-flex items-center gap-1.5 text-xs font-extrabold text-indigo-950 underline underline-offset-4"
+                >
+                  <span>Practice Foundational Skills</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+
+              <div className="rounded-3xl border-2 border-rose-300 bg-rose-50/60 p-6 flex flex-col justify-between">
+                <div>
+                  <span className="text-xs font-extrabold uppercase text-rose-900">Pillar 04 · Grow with Support</span>
+                  <h3 className="text-xl font-extrabold text-slate-900 mt-1">Skills &amp; Creations Passport</h3>
+                  <p className="text-xs text-slate-700 mt-2 leading-relaxed">
+                    Private-by-default child portfolio, ADHD/autism-friendly calm pacing, AAC tap-to-speak boards, and parent sharing controls.
+                  </p>
+                </div>
+                <Link
+                  href="/youth/passport"
+                  className="mt-5 inline-flex items-center gap-1.5 text-xs font-extrabold text-rose-950 underline underline-offset-4"
+                >
+                  <span>View Skills Passport</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ===================================================================== */}
         {/* SECTION 2: MEET THE FOUR AI FRIENDS                                   */}
         {/* ===================================================================== */}
         <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">

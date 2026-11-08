@@ -18,7 +18,13 @@ export interface ToolAction {
     | "start_sports_drill"
     | "open_interactive_cartoon"
     | "start_tech_discovery"
-    | "start_life_skills_mission";
+    | "start_life_skills_mission"
+    | "open_learning_journey"
+    | "open_creator_academy"
+    | "debug_visual_game"
+    | "suggest_story_branch"
+    | "open_foundational_skills_lab"
+    | "open_skills_passport";
   route?: string;
   label: string;
   icon?: string;
@@ -306,6 +312,100 @@ function evaluateToolRouting(
         params: { language: "en" },
       },
       confirmationReply: "Awesome! Let's talk in English. What would you like to explore today?",
+    };
+  }
+
+  // V10 UNIFIED ECOSYSTEM TOOL ROUTING (Journeys, Creator Academy, Skills Lab, Passport)
+  if (
+    lower.includes("learning journey") ||
+    lower.includes("watch learn play") ||
+    lower.includes("fair share mangoes") ||
+    lower.includes("5-stage") ||
+    (lower.includes("journey") && !lower.includes("space"))
+  ) {
+    return {
+      action: {
+        tool: "open_learning_journey",
+        route: "/youth/journeys",
+        label: "Open 5-Stage Learning Journeys",
+        icon: "🧭",
+      },
+      confirmationReply:
+        "Let's start a 5-Stage Learning Journey together — Watch, Learn, Play, Implement, and Reflect!",
+    };
+  }
+
+  if (
+    lower.includes("debug game") ||
+    lower.includes("fix my game") ||
+    lower.includes("block game") ||
+    lower.includes("game maker") ||
+    lower.includes("build a game")
+  ) {
+    return {
+      action: {
+        tool: "debug_visual_game",
+        route: "/youth/creator?tool=game_maker",
+        label: "Open Visual Block Game Maker",
+        icon: "🕹️",
+      },
+      confirmationReply:
+        "Let's inspect your visual blocks step-by-step in the AI Game Maker! Check if your 'Move Right' and 'If Touching Star' blocks are in the right order.",
+    };
+  }
+
+  if (
+    lower.includes("creator academy") ||
+    lower.includes("story maker") ||
+    lower.includes("ai detective") ||
+    lower.includes("young ai inventor")
+  ) {
+    return {
+      action: {
+        tool: "open_creator_academy",
+        route: "/youth/creator",
+        label: "Open AI Creator Academy",
+        icon: "🚀",
+      },
+      confirmationReply:
+        "Welcome to the AI Creator Academy! Let's build a story, block game, or cartoon where you are the author and AI is your helper.",
+    };
+  }
+
+  if (
+    lower.includes("skills lab") ||
+    lower.includes("freeze and go") ||
+    lower.includes("memory garden") ||
+    lower.includes("switch the rule") ||
+    lower.includes("foundational skill")
+  ) {
+    return {
+      action: {
+        tool: "open_foundational_skills_lab",
+        route: "/youth/skills-lab",
+        label: "Open Foundational Skills Lab",
+        icon: "🧠",
+      },
+      confirmationReply:
+        "Let's practice focus, memory, and flexible rules in the Foundational Skills Lab!",
+    };
+  }
+
+  if (
+    lower.includes("my passport") ||
+    lower.includes("skills passport") ||
+    lower.includes("creations passport") ||
+    lower.includes("my portfolio")
+  ) {
+    return {
+      action: {
+        tool: "open_skills_passport",
+        route: "/youth/passport",
+        label: "Open Skills & Creations Passport",
+        icon: "🏅",
+      },
+      confirmationReply:
+        "Let's open your private Skills & Creations Passport to celebrate your stories, games, and badges!",
     };
   }
 

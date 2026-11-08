@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isSupabaseConfigured, sbInsert, sbSelect } from "@/lib/server/supabase";
 
+export type V10EventType =
+  | "journey_started"
+  | "journey_completed"
+  | "activity_completed"
+  | "project_created"
+  | "project_updated"
+  | "learning_objective_practiced";
+
 export interface EducationalActivityEvent {
   id: string;
+  event_type?: V10EventType;
   student_pseudonymous_id: string;
   student_name?: string;
   activity_id: string;
@@ -21,6 +30,7 @@ export interface EducationalActivityEvent {
 const inMemoryEvents: EducationalActivityEvent[] = [
   {
     id: "evt_demo_01",
+    event_type: "activity_completed",
     student_pseudonymous_id: "std_ayan_7y",
     student_name: "Ayan (Fictional Demo)",
     activity_id: "q_emot_0001",
@@ -36,6 +46,7 @@ const inMemoryEvents: EducationalActivityEvent[] = [
   },
   {
     id: "evt_demo_02",
+    event_type: "learning_objective_practiced",
     student_pseudonymous_id: "std_zainab_10y",
     student_name: "Zainab (Fictional Demo)",
     activity_id: "q_scie_0001",
@@ -51,6 +62,7 @@ const inMemoryEvents: EducationalActivityEvent[] = [
   },
   {
     id: "evt_demo_03",
+    event_type: "journey_completed",
     student_pseudonymous_id: "std_ayan_7y",
     student_name: "Ayan (Fictional Demo)",
     activity_id: "q_math_0001",
@@ -72,11 +84,12 @@ export async function POST(req: NextRequest) {
     const eventId = `evt_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
     const newEvent: EducationalActivityEvent = {
       id: eventId,
-      student_pseudonymous_id: body.student_pseudonymous_id || "std_anonymous_demo",
+      event_type: body.event_type || "activity_completed",
+      student_pseudonymous_id: body.student_pseudonymous_id || body.child_id || "std_anonymous_demo",
       student_name: body.student_name || "Ayan (Fictional Demo)",
       activity_id: body.activity_id || "q_interactive_activity",
       activity_title: body.activity_title || "Interactive SEL Activity",
-      category: body.category || "emotional_vocabulary",
+      category: body.category || body.skill_domain || "emotional_vocabulary",
       learning_objective: body.learning_objective || "Practice cooperative problem solving",
       completion_status: body.completion_status || "completed",
       hints_used_count: Number(body.hints_used_count || 0),

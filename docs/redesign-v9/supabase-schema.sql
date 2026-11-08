@@ -79,3 +79,64 @@ create policy "app_rw_assign" on public.classroom_assignments for all using (tru
 
 drop policy if exists "app_insert_inquiries" on public.pilot_inquiries;
 create policy "app_insert_inquiries" on public.pilot_inquiries for insert with check (true);
+
+-- ============================================================================
+-- WEEBLY V10 — UNIFIED LEARNING JOURNEYS, AI CREATOR ACADEMY & SKILLS PASSPORT
+-- ============================================================================
+
+create table if not exists public.learning_journey_progress (
+  id text primary key,
+  student_pseudonymous_id text not null default 'std_weebly_child',
+  journey_id text not null,
+  current_stage text not null default 'watch',
+  completed_stages jsonb not null default '[]'::jsonb,
+  reflection_response text,
+  caregiver_observation text,
+  status text not null default 'in_progress',
+  language_used text not null default 'en',
+  updated_at timestamptz not null default now(),
+  created_at timestamptz not null default now()
+);
+create index if not exists idx_ljp_student on public.learning_journey_progress (student_pseudonymous_id, updated_at desc);
+
+create table if not exists public.creator_projects (
+  id text primary key,
+  student_pseudonymous_id text not null default 'std_weebly_child',
+  tool_type text not null, -- 'story_maker' | 'game_maker' | 'cartoon_studio' | 'art_lab' | 'ai_inventors' | 'ai_detective'
+  title text not null,
+  age_band text not null default '6',
+  project_state jsonb not null default '{}'::jsonb,
+  moderation_status text not null default 'approved_private',
+  parent_sharing_approved boolean not null default false,
+  teacher_visible boolean not null default true,
+  updated_at timestamptz not null default now(),
+  created_at timestamptz not null default now()
+);
+create index if not exists idx_cp_student on public.creator_projects (student_pseudonymous_id, updated_at desc);
+
+create table if not exists public.cms_content_items (
+  id text primary key,
+  content_type text not null, -- 'journey' | 'creator_template' | 'foundational_skill' | 'ai_pathway' | 'question' | 'rag_source'
+  title text not null,
+  age_band text not null,
+  subject text not null,
+  language text not null default 'en',
+  review_status text not null default 'Draft', -- 'Draft' | 'Under Review' | 'Approved' | 'Published' | 'Archived'
+  content_license text not null default 'Weebly Original CC-BY-NC',
+  payload jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.learning_journey_progress enable row level security;
+alter table public.creator_projects enable row level security;
+alter table public.cms_content_items enable row level security;
+
+drop policy if exists "app_rw_journey_progress" on public.learning_journey_progress;
+create policy "app_rw_journey_progress" on public.learning_journey_progress for all using (true) with check (true);
+
+drop policy if exists "app_rw_creator_projects" on public.creator_projects;
+create policy "app_rw_creator_projects" on public.creator_projects for all using (true) with check (true);
+
+drop policy if exists "app_rw_cms_items" on public.cms_content_items;
+create policy "app_rw_cms_items" on public.cms_content_items for all using (true) with check (true);
+

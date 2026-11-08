@@ -222,7 +222,74 @@ function PlayHubContent({
           </p>
         </div>
 
-        {/* Big Illustrated Tiles Grid */}
+        {/* V10 Unified 4-Pillar Quick Launch Strip (Learn, Create, Think, Grow) */}
+        <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          <Link
+            href="/youth/journeys"
+            className="rounded-3xl border-2 border-teal-200 bg-teal-50/80 hover:bg-teal-100/80 p-4 flex flex-col justify-between transition shadow-2xs"
+          >
+            <div>
+              <span className="inline-block rounded-full bg-teal-200/80 px-2.5 py-0.5 text-[10px] font-black uppercase text-teal-950">
+                1 · Learn with AI
+              </span>
+              <h2 className="mt-2 text-base font-black text-slate-900">🧭 5-Stage Journeys</h2>
+              <p className="mt-1 text-xs font-semibold text-slate-600">
+                Watch → Learn → Play → Implement → Reflect
+              </p>
+            </div>
+            <span className="mt-3 text-xs font-extrabold text-teal-800">Open Journeys →</span>
+          </Link>
+
+          <Link
+            href="/youth/creator"
+            className="rounded-3xl border-2 border-amber-200 bg-amber-50/80 hover:bg-amber-100/80 p-4 flex flex-col justify-between transition shadow-2xs"
+          >
+            <div>
+              <span className="inline-block rounded-full bg-amber-200/80 px-2.5 py-0.5 text-[10px] font-black uppercase text-amber-950">
+                2 · Create with AI
+              </span>
+              <h2 className="mt-2 text-base font-black text-slate-900">🚀 AI Creator Academy</h2>
+              <p className="mt-1 text-xs font-semibold text-slate-600">
+                Story Maker, Block Game Maker &amp; Cartoon Studio
+              </p>
+            </div>
+            <span className="mt-3 text-xs font-extrabold text-amber-900">Create Now →</span>
+          </Link>
+
+          <Link
+            href="/youth/skills-lab"
+            className="rounded-3xl border-2 border-indigo-200 bg-indigo-50/80 hover:bg-indigo-100/80 p-4 flex flex-col justify-between transition shadow-2xs"
+          >
+            <div>
+              <span className="inline-block rounded-full bg-indigo-200/80 px-2.5 py-0.5 text-[10px] font-black uppercase text-indigo-950">
+                3 · Foundational Skills
+              </span>
+              <h2 className="mt-2 text-base font-black text-slate-900">🧠 Skills Lab (10 Games)</h2>
+              <p className="mt-1 text-xs font-semibold text-slate-600">
+                Attention, memory, sequencing &amp; strategy
+              </p>
+            </div>
+            <span className="mt-3 text-xs font-extrabold text-indigo-900">Practice Skills →</span>
+          </Link>
+
+          <Link
+            href="/youth/passport"
+            className="rounded-3xl border-2 border-rose-200 bg-rose-50/80 hover:bg-rose-100/80 p-4 flex flex-col justify-between transition shadow-2xs"
+          >
+            <div>
+              <span className="inline-block rounded-full bg-rose-200/80 px-2.5 py-0.5 text-[10px] font-black uppercase text-rose-950">
+                4 · Grow with Support
+              </span>
+              <h2 className="mt-2 text-base font-black text-slate-900">🏅 Skills Passport</h2>
+              <p className="mt-1 text-xs font-semibold text-slate-600">
+                Your private portfolio, badges &amp; creations
+              </p>
+            </div>
+            <span className="mt-3 text-xs font-extrabold text-rose-900">View Passport →</span>
+          </Link>
+        </div>
+
+        {/* Big Illustrated Tiles Grid (Six Connected Worlds) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 max-w-5xl mx-auto">
           {PLAY_TILES.map((tile) => {
             const title = tile.title[locale === "ur" ? "ur" : locale === "pa" ? "pa" : "en"];
